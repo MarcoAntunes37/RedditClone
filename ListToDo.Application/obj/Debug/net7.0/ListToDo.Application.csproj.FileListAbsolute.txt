@@ -1,0 +1,15 @@
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\bin\Debug\net7.0\ListToDo.Application.deps.json
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\bin\Debug\net7.0\ListToDo.Application.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\bin\Debug\net7.0\ListToDo.Application.pdb
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\obj\Debug\net7.0\ListToDo.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\obj\Debug\net7.0\ListToDo.Application.AssemblyInfoInputs.cache
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\obj\Debug\net7.0\ListToDo.Application.AssemblyInfo.cs
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\obj\Debug\net7.0\ListToDo.Application.csproj.CoreCompileInputs.cache
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\obj\Debug\net7.0\ListToDo.Application.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\obj\Debug\net7.0\refint\ListToDo.Application.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\obj\Debug\net7.0\ListToDo.Application.pdb
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\obj\Debug\net7.0\ref\ListToDo.Application.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\bin\Debug\net7.0\ListToDo.Domain.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\bin\Debug\net7.0\ListToDo.Domain.pdb
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\obj\Debug\net7.0\ListToDo.Application.csproj.AssemblyReference.cache
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Application\obj\Debug\net7.0\ListToDo.Application.csproj.CopyComplete

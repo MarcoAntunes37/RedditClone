@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "QOZ3A4NbNPFo4r/P8pamjljZ3MGgXeCFPk81gPk9d2PeVm3JxghiYWu2R2oDZHV5AP4UKIiqT8CViYR+/UxNNQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Marco\\Documents\\VSCodeProjects\\CleanArquitectureProject\\ListToDo\\ListToDo.Infrastructure\\ListToDo.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Marco\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

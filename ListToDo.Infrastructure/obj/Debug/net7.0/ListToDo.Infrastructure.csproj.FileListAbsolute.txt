@@ -1,0 +1,17 @@
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\bin\Debug\net7.0\ListToDo.Infrastructure.deps.json
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\bin\Debug\net7.0\ListToDo.Infrastructure.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\bin\Debug\net7.0\ListToDo.Infrastructure.pdb
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\obj\Debug\net7.0\ListToDo.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\obj\Debug\net7.0\ListToDo.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\obj\Debug\net7.0\ListToDo.Infrastructure.AssemblyInfo.cs
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\obj\Debug\net7.0\ListToDo.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\obj\Debug\net7.0\ListToDo.Infrastructure.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\obj\Debug\net7.0\refint\ListToDo.Infrastructure.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\obj\Debug\net7.0\ListToDo.Infrastructure.pdb
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\obj\Debug\net7.0\ref\ListToDo.Infrastructure.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\bin\Debug\net7.0\ListToDo.Application.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\bin\Debug\net7.0\ListToDo.Domain.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\bin\Debug\net7.0\ListToDo.Application.pdb
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\bin\Debug\net7.0\ListToDo.Domain.pdb
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\obj\Debug\net7.0\ListToDo.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Infrastructure\obj\Debug\net7.0\ListToDo.Infrastructure.csproj.CopyComplete

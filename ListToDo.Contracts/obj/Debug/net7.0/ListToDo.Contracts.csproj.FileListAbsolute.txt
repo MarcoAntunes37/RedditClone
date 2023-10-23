@@ -1,0 +1,11 @@
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\bin\Debug\net7.0\ListToDo.Contracts.deps.json
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\bin\Debug\net7.0\ListToDo.Contracts.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\bin\Debug\net7.0\ListToDo.Contracts.pdb
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\obj\Debug\net7.0\ListToDo.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\obj\Debug\net7.0\ListToDo.Contracts.AssemblyInfoInputs.cache
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\obj\Debug\net7.0\ListToDo.Contracts.AssemblyInfo.cs
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\obj\Debug\net7.0\ListToDo.Contracts.csproj.CoreCompileInputs.cache
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\obj\Debug\net7.0\ListToDo.Contracts.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\obj\Debug\net7.0\refint\ListToDo.Contracts.dll
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\obj\Debug\net7.0\ListToDo.Contracts.pdb
+C:\Users\Marco\Documents\VSCodeProjects\CleanArquitectureProject\ListToDo\ListToDo.Contracts\obj\Debug\net7.0\ref\ListToDo.Contracts.dll
