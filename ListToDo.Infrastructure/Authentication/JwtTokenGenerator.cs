@@ -2,17 +2,29 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ListToDo.Application.Common.Interfaces.Authentication;
+using ListToDo.Application.Common.Interfaces.Services;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ListToDo.Infrastructure.Authentication;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
+    private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly JwtSettings _jwtSettings;
+
+    public JwtTokenGenerator(IDateTimeProvider dateTimeProvider,
+    IOptions<JwtSettings> jwtSettings)
+    {
+        _dateTimeProvider = dateTimeProvider;
+        _jwtSettings = jwtSettings.Value;
+    }
+
     public string GenerateToken(Guid userId, string firstName, string lastName, string email)
     {
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("super-secret-key")),
+                Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
             SecurityAlgorithms.HmacSha256
         );
 
@@ -25,8 +37,8 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         };
 
         var securityToken = new JwtSecurityToken(
-            issuer: "ListTodo",
-            expires: DateTime.Now.AddDays(1),
+            issuer: _jwtSettings.Issuer,
+            expires: _dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.expirationTimeInMinutes),
             claims: claims,
             signingCredentials: signingCredentials
         );

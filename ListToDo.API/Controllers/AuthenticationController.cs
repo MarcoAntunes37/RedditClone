@@ -46,7 +46,7 @@ public class AuthenticationController : ControllerBase{
         var response = new LoginResponse(
             result.Id,
             result.Email,
-            "token"
+            result.Token
         );
 
         return Ok(response);
