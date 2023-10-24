@@ -8,6 +8,7 @@
         - [Login](#login)
             - [Login request](#login-request)
             - [login response](#login-response)
+    - [Error Handling](#error-handling)
 
 ## Auth
 

@@ -1,7 +1,10 @@
+using System.Security.Authentication;
+using ErrorOr;
 using ListTodo.Domain.Entities;
 using ListToDo.Application.Common.Interfaces.Authentication;
 using ListToDo.Application.Persistence;
 using ListToDo.Application.Services.Authentication.Responses;
+using ListToDo.Domain.Common.Errors;
 
 namespace ListToDo.Application.Services.Authentication;
 
@@ -17,14 +20,16 @@ public class AuthenticationService : IAuthenticationService
         _userRepository = userRepository;
     }
 
-    public LoginResponse Login(string email, string password)
+    public ErrorOr<LoginResponse> Login(string email, string password)
     {
-        if(_userRepository.GetUserByEmail(email) is not User user){
-            throw new Exception("User with this email not exists");
+        if (_userRepository.GetUserByEmail(email) is not User user)
+        {
+            return Errors.Authentication.InvalidCredentials;
         }
 
-        if(user.Password != password){
-            throw new Exception("Invalid password");
+        if (user.Password != password)
+        {
+            return new[] { Errors.Authentication.InvalidCredentials };
         }
 
         var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName, email);
@@ -36,10 +41,11 @@ public class AuthenticationService : IAuthenticationService
         );
     }
 
-    public RegisterResponse Register(string firstName, string lastName, string email, string password)
+    public ErrorOr<RegisterResponse> Register(string firstName, string lastName, string email, string password)
     {
-        if(_userRepository.GetUserByEmail(email) is not null){
-            throw new Exception("User email is already exist");
+        if (_userRepository.GetUserByEmail(email) is not null)
+        {
+            return Errors.User.DuplicatedEmail;
         }
 
         var user = new User

@@ -1,14 +1,15 @@
 namespace ListTodo.API.Controllers;
 
+using ErrorOr;
 using ListTodo.Contracts.Authentication;
+using ListToDo.API.Controllers;
 using ListToDo.Application.Services.Authentication;
 using ListToDo.Application.Services.Authentication.Responses;
 using Microsoft.AspNetCore.Mvc;
 
-
-[ApiController]
 [Route("auth")]
-public class AuthenticationController : ControllerBase{
+public class AuthenticationController : ApiController
+{
     private readonly IAuthenticationService _authenticationService;
 
     public AuthenticationController(IAuthenticationService authenticationService)
@@ -17,38 +18,51 @@ public class AuthenticationController : ControllerBase{
     }
 
     [HttpPost("register")]
-    public IActionResult Register(RegisterRequest request){
+    public IActionResult Register(RegisterRequest request)
+    {
 
-        var result = _authenticationService.Register(
-            request.FirstName, 
-            request.LastName, 
-            request.Email, 
+        ErrorOr<RegisterResponse> result = _authenticationService.Register(
+            request.FirstName,
+            request.LastName,
+            request.Email,
             request.Password
         );
 
-        var response = new RegisterResponse(
-            result.Id,
-            result.FirstName,
-            result.LastName,
-            result.Email
+        return result.Match(
+            result => Ok(MapRegisterResult(result)),
+            errors => Problem(errors)
         );
-
-        return Ok(response);
     }
 
     [HttpPost("login")]
-    public IActionResult Login(LoginRequest request){
-         var result = _authenticationService.Login(            
-            request.Email, 
-            request.Password
-        );
+    public IActionResult Login(LoginRequest request)
+    {
+        ErrorOr<LoginResponse> result = _authenticationService.Login(
+           request.Email,
+           request.Password
+       );
 
-        var response = new LoginResponse(
+        return result.Match(
+            result => Ok(MapAuthResult(result)),
+            errors => Problem(errors));
+    }
+
+    private static RegisterResponse MapRegisterResult(RegisterResponse result)
+    {
+        return new RegisterResponse(
+                    result.Id,
+                    result.FirstName,
+                    result.LastName,
+                    result.Email
+                );
+    }
+
+    private static LoginResponse MapAuthResult(LoginResponse result)
+    {
+        return new LoginResponse(
             result.Id,
             result.Email,
             result.Token
         );
-
-        return Ok(response);
     }
 }
