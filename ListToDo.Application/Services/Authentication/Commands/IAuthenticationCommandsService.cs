@@ -1,10 +1,9 @@
 using ErrorOr;
 using ListToDo.Application.Services.Authentication.Responses;
 
-namespace ListToDo.Application.Services.Authentication;
+namespace ListToDo.Application.Services.Authentication.Commands;
 
-public interface IAuthenticationService
+public interface IAuthenticationCommandsService
 {
-    ErrorOr<LoginResponse> Login(string email, string password);
     ErrorOr<RegisterResponse> Register(string firstName, string lastName, string email, string password);
 }

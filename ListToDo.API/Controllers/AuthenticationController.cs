@@ -3,25 +3,29 @@ namespace ListTodo.API.Controllers;
 using ErrorOr;
 using ListTodo.Contracts.Authentication;
 using ListToDo.API.Controllers;
-using ListToDo.Application.Services.Authentication;
+using ListToDo.Application.Services.Authentication.Commands;
+using ListToDo.Application.Services.Authentication.Queries;
 using ListToDo.Application.Services.Authentication.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("auth")]
 public class AuthenticationController : ApiController
 {
-    private readonly IAuthenticationService _authenticationService;
+    private readonly IAuthenticationCommandsService _authenticationCommandsService;
+    private readonly IAuthenticationQueriesService _authenticationQueriesService;
 
-    public AuthenticationController(IAuthenticationService authenticationService)
+    public AuthenticationController(IAuthenticationCommandsService authenticationCommandsService,
+    IAuthenticationQueriesService authenticationQueriesService)
     {
-        _authenticationService = authenticationService;
+        _authenticationCommandsService = authenticationCommandsService;
+        _authenticationQueriesService = authenticationQueriesService;
     }
 
     [HttpPost("register")]
     public IActionResult Register(RegisterRequest request)
     {
 
-        ErrorOr<RegisterResponse> result = _authenticationService.Register(
+        ErrorOr<RegisterResponse> result = _authenticationCommandsService.Register(
             request.FirstName,
             request.LastName,
             request.Email,
@@ -37,7 +41,7 @@ public class AuthenticationController : ApiController
     [HttpPost("login")]
     public IActionResult Login(LoginRequest request)
     {
-        ErrorOr<LoginResponse> result = _authenticationService.Login(
+        ErrorOr<LoginResponse> result = _authenticationQueriesService.Login(
            request.Email,
            request.Password
        );
