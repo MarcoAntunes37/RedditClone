@@ -63,45 +63,34 @@ This project is created o apply all knowlege acquired in Software Arquitecture.
 ### Instalation
 * Clone repository
 ```
-  https://github.com/MarcoAntunes37/ListToDo.git
+  https://github.com/MarcoAntunes37/RedditClone.git
 ```
 * Access folder
 ```
-  cd ListToDo
+  cd RedditClone
 ```
-#### References
-
-* Add package Microsoft.Extensions.DependencyInjection.Abstractions to Application layer
-```
-  dotnet add .\ListToDo.Application\ package Microsoft.Extensions.DependencyInjection.Abstractions
-```
-* Add package Microsoft.Extensions.DependencyInjection.Abstractions to Infrastructure layer
-```
-  dotnet add .\ListToDo.Infrastructure\ package Microsoft.Extensions.DependencyInjection.Abstractions
-```
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contact
 
 Marco Antunes - marcoantunesdev@gmail.com
 
-Project Link: [https://github.com/MarcoAntunes37/ListToDo](https://github.com/MarcoAntunes37/ListToDo)
+Project Link: [https://github.com/MarcoAntunes37/RedditClone](https://github.com/MarcoAntunes37/RedditClone)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/MarcoAntunes37/ListToDo.svg?style=for-the-badge
-[contributors-url]: https://github.com/MarcoAntunes37/ListToDo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/MarcoAntunes37/ListToDo.svg?style=for-the-badge
-[forks-url]: https://github.com/MarcoAntunes37/ListToDo/network/members
-[stars-shield]: https://img.shields.io/github/stars/MarcoAntunes37/ListToDo.svg?style=for-the-badge
-[stars-url]: https://github.com/MarcoAntunes37/ListToDo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/MarcoAntunes37/ListToDo.svg?style=for-the-badge
-[issues-url]: https://github.com/MarcoAntunes37/ListToDo/issues
-[license-shield]: https://img.shields.io/github/license/MarcoAntunes37/ListToDo.svg?style=for-the-badge
-[license-url]: https://github.com/MarcoAntunes37/ListToDo/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/MarcoAntunes37/RedditClone.svg?style=for-the-badge
+[contributors-url]: https://github.com/MarcoAntunes37/RedditClone/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/MarcoAntunes37/RedditClone.svg?style=for-the-badge
+[forks-url]: https://github.com/MarcoAntunes37/RedditClone/network/members
+[stars-shield]: https://img.shields.io/github/stars/MarcoAntunes37/RedditClone.svg?style=for-the-badge
+[stars-url]: https://github.com/MarcoAntunes37/RedditClone/stargazers
+[issues-shield]: https://img.shields.io/github/issues/MarcoAntunes37/RedditClone.svg?style=for-the-badge
+[issues-url]: https://github.com/MarcoAntunes37/RedditClone/issues
+[license-shield]: https://img.shields.io/github/license/MarcoAntunes37/RedditClone.svg?style=for-the-badge
+[license-url]: https://github.com/MarcoAntunes37/RedditClone/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/marco-aurelio-antunes-junior-0b11526a/
 [product-screenshot]: images/screenshot.png

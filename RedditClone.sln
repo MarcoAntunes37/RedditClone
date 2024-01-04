@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditClone.API", "RedditClone.API\RedditClone.API.csproj", "{99FACE3F-AC52-4381-A854-8773739C24F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditClone.Application", "RedditClone.Application\RedditClone.Application.csproj", "{89FAD614-55FC-4C04-99E0-2F0836E8942B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditClone.Contracts", "RedditClone.Contracts\RedditClone.Contracts.csproj", "{EF2A9C92-733E-4278-AD7E-0AC3D3E9EAC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditClone.Domain", "RedditClone.Domain\RedditClone.Domain.csproj", "{D2C00EF1-41DA-4815-AFDD-A002F39B93F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditClone.Infrastructure", "RedditClone.Infrastructure\RedditClone.Infrastructure.csproj", "{2B8DBF73-C80E-4810-B33A-5DB0BF8F80E0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99FACE3F-AC52-4381-A854-8773739C24F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99FACE3F-AC52-4381-A854-8773739C24F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99FACE3F-AC52-4381-A854-8773739C24F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99FACE3F-AC52-4381-A854-8773739C24F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89FAD614-55FC-4C04-99E0-2F0836E8942B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89FAD614-55FC-4C04-99E0-2F0836E8942B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89FAD614-55FC-4C04-99E0-2F0836E8942B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89FAD614-55FC-4C04-99E0-2F0836E8942B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF2A9C92-733E-4278-AD7E-0AC3D3E9EAC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF2A9C92-733E-4278-AD7E-0AC3D3E9EAC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF2A9C92-733E-4278-AD7E-0AC3D3E9EAC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF2A9C92-733E-4278-AD7E-0AC3D3E9EAC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2C00EF1-41DA-4815-AFDD-A002F39B93F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2C00EF1-41DA-4815-AFDD-A002F39B93F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2C00EF1-41DA-4815-AFDD-A002F39B93F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2C00EF1-41DA-4815-AFDD-A002F39B93F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B8DBF73-C80E-4810-B33A-5DB0BF8F80E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B8DBF73-C80E-4810-B33A-5DB0BF8F80E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B8DBF73-C80E-4810-B33A-5DB0BF8F80E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B8DBF73-C80E-4810-B33A-5DB0BF8F80E0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
