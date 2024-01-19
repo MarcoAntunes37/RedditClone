@@ -9,7 +9,8 @@
     "username": "marcodev",
     "password": "123$Asdsa",
     "email": "emailteste@gmail.com",
-    "subscribed": ["000000000-0000-0000-000000"]
+    "subscribedCommunities": ["000000000-0000-0000-000000"],
+    "createdAt": "2020-01-01T00:00:00.00000000Z"
 }
 ```
 
@@ -20,18 +21,9 @@
     "owner_id": "000000000-0000-0000-000000",
     "name": "C#",
     "description": "hello i am a description",
-    "members": 1,
-    "topic": "Programming"    
-}
-```
-
-## Moderator
-```json
-{
-    "id": "000000000-0000-0000-000000",
-    "user_id": "000000000-0000-0000-000000",
-    "community_id": "000000000-0000-0000-000000",
-    "username": "marcodev"
+    "membersCount": 0,
+    "topic": "Programming",
+    "createdAt": "2020-01-01T00:00:00.00000000Z"
 }
 ```
 
@@ -39,13 +31,13 @@
 ```json 
 {
     "id": "000000000-0000-0000-000000",
-    "user_id": "000000000-0000-0000-000000",
-    "community_id": "000000000-0000-0000-000000",
+    "userId": "000000000-0000-0000-000000",
+    "communityId": "000000000-0000-0000-000000",
     "title": "Post title",
     "content": "Post body",
-    "timestamp": "2023-11-13T12:30:00Z",
-    "upvote": 0,
-    "downvote": 0
+    "upvote": ["000000000-0000-0000-000000"],
+    "downvote": ["000000000-0000-0000-000000"],
+    "createdAt": "2020-01-01T00:00:00.00000000Z"
 }
 ```
 
@@ -53,10 +45,12 @@
 ```json
 {
     "id": "000000000-0000-0000-000000",
-    "post_id": "000000000-0000-0000-000000",
+    "postId": "000000000-0000-0000-000000",
     "username": "marcodev",
     "content": "Hello i am a content",
-    "timestamp": "2023-11-13T12:30:00Z"
+    "upvote": ["000000000-0000-0000-000000"],
+    "downvote": ["000000000-0000-0000-000000"],
+    "createdAt": "2020-01-01T00:00:00.00000000Z"
 }
 ```
 
@@ -64,9 +58,11 @@
 ```json
 {
     "id": "000000000-0000-0000-000000",
-    "comment_id": "000000000-0000-0000-000000",
+    "commentId": "000000000-0000-0000-000000",
     "username": "marcodev",
     "content": "Hello i am a content",
-    "timestamp": "2023-11-13T12:30:00Z"
+    "upvote": ["000000000-0000-0000-000000"],
+    "downvote": ["000000000-0000-0000-000000"],
+    "createdAt": "2020-01-01T00:00:00.00000000Z"
 }
 ```

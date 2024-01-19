@@ -22,6 +22,7 @@ ErrorOr<LoginResult>>
 
     public async Task<ErrorOr<LoginResult>> Handle(LoginQuery query, CancellationToken cancellationToken)
     {
+        await Task.CompletedTask;
         if (_userRepository.GetUserByEmail(query.Email) is not User user)
         {
             return Errors.Authentication.InvalidCredentials;
@@ -32,10 +33,9 @@ ErrorOr<LoginResult>>
             return new[] { Errors.Authentication.InvalidCredentials };
         }
 
-        var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName, user.Email);
+        var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName);
 
         return new LoginResult(
-            user.Email,
             token
         );
     }

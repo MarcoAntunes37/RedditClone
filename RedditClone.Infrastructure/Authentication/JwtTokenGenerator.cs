@@ -20,7 +20,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _jwtSettings = jwtSettings.Value;
     }
 
-    public string GenerateToken(Guid userId, string firstName, string lastName, string email)
+    public string GenerateToken(Guid userId, string firstName, string lastName)
     {
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(

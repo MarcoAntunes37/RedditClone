@@ -1,0 +1,62 @@
+using RedditClone.Domain.Common.Models;
+using RedditClone.Domain.User.Entities;
+using RedditClone.Domain.User.ValueObjects;
+
+namespace RedditClone.Domain.User;
+
+public sealed class User : 
+AggregateRoot<UserId>
+{
+    private readonly List<SubscribedCommunity> _subscribeCommunities = new();
+    public string FirstName { get; }
+    public string LastName { get; }
+    public string UserName { get; }
+    public string Password { get; }
+    public string Email { get; }
+    public IReadOnlyList<SubscribedCommunity> SubscribedCommunities =>
+        _subscribeCommunities.AsReadOnly();
+    public DateTime CreatedAt { get; }
+    public DateTime UpdatedAt { get; }
+
+    private User(
+        UserId userId,
+        string firstName,
+        string lastName,
+        string username,
+        string password,
+        string email,
+        DateTime createdAt,
+        DateTime updatedAt
+        
+    ) : base(userId)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        UserName = username;
+        Password = password;
+        Email = email;
+        CreatedAt = createdAt;
+        UpdatedAt = updatedAt;
+    }
+    
+    public static User Create(
+        string firstName,
+        string lastName,
+        string username,
+        string password,
+        string email,
+        DateTime createdAt,
+        DateTime updatedAt
+    ){
+        return new(
+            UserId.CreateUnique(),
+            firstName,
+            lastName,
+            username,
+            password,
+            email,
+            createdAt,
+            updatedAt
+        );
+    }
+}

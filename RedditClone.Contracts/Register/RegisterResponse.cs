@@ -1,7 +1,6 @@
 namespace RedditClone.Contracts.Authentication;
 
-public record AuthenticationResponse(
-    Guid Id,
+public record RegisterResponse(
     string FirstName,
     string LastName,
     string Email,
