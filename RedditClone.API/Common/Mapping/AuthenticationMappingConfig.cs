@@ -1,4 +1,5 @@
-using RedditClone.Contracts.Authentication;
+using RedditClone.Contracts.Login;
+using RedditClone.Contracts.Register;
 using Mapster;
 using RedditClone.Application.Authentication.Commands.Register;
 using RedditClone.Application.Authentication.Queries.Login;

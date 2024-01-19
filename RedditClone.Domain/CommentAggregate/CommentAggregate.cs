@@ -1,11 +1,10 @@
 using RedditClone.Domain.Common.Models;
 using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
-using RedditClone.Domain.Post.ValueObjects;
 
 namespace RedditClone.Domain.CommentAggregate;
 
-public sealed class Comment :
+public sealed class CommentAggregate :
 AggregateRoot<CommentId>
 {
     private readonly List<Reply> _replies = new ();
@@ -20,7 +19,7 @@ AggregateRoot<CommentId>
     public IReadOnlyList<Reply> Upvotes => _upvotes.AsReadOnly();
     public IReadOnlyList<Reply> Downvotes => _downvotes.AsReadOnly();
 
-    private Comment(
+    private CommentAggregate(
         CommentId commentId,
         string username,
         string content,
@@ -37,7 +36,7 @@ AggregateRoot<CommentId>
         UpdatedAt = updatedAt;
     }
 
-    public static Comment Create(
+    public static CommentAggregate Create(
         string username,
         string content,
         PostId postId,

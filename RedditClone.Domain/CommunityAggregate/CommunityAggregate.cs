@@ -3,7 +3,7 @@ using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 namespace RedditClone.Domain.CommunityAggregate;
 
-public sealed class Community :
+public sealed class CommunityAggregate :
 AggregateRoot<CommunityId>
 {
     public string Name { get; }
@@ -12,7 +12,7 @@ AggregateRoot<CommunityId>
     public string Topic { get; }
     public DateTime CreatedAt { get; }
     public DateTime UpdatedAt { get; }
-    private Community(
+    private CommunityAggregate(
         CommunityId communityId,
         string name,
         string description,
@@ -31,7 +31,7 @@ AggregateRoot<CommunityId>
         UpdatedAt = updatedAt;
     }
 
-    public static Community Create(
+    public static CommunityAggregate Create(
         string name,
         string description,
         int membersCount,

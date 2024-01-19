@@ -4,7 +4,7 @@ using RedditClone.Domain.UserAggregate.ValueObjects;
 
 namespace RedditClone.Domain.UserAggregate;
 
-public sealed class User :
+public sealed class UserAggregate :
 AggregateRoot<UserId>
 {
     private readonly List<SubscribedCommunity> _subscribeCommunities = new();
@@ -18,7 +18,7 @@ AggregateRoot<UserId>
     public DateTime CreatedAt { get; }
     public DateTime UpdatedAt { get; }
 
-    private User(
+    private UserAggregate(
         UserId userId,
         string firstName,
         string lastName,
@@ -39,7 +39,7 @@ AggregateRoot<UserId>
         UpdatedAt = updatedAt;
     }
 
-    public static User Create(
+    public static UserAggregate Create(
         string firstName,
         string lastName,
         string username,

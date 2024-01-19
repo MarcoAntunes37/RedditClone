@@ -4,7 +4,7 @@ using RedditClone.Domain.PostAggregate.ValueObjects;
 
 namespace RedditClone.Domain.PostAggregate;
 
-public sealed class Post :
+public sealed class PostAggregate :
 AggregateRoot<PostId>
 {
     private readonly List<Upvotes> _upvotes = new();
@@ -18,7 +18,7 @@ AggregateRoot<PostId>
     public DateTime CreatedAt { get; }
     public DateTime UpdatedAt { get; }
 
-    private Post(
+    private PostAggregate(
         PostId postId,
         string title,
         string content,
@@ -37,7 +37,7 @@ AggregateRoot<PostId>
         UpdatedAt = updatedAt;
     }
 
-    public static Post Create(
+    public static PostAggregate Create(
         string title,
         string content,
         UserId userId,
