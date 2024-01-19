@@ -1,9 +1,9 @@
 using RedditClone.Domain.Common.Models;
-using RedditClone.Domain.User.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
-namespace RedditClone.Domain.User.Entities;
+namespace RedditClone.Domain.UserAggregate.Entities;
 
-public sealed class SubscribedCommunity : 
+public sealed class SubscribedCommunity :
 Entity<SubscribedCommunityId>
 {
     public string Name { get; }
@@ -11,9 +11,9 @@ Entity<SubscribedCommunityId>
     public string Topic { get; }
 
     private SubscribedCommunity(
-        SubscribedCommunityId subscribedCommunityId, 
-        string name, 
-        string description, 
+        SubscribedCommunityId subscribedCommunityId,
+        string name,
+        string description,
         string topic) : base(subscribedCommunityId)
     {
         Name = name;
@@ -22,8 +22,8 @@ Entity<SubscribedCommunityId>
     }
 
     public static SubscribedCommunity Create(
-        string name, 
-        string description, 
+        string name,
+        string description,
         string topic)
     {
         return new(

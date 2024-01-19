@@ -16,6 +16,7 @@
     "replies": [
         {
             "id": { "value": "000000000-0000-0000-000000"},
+            "userId":  { "value": "000000000-0000-0000-000000" },
             "username": "other",
             "content": "some content",
             "upvotes": [

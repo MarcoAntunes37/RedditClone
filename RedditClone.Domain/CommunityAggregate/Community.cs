@@ -1,9 +1,9 @@
 using RedditClone.Domain.Common.Models;
-using RedditClone.Domain.User.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
-namespace RedditClone.Domain.Community;
+namespace RedditClone.Domain.CommunityAggregate;
 
-public sealed class Community : 
+public sealed class Community :
 AggregateRoot<CommunityId>
 {
     public string Name { get; }

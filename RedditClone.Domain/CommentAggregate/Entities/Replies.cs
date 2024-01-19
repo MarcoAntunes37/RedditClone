@@ -1,47 +1,49 @@
 using RedditClone.Domain.Common.Models;
-using RedditClone.Domain.Comment.ValueObjects;
+using RedditClone.Domain.CommentAggregate.ValueObjects;
 
-namespace RedditClone.Domain.Comment.Entities;
+namespace RedditClone.Domain.CommentAggregate.Entities;
 
-public sealed class Reply : 
+public sealed class Reply :
 Entity<ReplyId>
 {
     private readonly List<Upvotes> _upvotes = new();
     private readonly List<Downvotes> _downvotes = new();
-    public string Name { get; }
-    public string Description { get; }
-    public string Topic { get; }
+    public UserId UserId { get; }
+    public string Username { get; }
+    public string Content { get; }
     public DateTime CreatedAt { get; }
     public DateTime UpdatedAt { get; }
-    public IReadOnlyList<Upvotes> Upvotes => _upvotes.AsReadOnly(); 
-    public IReadOnlyList<Downvotes> Downvotes => _downvotes.AsReadOnly();
+    public IReadOnlyList<Upvotes> Upvotes =>
+        _upvotes.AsReadOnly();
+    public IReadOnlyList<Downvotes> Downvotes =>
+        _downvotes.AsReadOnly();
     private Reply(
-        ReplyId replyId, 
-        string name, 
-        string description, 
-        string topic,
+        ReplyId replyId,
+        UserId userId,
+        string username,
+        string content,
         DateTime createdAt,
         DateTime updatedAt) : base(replyId)
     {
-        Name = name;
-        Description = description;
-        Topic = topic;
+        UserId = userId;
+        Username = username;
+        Content = content;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
     }
 
     public static Reply Create(
-        string name, 
-        string description, 
-        string topic,
+        UserId userId,
+        string username,
+        string content,
         DateTime createdAt,
         DateTime updatedAt)
     {
         return new(
             ReplyId.CreateUnique(),
-            name,
-            description,
-            topic,
+            userId,
+            username,
+            content,
             createdAt,
             updatedAt);
     }

@@ -1,20 +1,20 @@
+using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.Common.Models;
-using RedditClone.Domain.Post.ValueObjects;
-using RedditClone.Domain.User.Entities;
+using RedditClone.Domain.PostAggregate.ValueObjects;
 
-namespace RedditClone.Domain.Post;
+namespace RedditClone.Domain.PostAggregate;
 
-public sealed class Post : 
+public sealed class Post :
 AggregateRoot<PostId>
 {
     private readonly List<Upvotes> _upvotes = new();
-    private readonly List<Upvotes> _downvotes = new();
+    private readonly List<Downvotes> _downvotes = new();
     public string Title { get; }
     public string Content { get; }
     public UserId UserId { get; }
     public CommunityId CommunityId { get; }
     public IReadOnlyList<Upvotes> Upvotes => _upvotes.AsReadOnly();
-    public IReadOnlyList<Upvotes> Downvotes => _downvotes.AsReadOnly();
+    public IReadOnlyList<Downvotes> Downvotes => _downvotes.AsReadOnly();
     public DateTime CreatedAt { get; }
     public DateTime UpdatedAt { get; }
 
@@ -37,7 +37,7 @@ AggregateRoot<PostId>
         UpdatedAt = updatedAt;
     }
 
-    public static Post Create(        
+    public static Post Create(
         string title,
         string content,
         UserId userId,

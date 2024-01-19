@@ -1,10 +1,10 @@
 using RedditClone.Domain.Common.Models;
-using RedditClone.Domain.User.Entities;
-using RedditClone.Domain.User.ValueObjects;
+using RedditClone.Domain.UserAggregate.Entities;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
-namespace RedditClone.Domain.User;
+namespace RedditClone.Domain.UserAggregate;
 
-public sealed class User : 
+public sealed class User :
 AggregateRoot<UserId>
 {
     private readonly List<SubscribedCommunity> _subscribeCommunities = new();
@@ -27,7 +27,7 @@ AggregateRoot<UserId>
         string email,
         DateTime createdAt,
         DateTime updatedAt
-        
+
     ) : base(userId)
     {
         FirstName = firstName;
@@ -38,7 +38,7 @@ AggregateRoot<UserId>
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
     }
-    
+
     public static User Create(
         string firstName,
         string lastName,

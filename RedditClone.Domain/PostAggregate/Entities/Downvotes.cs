@@ -1,14 +1,14 @@
 using RedditClone.Domain.Common.Models;
-using RedditClone.Domain.Post.ValueObjects;
+using RedditClone.Domain.PostAggregate.ValueObjects;
 
-namespace RedditClone.Domain.User.Entities;
+namespace RedditClone.Domain.PostAggregate.Entities;
 
-public sealed class Downvotes : 
+public sealed class Downvotes :
 Entity<DownvoteId>
 {
     public UserId UserId;
 
-    private Downvotes(DownvoteId downvoteId, 
+    private Downvotes(DownvoteId downvoteId,
     UserId userId) : base(downvoteId)
     {
         UserId = userId;

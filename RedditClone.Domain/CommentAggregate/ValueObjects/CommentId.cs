@@ -1,6 +1,6 @@
 using RedditClone.Domain.Common.Models;
 
-namespace RedditClone.Domain.Comment.ValueObjects;
+namespace RedditClone.Domain.CommentAggregate.ValueObjects;
 
 public sealed class CommentId : ValueObject
 {

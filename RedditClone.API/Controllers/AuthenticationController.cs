@@ -1,7 +1,7 @@
 namespace RedditClone.API.Controllers;
 
 using ErrorOr;
-using RedditClone.Contracts.Authentication;
+using RedditClone.Contracts.Login;
 using Microsoft.AspNetCore.Mvc;
 using RedditClone.Application.Authentication.Commands.Register;
 using MediatR;
@@ -10,6 +10,7 @@ using RedditClone.Application.Authentication.Results.Login;
 using RedditClone.Application.Authentication.Queries.Login;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
+using RedditClone.Contracts.Register;
 
 [Route("auth")]
 [AllowAnonymous]

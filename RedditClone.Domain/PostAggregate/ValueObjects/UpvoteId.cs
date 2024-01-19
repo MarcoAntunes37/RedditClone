@@ -1,6 +1,6 @@
 using RedditClone.Domain.Common.Models;
 
-namespace RedditClone.Domain.Post.ValueObjects;
+namespace RedditClone.Domain.PostAggregate.ValueObjects;
 
 public sealed class UpvoteId : ValueObject
 {

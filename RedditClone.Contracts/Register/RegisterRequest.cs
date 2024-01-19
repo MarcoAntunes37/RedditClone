@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Authentication;
+namespace RedditClone.Contracts.Register;
 
 public record RegisterRequest(
     string FirstName,
