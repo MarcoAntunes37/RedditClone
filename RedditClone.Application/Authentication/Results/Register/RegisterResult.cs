@@ -1,8 +1,8 @@
+using RedditClone.Domain.UserAggregate;
+
 namespace RedditClone.Application.Authentication.Results.Register;
 
 public record RegisterResult(
-    string FirstName,
-    string LastName,
-    string Email,
+    UserAggregate User,
     string Token
 );

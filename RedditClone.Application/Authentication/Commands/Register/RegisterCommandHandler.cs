@@ -1,10 +1,13 @@
 using ErrorOr;
 using MediatR;
 using RedditClone.Application.Persistence;
-using RedditClone.Domain.Entities;
 using RedditClone.Domain.Common.Errors;
 using RedditClone.Application.Authentication.Results.Register;
 using RedditClone.Application.Common.Interfaces.Authentication;
+using RedditClone.Domain.UserAggregate;
+using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.Entities;
+using RedditClone.Domain.UserAggregate.Entities;
 
 namespace RedditClone.Application.Authentication.Commands.Register;
 
@@ -31,23 +34,28 @@ ErrorOr<RegisterResult>>
         {
             return Errors.User.DuplicatedEmail;
         }
-        
-        var user = new User
+
+        if (_userRepository.GetUserByUsername(command.Username) is not null)
         {
-            FirstName = command.FirstName,
-            LastName = command.LastName,
-            Email = command.Email,
-            Password = command.Password
-        };
+            return Errors.User.DuplicatedUsername;
+        }
+
+        var user = UserAggregate.Create(
+            command.FirstName,
+            command.LastName,
+            command.Username,
+            command.Password,
+            command.Email,
+            command.CreatedAt,
+            command.UpdatedAt
+        );
 
         _userRepository.Add(user);
 
-        var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName);
-        
+        var token = _jwtTokenGenerator.GenerateToken(user.Id.Value, user.FirstName, user.LastName);
+
         return new RegisterResult(
-            user.FirstName,
-            user.LastName,
-            user.Email,
+            user,
             token
         );
     }

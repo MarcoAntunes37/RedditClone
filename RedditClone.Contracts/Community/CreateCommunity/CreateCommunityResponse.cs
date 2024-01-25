@@ -2,7 +2,7 @@ namespace RedditClone.Contracts.Community;
 
 public record CreateCommunityResponse(
     string Id,
-    string OwnerId,
+    string UserId,
     string Name,
     string Description,
     int MembersCount,

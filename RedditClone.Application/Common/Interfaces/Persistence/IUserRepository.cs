@@ -1,9 +1,10 @@
-using RedditClone.Domain.Entities;
+using RedditClone.Domain.UserAggregate;
 
 namespace RedditClone.Application.Persistence;
 
 public interface IUserRepository
 {
-    User? GetUserByEmail(string email);
-    void Add(User user);
+    UserAggregate? GetUserByEmail(string email);
+    UserAggregate? GetUserByUsername(string username);
+    void Add(UserAggregate user);
 }

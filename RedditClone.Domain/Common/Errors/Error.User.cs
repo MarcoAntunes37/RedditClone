@@ -9,5 +9,8 @@ public static partial class Errors
         public static Error DuplicatedEmail => Error.Conflict(
             code: "User.DuplicatedEmail",
             description: "Email is already in use");
+
+        public static Error DuplicatedUsername => Error.Conflict(
+            code: "User.DuplicateUsername");
     }
 }

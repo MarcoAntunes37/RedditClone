@@ -6,6 +6,7 @@ namespace RedditClone.Domain.CommunityAggregate;
 public sealed class CommunityAggregate :
 AggregateRoot<CommunityId>
 {
+    public UserId UserId { get; }
     public string Name { get; }
     public string Description { get; }
     public int MembersCount { get; }
@@ -14,6 +15,7 @@ AggregateRoot<CommunityId>
     public DateTime UpdatedAt { get; }
     private CommunityAggregate(
         CommunityId communityId,
+        UserId userId,
         string name,
         string description,
         int membersCount,
@@ -23,6 +25,7 @@ AggregateRoot<CommunityId>
     )
     : base(communityId)
     {
+        UserId = userId;
         Name = name;
         Description = description;
         MembersCount = membersCount;
@@ -32,6 +35,7 @@ AggregateRoot<CommunityId>
     }
 
     public static CommunityAggregate Create(
+        UserId userId,
         string name,
         string description,
         int membersCount,
@@ -41,6 +45,7 @@ AggregateRoot<CommunityId>
     ){
         return new(
             CommunityId.CreateUnique(),
+            userId,
             name,
             description,
             membersCount,

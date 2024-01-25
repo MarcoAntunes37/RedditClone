@@ -2,9 +2,9 @@ using ErrorOr;
 using MediatR;
 using RedditClone.Application.Common.Interfaces.Authentication;
 using RedditClone.Application.Persistence;
-using RedditClone.Domain.Entities;
 using RedditClone.Domain.Common.Errors;
 using RedditClone.Application.Authentication.Results.Login;
+using RedditClone.Domain.UserAggregate;
 namespace RedditClone.Application.Authentication.Queries.Login;
 
 public class LoginQueryHandler :
@@ -23,7 +23,7 @@ ErrorOr<LoginResult>>
     public async Task<ErrorOr<LoginResult>> Handle(LoginQuery query, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-        if (_userRepository.GetUserByEmail(query.Email) is not User user)
+        if (_userRepository.GetUserByEmail(query.Email) is not UserAggregate user)
         {
             return Errors.Authentication.InvalidCredentials;
         }
@@ -33,7 +33,7 @@ ErrorOr<LoginResult>>
             return new[] { Errors.Authentication.InvalidCredentials };
         }
 
-        var token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName);
+        var token = _jwtTokenGenerator.GenerateToken(user.Id.Value, user.FirstName, user.LastName);
 
         return new LoginResult(
             token
