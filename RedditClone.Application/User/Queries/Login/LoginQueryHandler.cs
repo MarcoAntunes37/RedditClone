@@ -3,9 +3,10 @@ using MediatR;
 using RedditClone.Application.Common.Interfaces.Authentication;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.Common.Errors;
-using RedditClone.Application.Authentication.Results.Login;
+using RedditClone.Application.User.Results.Login;
 using RedditClone.Domain.UserAggregate;
-namespace RedditClone.Application.Authentication.Queries.Login;
+
+namespace RedditClone.Application.User.Queries.Login;
 
 public class LoginQueryHandler :
 IRequestHandler<LoginQuery,

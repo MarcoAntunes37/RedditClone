@@ -1,3 +1,5 @@
+using RedditClone.Contracts.Community;
+
 namespace RedditClone.Contracts.Register;
 
 public record RegisterRequest(

@@ -1,6 +1,6 @@
 using RedditClone.Domain.UserAggregate;
 
-namespace RedditClone.Application.Authentication.Results.Register;
+namespace RedditClone.Application.User.Results.Register;
 
 public record RegisterResult(
     UserAggregate User,

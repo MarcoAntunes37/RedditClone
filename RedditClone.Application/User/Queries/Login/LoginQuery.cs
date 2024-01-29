@@ -1,8 +1,8 @@
 using ErrorOr;
 using MediatR;
-using RedditClone.Application.Authentication.Results.Login;
+using RedditClone.Application.User.Results.Login;
 
-namespace RedditClone.Application.Authentication.Queries.Login;
+namespace RedditClone.Application.User.Queries.Login;
 
 public record LoginQuery(
     string Email,

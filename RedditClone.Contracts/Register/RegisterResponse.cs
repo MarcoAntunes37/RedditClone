@@ -1,3 +1,5 @@
+using RedditClone.Contracts.Community;
+
 namespace RedditClone.Contracts.Register;
 
 public record RegisterResponse(
@@ -8,11 +10,7 @@ public record RegisterResponse(
     string Password,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    List<UserCommunities> Communities,
+    List<RegisterUserCommunities> Communities,
     string Token
 );
 
-public record UserCommunities(
-    string CommunityId,
-    string Name
-);

@@ -1,10 +1,10 @@
 using ErrorOr;
 using MediatR;
-using RedditClone.Application.Authentication.Results.Register;
+using RedditClone.Application.User.Results.Register;
 using RedditClone.Domain.UserAggregate.Entities;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
-namespace RedditClone.Application.Authentication.Commands.Register;
+namespace RedditClone.Application.User.Commands.Register;
 
 public record RegisterCommand(
     UserId UserId,

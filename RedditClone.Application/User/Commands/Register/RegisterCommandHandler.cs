@@ -2,11 +2,11 @@ using ErrorOr;
 using MediatR;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.Common.Errors;
-using RedditClone.Application.Authentication.Results.Register;
+using RedditClone.Application.User.Results.Register;
 using RedditClone.Application.Common.Interfaces.Authentication;
 using RedditClone.Domain.UserAggregate;
 
-namespace RedditClone.Application.Authentication.Commands.Register;
+namespace RedditClone.Application.User.Commands.Register;
 
 public class RegisterCommandHandler :
 IRequestHandler<RegisterCommand,
