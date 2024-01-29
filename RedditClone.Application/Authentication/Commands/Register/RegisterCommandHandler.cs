@@ -5,9 +5,6 @@ using RedditClone.Domain.Common.Errors;
 using RedditClone.Application.Authentication.Results.Register;
 using RedditClone.Application.Common.Interfaces.Authentication;
 using RedditClone.Domain.UserAggregate;
-using RedditClone.Domain.UserAggregate.ValueObjects;
-using RedditClone.Domain.Entities;
-using RedditClone.Domain.UserAggregate.Entities;
 
 namespace RedditClone.Application.Authentication.Commands.Register;
 
@@ -47,7 +44,8 @@ ErrorOr<RegisterResult>>
             command.Password,
             command.Email,
             command.CreatedAt,
-            command.UpdatedAt
+            command.UpdatedAt,
+            command.UserCommunities
         );
 
         _userRepository.Add(user);

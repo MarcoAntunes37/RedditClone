@@ -7,13 +7,13 @@ namespace RedditClone.Domain.UserAggregate;
 public sealed class UserAggregate :
 AggregateRoot<UserId>
 {
-
+    private readonly List<UserCommunities> _communities = new();
     public string FirstName { get; }
     public string LastName { get; }
     public string Username { get; }
     public string Password { get; }
     public string Email { get; }
-
+    public IReadOnlyList<UserCommunities> Communities => _communities.ToList();
     public DateTime CreatedAt { get; }
     public DateTime UpdatedAt { get; }
 
@@ -25,7 +25,8 @@ AggregateRoot<UserId>
         string password,
         string email,
         DateTime createdAt,
-        DateTime updatedAt
+        DateTime updatedAt,
+        List<UserCommunities> communities
 
     ) : base(userId)
     {
@@ -36,6 +37,7 @@ AggregateRoot<UserId>
         Email = email;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
+        _communities = communities ?? new List<UserCommunities>();
     }
 
     public static UserAggregate Create(
@@ -45,7 +47,8 @@ AggregateRoot<UserId>
         string password,
         string email,
         DateTime createdAt,
-        DateTime updatedAt
+        DateTime updatedAt,
+        List<UserCommunities> communities
     ){
         return new(
             UserId.CreateUnique(),
@@ -55,7 +58,8 @@ AggregateRoot<UserId>
             password,
             email,
             createdAt,
-            updatedAt
+            updatedAt,
+            communities
         );
     }
 }

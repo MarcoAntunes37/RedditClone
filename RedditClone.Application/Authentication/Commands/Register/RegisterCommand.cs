@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using RedditClone.Application.Authentication.Results.Register;
+using RedditClone.Domain.UserAggregate.Entities;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 namespace RedditClone.Application.Authentication.Commands.Register;
@@ -13,4 +14,5 @@ public record RegisterCommand(
     string Password,
     string Email,
     DateTime CreatedAt,
-    DateTime UpdatedAt):IRequest<ErrorOr<RegisterResult>>;
+    DateTime UpdatedAt,
+    List<UserCommunities> UserCommunities):IRequest<ErrorOr<RegisterResult>>;

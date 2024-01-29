@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Authentication;
+namespace RedditClone.Contracts.Register;
 
 public record RegisterResponse(
     string FirstName,
@@ -8,5 +8,11 @@ public record RegisterResponse(
     string Password,
     DateTime CreatedAt,
     DateTime UpdatedAt,
+    List<UserCommunities> Communities,
     string Token
+);
+
+public record UserCommunities(
+    string CommunityId,
+    string Name
 );
