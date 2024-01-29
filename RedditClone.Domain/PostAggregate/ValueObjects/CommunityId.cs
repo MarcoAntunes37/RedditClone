@@ -15,6 +15,14 @@ public sealed class CommunityId : ValueObject
         return new(Guid.NewGuid());
     }
 
+    public static CommunityId Create(string CommunityId){
+        Guid guidCommunityId = new(CommunityId);
+
+        return new CommunityId(
+            value: guidCommunityId
+        );
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

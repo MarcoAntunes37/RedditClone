@@ -7,49 +7,62 @@ namespace RedditClone.Domain.CommentAggregate;
 public sealed class CommentAggregate :
 AggregateRoot<CommentId>
 {
-    private readonly List<Reply> _replies = new ();
-    private readonly List<Reply> _upvotes = new ();
-    private readonly List<Reply> _downvotes = new ();
-    public string Username { get; }
+    private readonly List<Replies> _replies = new();
+    private readonly List<Upvotes> _upvotes = new();
+    private readonly List<Downvotes> _downvotes = new();
     public string Content { get; }
+    public UserId UserId { get; }
     public PostId PostId { get; }
     public DateTime CreatedAt { get; }
     public DateTime UpdatedAt { get; }
-    public IReadOnlyList<Reply> Replies => _replies.AsReadOnly();
-    public IReadOnlyList<Reply> Upvotes => _upvotes.AsReadOnly();
-    public IReadOnlyList<Reply> Downvotes => _downvotes.AsReadOnly();
+    public IReadOnlyList<Replies> Replies => _replies.AsReadOnly();
+    public IReadOnlyList<Upvotes> Upvotes => _upvotes.AsReadOnly();
+    public IReadOnlyList<Downvotes> Downvotes => _downvotes.AsReadOnly();
 
     private CommentAggregate(
         CommentId commentId,
-        string username,
-        string content,
+        UserId userId,
         PostId postId,
+        string content,
         DateTime createdAt,
-        DateTime updatedAt
+        DateTime updatedAt,
+        List<Replies> replies,
+        List<Upvotes> upvotes,
+        List<Downvotes> downvotes
     )
     : base(commentId)
     {
-        Username = username;
-        Content = content;
+        UserId = userId;
         PostId = postId;
+        Content = content;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
+        _replies = replies ?? new List<Replies>();
+        _upvotes = upvotes ?? new List<Upvotes>();
+        _downvotes = downvotes ?? new List<Downvotes>();
     }
 
     public static CommentAggregate Create(
-        string username,
         string content,
+        UserId userId,
         PostId postId,
         DateTime createdAt,
-        DateTime updatedAt
-    ){
+        DateTime updatedAt,
+        List<Replies> replies,
+        List<Upvotes> upvotes,
+        List<Downvotes> downvotes
+    )
+    {
         return new(
             CommentId.CreateUnique(),
-            username,
-            content,
+            userId,
             postId,
+            content,
             createdAt,
-            updatedAt
+            updatedAt,
+            replies,
+            upvotes,
+            downvotes
         );
     }
 }

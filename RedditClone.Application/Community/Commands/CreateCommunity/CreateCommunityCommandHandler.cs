@@ -16,20 +16,20 @@ public class CreateCommunityCommandHandler :
         _communityRepository = communityRepository;
     }
 
-    public async Task<ErrorOr<CommunityAggregate>> Handle(CreateCommunityCommand request,
+    public async Task<ErrorOr<CommunityAggregate>> Handle(CreateCommunityCommand command,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
 
         //create community
         var community = CommunityAggregate.Create(
-            request.UserId,
-            request.Name,
-            request.Description,
-            request.MembersCount,
-            request.Topic,
-            request.CreatedAt,
-            request.UpdatedAt
+            command.UserId,
+            command.Name,
+            command.Description,
+            command.MembersCount,
+            command.Topic,
+            command.CreatedAt,
+            command.UpdatedAt
         );
 
         //persist community

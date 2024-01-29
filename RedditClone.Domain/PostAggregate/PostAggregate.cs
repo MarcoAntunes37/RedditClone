@@ -25,7 +25,9 @@ AggregateRoot<PostId>
         UserId userId,
         CommunityId communityId,
         DateTime createdAt,
-        DateTime updatedAt
+        DateTime updatedAt,
+        List<Upvotes> upvotes,
+        List<Downvotes> downvotes
     )
     : base(postId)
     {
@@ -35,6 +37,8 @@ AggregateRoot<PostId>
         CommunityId = communityId;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
+        _upvotes = upvotes ?? new List<Upvotes>();
+        _downvotes = downvotes ?? new List<Downvotes>();
     }
 
     public static PostAggregate Create(
@@ -43,7 +47,9 @@ AggregateRoot<PostId>
         UserId userId,
         CommunityId communityId,
         DateTime createdAt,
-        DateTime updatedAt
+        DateTime updatedAt,
+        List<Upvotes> upvotes,
+        List<Downvotes> downvotes
     ){
         return new(
             PostId.CreateUnique(),
@@ -52,7 +58,9 @@ AggregateRoot<PostId>
             userId,
             communityId,
             createdAt,
-            updatedAt
+            updatedAt,
+            upvotes,
+            downvotes
         );
     }
 }

@@ -15,6 +15,14 @@ public sealed class CommentId : ValueObject
         return new(Guid.NewGuid());
     }
 
+    public static CommentId Create(string CommentId){
+        Guid guidCommentId = new(CommentId);
+
+        return new CommentId(
+            value: guidCommentId
+        );
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

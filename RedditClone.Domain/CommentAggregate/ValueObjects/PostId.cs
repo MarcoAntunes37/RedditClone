@@ -15,6 +15,14 @@ public sealed class PostId : ValueObject
         return new(Guid.NewGuid());
     }
 
+    public static PostId Create(string PostId){
+        Guid guidPostId = new(PostId);
+
+        return new PostId(
+            value: guidPostId
+        );
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;
