@@ -2,7 +2,6 @@ using ErrorOr;
 using MediatR;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommentAggregate;
-using RedditClone.Domain.CommentAggregate.Entities;
 
 namespace RedditClone.Application.Comment.Commands.CreateCommentCommand;
 
