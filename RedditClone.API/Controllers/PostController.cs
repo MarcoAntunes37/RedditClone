@@ -1,11 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RedditClone.Application.Post.Commands.CreatePost;
-using RedditClone.Contracts.Posts;
 using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate;
 using RedditClone.Domain.PostAggregate.ValueObjects;
-using RedditClone.Contracts.Posts.CreatePost.Models;
+using RedditClone.Contracts.Post;
+using RedditClone.Contracts.Post.CreatePost.Models;
 
 namespace RedditClone.API.Controllers;
 
@@ -27,10 +27,10 @@ public class PostController : ApiController
     {
         var command = MapCreatePostCommand(request, communityId, userId);
 
-        var createCommunityResult = await _sender.Send(command);
+        var createPostResult = await _sender.Send(command);
 
-        return createCommunityResult.Match(
-            community => Ok(MapCreatePostResponse(community)),
+        return createPostResult.Match(
+            post => Ok(MapCreatePostResponse(post)),
             errors => Problem(errors)
         );
     }

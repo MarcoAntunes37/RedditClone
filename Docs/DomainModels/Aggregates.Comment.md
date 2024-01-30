@@ -1,12 +1,15 @@
 ## Comment Aggregates
+
+## C# interface
 ```csharp
-    Comment Create();
+    void Create(Comment comment);
     void Update(Comment comment);
     void Delete(Guid commentId);
     void Upvote(Guid commentId, Guid userId);
     void Downvote(Guid commentId, Guid userId);
 ```
 
+## Domain object representation
 ```json
 {
     "id": { "value": "000000000-0000-0000-000000"},
@@ -17,7 +20,6 @@
         {
             "id": { "value": "000000000-0000-0000-000000"},
             "userId":  { "value": "000000000-0000-0000-000000" },
-            "username": "other",
             "content": "some content",
             "upvotes": [
                 {

@@ -7,7 +7,7 @@
             - [Register response](#register-response)
         - [Login](#login)
             - [Login request](#login-request)
-            - [Login response](#login-response)    
+            - [Login response](#login-response)
     - [Community](#community)
         - [New community](#new-community)
             - [New community request](#new-community-request)
@@ -64,25 +64,6 @@
         - [Downvote comment](#downvote-comment)
             - [Downvote comment request](#downvote-comment-request)
             - [Downvote comment response](#downvote-comment-response)
-    - [Reply](#reply)
-        - [New reply](#new-reply)
-            - [New reply request](#new-reply-request)
-            - [New reply response](#new-reply-response)
-        - [Get replies](#get-replies)
-            - [Get replies request](#get-replies-request)
-            - [Get replies response](#get-replies-response)
-        - [Update reply](#update-reply)
-            - [Update reply request](#update-reply-request)
-            - [Update reply response](#update-reply-response)
-        - [Delete reply](#delete-reply)
-            - [Delete reply request](#delete-reply-request)
-            - [Delete reply response](#delete-reply-response)
-        - [Upvote reply](#upvote-reply)
-            - [Upvote reply request](#upvote-reply-request)
-            - [Upvote reply response](#upvote-reply-response)
-        - [Downvote reply](#downvote-reply)
-            - [Downvote reply request](#downvote-reply-request)
-            - [Downvote reply response](#downvote-reply-response)
 
 ## Auth
 
@@ -95,19 +76,26 @@ POST {{host}}/auth/register
 #### Register Request
 ```json
 {
-    "firstName": "Marco",
-    "lastName": "Aurelio",
-    "username": "marcodev",
+    "firstName": "User first name",
+    "lastName": "User last name",
+    "username": "Username",
     "password": "123$Asdsa",
     "email": "emailteste@gmail.com"
 }
 ```
 
-#### Register Response 
+#### Register Response
 ```json
 {
     "firstName": "Marco",
-    "lastName": "Aurelio"
+    "lastName": "Aurelio",
+    "email": "emailteste@gmail.com",
+    "username": "marcodev",
+    "password": "A123&!",
+    "createdAt": "0001-01-01T00:00:00",
+    "updatedAt": "0001-01-01T00:00:00",
+    "communities": [],
+    "token": "eyJ...aBa8"
 }
 ```
 
@@ -116,7 +104,7 @@ POST {{host}}/auth/register
 #### Login request
 ```json
 {
-    "email": "emailteste@gmail.com ",
+    "email": "emailteste@gmail.com",
     "password": "123$Asdsa"
 }
 ```
@@ -125,7 +113,7 @@ POST {{host}}/auth/register
 
 ```json
 {
-    "token": "eyJhbG..._adQssw5c"
+    "token": "eyJ...aBa8"
 }
 ```
 
@@ -135,22 +123,28 @@ POST {{host}}/auth/register
 
 #### New community request
 ```js
-POST {{host}}/community/new
+POST {{host}}/communities/{{userid}}/new-community
 ```
 ```json
 {
     "name": "C#",
-    "description": "hello i am a description",
-    "members": 1,
-    "topic": "Programming",
-    "moderators": []
+    "description": "Microsoft C# enjoyers community",
+    "membersCount": 1,
+    "topic": "Programming"
 }
 ```
 
 #### New community response
 ```json
 {
-    "message": "New community created."    
+    "id": "b5c7fad0-f74e-40ed-910e-b3432e9d9af7",
+    "userId": "9f7e0a0d-36e0-4239-b600-97aa785c4621",
+    "name": "C#",
+    "description": "Microsoft C# enjoyers community",
+    "membersCount": 1,
+    "topic": "Programming",
+    "createdAt": "2024-01-30T10:29:32.5521843-03:00",
+    "updatedAt": "2024-01-30T10:29:32.5537954-03:00"
 }
 ```
 
@@ -158,49 +152,26 @@ POST {{host}}/community/new
 
 #### Get communities request
 ```js
-GET {{host}}/community/
+
 ```
 ```json
-{    
-}
 ```
 #### Get communities response
 ```json
-{
-    {
-        "name": "C#",
-        "description": "hello i am a description",
-        "members": 1,
-        "topic": "Programming",
-        "moderators": [
-                {
-                    "id": "000000000-0000-0000-000000",
-                    "username": "marcodev" 
-                }
-        ]
-    },
-    ...
-}
 ```
 
 ### Update community
 
 #### Update community request
 ```js
-PUT {{host}}/community/{communityId}
+
 ```
 ```json
-{
-    "name": "C#",
-    "description": "hello i am a description",
-    "topic": "Programming",
-}
 ```
 
 #### Update community response
 ```json
 {
-    "message": "Community updated"
 }
 ```
 
@@ -208,48 +179,11 @@ PUT {{host}}/community/{communityId}
 
 #### Delete community request
 ```js
-DELETE {{host}}/community/{communityId}
 ```
 
 #### Delete community response
 ```json
 {
-    "message": "Community deleted"
-}
-```
-
-### Add moderator
-
-#### Add moderator request
-```js
-POST {{host}}/community/moderator
-```
-
-```json
-{
-    "id": "000000000-0000-0000-000000",
-    "username": "marcodev" 
-}
-```
-
-#### Add moderator response
-```json
-{
-    "message": "Moderator created"
-}
-```
-
-### Remove moderator
-
-#### Remove moderator request
-```js
-DELETE {{host}}/community/moderator/{moderator_id}
-```
-
-#### Remove moderator response
-```json
-{
-    "message": "Moderator deleted"
 }
 ```
 
@@ -259,29 +193,33 @@ DELETE {{host}}/community/moderator/{moderator_id}
 
 #### New post request
 ```js
-POST {{host}}/community/post/new
+POST {{host}}/communities/{{communityid}}/posts/{{userid}}/new-post
 ```
 ```json
 {
-    "user_id": "000000000-0000-0000-000000",
-    "community_id": "000000000-0000-0000-000000",
-    "title": "Post title",
-    "content": "Post body",
-    "timestamp": "2023-11-13T12:30:00Z"
+    "title": "Post title example",
+    "content": "Post title content"
 }
 ```
 
 #### New post response
 ```json
 {
-    "message": "Post created"
+    "postId": "42fa1dcb-1ed6-45af-be9f-d55a06b8a49f",
+    "title": "Post title example",
+    "content": "Post title content",
+    "userId": "9f7e0a0d-36e0-4239-b600-97aa785c4621",
+    "communityId": "e5787ea2-4fd3-4876-88dd-1085760d0d3e",
+    "createdAt": "2024-01-30T10:34:25.3111036-03:00",
+    "updatedAt": "2024-01-30T10:34:25.3111049-03:00",
+    "upvotes": [],
+    "downvotes": []
 }
 ```
 ### Get posts
 
 #### Get posts request
 ```js
-GET {{host}}/community/post/
 ```
 ```json
 {
@@ -291,14 +229,6 @@ GET {{host}}/community/post/
 #### Get posts response
 ```json
 {
-    {
-        "title": "Post title",
-        "content": "Post body",
-        "timestamp": "2023-11-13T12:30:00Z",
-        "upvote": 0,
-        "downvote": 0
-    },
-    ...
 }
 ```
 
@@ -306,13 +236,10 @@ GET {{host}}/community/post/
 
 #### Update post request
 ```js
-PUT {{host}}/community/post/{post_id}
+
 ```
 ```json
-{
-    "title": "Post title",
-    "content": "Post body"
-}
+
 ```
 
 #### Update post response
@@ -326,7 +253,7 @@ PUT {{host}}/community/post/{post_id}
 
 #### Delete post request
 ```js
-DELETE {{host}}/community/post/{post_id}
+
 ```
 ```json
 {
@@ -343,7 +270,6 @@ DELETE {{host}}/community/post/{post_id}
 
 #### Upvote post request
 ```js
-PUT {{host}}/community/post/{post_id}/upvote
 ```
 ```json
 {
@@ -362,18 +288,15 @@ PUT {{host}}/community/post/{post_id}/upvote
 
 #### Downvote post request
 ```js
-PUT {{host}}/community/post/{post_id}/downvote
 ```
 ```json
 {
-
 }
 ```
 
 #### Downvote post response
 ```json
 {
-
 }
 ```
 
@@ -383,21 +306,27 @@ PUT {{host}}/community/post/{post_id}/downvote
 
 #### New comment request
 ```js
-POST {{host}}/community/post/{post_id}/newcomment
+POST {{host}}/communities/posts/{{postid}}/{{userid}}/new-comment
 ```
 
 ```json
 {
-    "username": "marcodev",
-    "content": "Hello i am a content",
-    "timestamp": "2023-11-13T12:30:00Z"
+    "content": "Comment content"
 }
 ```
 
 #### New comment response
-
 ```json
 {
+    "id": "567a7342-f5dc-4faa-9101-383e7480c822",
+    "userId": "9f7e0a0d-36e0-4239-b600-97aa785c4621",
+    "postId": "98590522-931f-486e-9add-f52d0bd2f230",
+    "content": "Comment content",
+    "createdAt": "2024-01-30T10:37:44.4000587-03:00",
+    "updatedAt": "2024-01-30T10:37:44.4000597-03:00",
+    "replies": [],
+    "upvotes": [],
+    "downvotes": []
 }
 ```
 
@@ -405,23 +334,16 @@ POST {{host}}/community/post/{post_id}/newcomment
 
 #### Get comments request
 ```js
-GET {{host}}/community/post/{post_id}/comments
 ```
 ```json
 {
-    
+
 }
 ```
 
 #### Get comments response
 ```json
 {
-    {
-        "username": "marcodev",
-        "content": "Hello i am a content",
-        "timestamp": "2023-11-13T12:30:00Z"
-    },
-    ...
 }
 ```
 
@@ -429,18 +351,16 @@ GET {{host}}/community/post/{post_id}/comments
 
 #### Update comment request
 ```js
-PUT {{host}}/community/post/{post_id}/comments/{comment_id}
+
 ```
 ```json
 {
-    "content": "Comment body"
 }
 ```
 
 #### Update comment response
 ```json
 {
-
 }
 ```
 
@@ -448,7 +368,6 @@ PUT {{host}}/community/post/{post_id}/comments/{comment_id}
 
 #### Delete comment request
 ```js
-DELETE {{host}}/community/post/{post_id}/comments/{comment_id}
 ```
 ```json
 {
@@ -458,7 +377,6 @@ DELETE {{host}}/community/post/{post_id}/comments/{comment_id}
 #### Delete comment response
 ```json
 {
-
 }
 ```
 
@@ -466,7 +384,6 @@ DELETE {{host}}/community/post/{post_id}/comments/{comment_id}
 
 #### Upvote comment request
 ```js
-POST {{host}}/community/post/{post_id}/comments/{comment_id}/upvote
 ```
 ```json
 {
@@ -485,48 +402,9 @@ POST {{host}}/community/post/{post_id}/comments/{comment_id}/upvote
 
 #### Downvote comment request
 ```js
-POST {{host}}/community/post/{post_id}/comments/{comment_id}/downvote
 ```
 ```json
 {
 
 }
 ```
-
-## Reply
-
-### New reply
-
-#### New reply request
-
-#### New reply response
-
-### Get replies
-
-#### Get replies request
-
-#### Get replies response
-
-### Update reply
-
-#### Update reply request
-
-#### Update reply response
-
-### Delete reply
-
-#### Delete reply request
-
-#### Delete reply response
-
-### Upvote reply
-
-#### Upvote reply request
-
-#### Upvote reply response
-
-### Downvote reply
-
-#### Downvote reply request
-
-#### Downvote reply response

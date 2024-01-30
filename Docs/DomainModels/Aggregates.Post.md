@@ -1,12 +1,15 @@
 ## Post
+
+## C# interface
 ```csharp
-    Post Create();
+    void Create(Post post);
     void Update(Post post);
     void Delete(Guid postId);
     void Upvote(Guid postId, Guid userId);
     void Downvote(Guid postId, Guid userId);
 ```
 
+## Domain object representation
 ```json
 {
     "id": { "value": "000000000-0000-0000-000000"},
@@ -15,13 +18,13 @@
     "title": "Post title",
     "content": "Post body",
     "upvotes": [
-        { 
+        {
             "id": { "value": "000000000-0000-0000-000000"},
             "userId": { "value": "000000000-0000-0000-000000"}
         }
     ],
     "downvotes": [
-        { 
+        {
             "id": { "value": "000000000-0000-0000-000000"},
             "userId": { "value": "000000000-0000-0000-000000"}
         }

@@ -1,6 +1,6 @@
-using RedditClone.Contracts.Posts.CreatePost.Models;
+using RedditClone.Contracts.Post.CreatePost.Models;
 
-namespace RedditClone.Contracts.Posts;
+namespace RedditClone.Contracts.Post;
 
 public record CreatePostResponse(
     string PostId,

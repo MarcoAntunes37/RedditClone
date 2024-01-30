@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Posts.CreatePost.Models;
+namespace RedditClone.Contracts.Post.CreatePost.Models;
 
 public record CreatePostDownvotes(
     string Id,

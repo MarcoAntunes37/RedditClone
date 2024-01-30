@@ -32,15 +32,15 @@ public class CommunityController : ApiController
     }
 
     private static CreateCommunityCommand MapCreateCommunityCommand(
-        CreateCommunityRequest createCommunity,
+        CreateCommunityRequest request,
         string userId
         ){
         return new CreateCommunityCommand(
             UserId.Create(userId),
-            createCommunity.Name,
-            createCommunity.Description,
-            createCommunity.MembersCount,
-            createCommunity.Topic,
+            request.Name,
+            request.Description,
+            request.MembersCount,
+            request.Topic,
             DateTime.Now,
             DateTime.Now
         );

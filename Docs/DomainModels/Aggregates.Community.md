@@ -1,16 +1,17 @@
 ## Community Aggregates
 
-## Community
+## C# interface
 ```csharp
-    Community Create();
+    void Create(Community community);
     void Update(Community community);
     void Delete(Guid communityId);
 ```
 
+## Domain object representation
 ```json
 {
     "id": { "value": "000000000-0000-0000-000000"},
-    "owner_id": { "value": "000000000-0000-0000-000000"},
+    "userId": { "value": "000000000-0000-0000-000000"},
     "name": "C#",
     "description": "hello i am a description",
     "membersCount": 0,
