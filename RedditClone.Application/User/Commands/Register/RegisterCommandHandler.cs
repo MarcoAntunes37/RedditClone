@@ -1,77 +1,40 @@
-using ErrorOr;
 using MediatR;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results.Register;
 using RedditClone.Application.Common.Interfaces.Authentication;
-using RedditClone.Domain.Common.Errors.User;
 using RedditClone.Domain.UserAggregate;
-using System.Text.RegularExpressions;
+using FluentValidation;
 
 namespace RedditClone.Application.User.Commands.Register;
 
 public partial class RegisterCommandHandler :
-IRequestHandler<RegisterCommand,
-ErrorOr<RegisterResult>>
+IRequestHandler<RegisterCommand, RegisterResult>
 {
     private readonly IUserRepository _userRepository;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IValidator<RegisterCommand> _validator;
 
     public RegisterCommandHandler(
         IUserRepository userRepository,
-        IJwtTokenGenerator jwtTokenGenerator)
+        IJwtTokenGenerator jwtTokenGenerator,
+        IValidator<RegisterCommand> validator)
     {
         _userRepository = userRepository;
         _jwtTokenGenerator = jwtTokenGenerator;
+        _validator = validator;
     }
 
-    public async Task<ErrorOr<RegisterResult>> Handle(RegisterCommand command,
+    public async Task<RegisterResult> Handle(RegisterCommand command,
     CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
+        if(_userRepository.GetUserByEmail(command.Email) is not null)
+            throw new Exception("Email is already in use");
 
-        if (string.IsNullOrEmpty(command.Email))
-        {
-            return Errors.RegisterUser.EmptyOrNullEmail;
-        }
+        if(_userRepository.GetUserByUsername(command.Username) is not null)
+            throw new Exception("Username is already in use");
 
-        Regex startWithValidCharacter = StartWithValidCharacter();
-        Regex hasAt = HasAt();
-        Regex isValidDomainLength = IsValidDomainLength();
-        Regex isValidDomain = IsValidDomain();
-        // if (!isValidEmail)
-        // {
-        //     return Errors.RegisterUser.NotValidEmail;
-        // }
-
-        if (string.IsNullOrEmpty(command.Username))
-        {
-            return Errors.RegisterUser.EmptyOrNullUsername;
-        }
-
-        if (string.IsNullOrEmpty(command.FirstName))
-        {
-            return Errors.RegisterUser.EmptyOrNullFirstName;
-        }
-
-        if (string.IsNullOrEmpty(command.LastName))
-        {
-            return Errors.RegisterUser.EmptyOrNullLastName;
-        }
-
-        if (string.IsNullOrEmpty(command.Password))
-        {
-            return Errors.RegisterUser.EmptyOrNullPassword;
-        }
-
-        if (_userRepository.GetUserByEmail(command.Email) is not null)
-        {
-            return Errors.RegisterUser.DuplicatedEmail;
-        }
-
-        if (_userRepository.GetUserByUsername(command.Username) is not null)
-        {
-            return Errors.RegisterUser.DuplicatedUsername;
-        }
+        _validator.ValidateAndThrow(command);
 
         var user = UserAggregate.Create(
             command.FirstName,
@@ -93,13 +56,4 @@ ErrorOr<RegisterResult>>
             token
         );
     }
-
-    [GeneratedRegex("^[a-zA-Z0-9._%+-]+")]
-    private static partial Regex StartWithValidCharacter();
-    [GeneratedRegex("@")]
-    private static partial Regex HasAt();
-    [GeneratedRegex("[a-zA-Z]{2,}$")]
-    private static partial Regex IsValidDomainLength();
-    [GeneratedRegex("[a-zA-Z0-9.-]+\\.")]
-    private static partial Regex IsValidDomain();
 }

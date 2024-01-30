@@ -1,4 +1,3 @@
-using ErrorOr;
 using MediatR;
 using RedditClone.Application.User.Results.Register;
 using RedditClone.Domain.UserAggregate.Entities;
@@ -15,4 +14,4 @@ public record RegisterCommand(
     string Email,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    List<UserCommunities> UserCommunities):IRequest<ErrorOr<RegisterResult>>;
+    List<UserCommunities> UserCommunities):IRequest<RegisterResult>;

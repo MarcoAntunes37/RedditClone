@@ -1,6 +1,5 @@
 namespace RedditClone.API.Controllers;
 
-using ErrorOr;
 using MediatR;
 using RedditClone.Contracts.Login;
 using Microsoft.AspNetCore.Mvc;
@@ -28,24 +27,18 @@ public class AuthenticationController : ApiController
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         var command = MapRegisterRequest(request);
-        ErrorOr<RegisterResult> result = await _sender.Send(command);
+        RegisterResult result = await _sender.Send(command);
 
-        return result.Match(
-            result => Ok(MapRegisterResult(result)),
-            errors => Problem(errors)
-        );
+        return Ok(MapRegisterResult(result));
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
         var query = MapLoginRequest(request);
-        ErrorOr<LoginResult> result = await _sender.Send(query);
+        LoginResult result = await _sender.Send(query);
 
-        return result.Match(
-            result => Ok(MapLoginResult(result)),
-            errors => Problem(errors)
-        );
+        return Ok(MapLoginResult(result));
     }
 
     private static LoginQuery MapLoginRequest(LoginRequest request)
