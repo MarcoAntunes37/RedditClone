@@ -6,7 +6,8 @@ public sealed class CommunityId : ValueObject
 {
     public Guid Value { get; }
 
-    public CommunityId(Guid value){
+    public CommunityId(Guid value)
+    {
         Value = value;
     }
 
@@ -15,12 +16,9 @@ public sealed class CommunityId : ValueObject
         return new(Guid.NewGuid());
     }
 
-    public static CommunityId Create(string CommunityId){
-        Guid guidCommunityId = new(CommunityId);
-
-        return new CommunityId(
-            value: guidCommunityId
-        );
+    public static CommunityId Create(Guid guid)
+    {
+        return new CommunityId(guid);
     }
 
     public override IEnumerable<object> GetEqualityComponents()

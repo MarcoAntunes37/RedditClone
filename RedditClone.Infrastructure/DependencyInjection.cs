@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 
 namespace RedditClone.Infrastructure;
 public static class DependencyInjection
@@ -27,6 +28,9 @@ public static class DependencyInjection
     public static IServiceCollection AddPersistence(
         this IServiceCollection services)
     {
+        services.AddDbContext<RedditCloneDbContext>(options =>
+            options.UseNpgsql(
+                "Host=http://localhost:5432/;Database=DB;Username=postgres;Password=postgres"));
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICommunityRepository, CommunityRepository>();
         services.AddScoped<IPostRepository, PostRepository>();

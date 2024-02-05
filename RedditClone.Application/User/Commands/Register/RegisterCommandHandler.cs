@@ -28,10 +28,11 @@ IRequestHandler<RegisterCommand, RegisterResult>
     CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-        if(_userRepository.GetUserByEmail(command.Email) is not null)
+
+        if (_userRepository.GetUserByEmail(command.Email) is not null)
             throw new Exception("Email is already in use");
 
-        if(_userRepository.GetUserByUsername(command.Username) is not null)
+        if (_userRepository.GetUserByUsername(command.Username) is not null)
             throw new Exception("Username is already in use");
 
         _validator.ValidateAndThrow(command);
@@ -43,8 +44,7 @@ IRequestHandler<RegisterCommand, RegisterResult>
             command.Password,
             command.Email,
             command.CreatedAt,
-            command.UpdatedAt,
-            command.UserCommunities
+            command.UpdatedAt
         );
 
         _userRepository.Add(user);

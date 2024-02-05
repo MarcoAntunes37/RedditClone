@@ -10,14 +10,18 @@ AggregateRoot<CommentId>
     private readonly List<Replies> _replies = new();
     private readonly List<Upvotes> _upvotes = new();
     private readonly List<Downvotes> _downvotes = new();
-    public string Content { get; }
-    public UserId UserId { get; }
-    public PostId PostId { get; }
-    public DateTime CreatedAt { get; }
-    public DateTime UpdatedAt { get; }
+    public string Content { get; private set; }
+    public UserId UserId { get; private set; }
+    public PostId PostId { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public DateTime UpdatedAt { get; private set; }
     public IReadOnlyList<Replies> Replies => _replies.AsReadOnly();
     public IReadOnlyList<Upvotes> Upvotes => _upvotes.AsReadOnly();
     public IReadOnlyList<Downvotes> Downvotes => _downvotes.AsReadOnly();
+
+#pragma warning disable CS8618
+    private CommentAggregate() { }
+#pragma warning restore CS8618
 
     private CommentAggregate(
         CommentId commentId,
@@ -65,4 +69,5 @@ AggregateRoot<CommentId>
             downvotes
         );
     }
+
 }

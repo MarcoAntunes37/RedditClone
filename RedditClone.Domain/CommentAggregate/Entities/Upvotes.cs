@@ -7,6 +7,10 @@ public sealed class Upvotes : Entity<UpvoteId>
 {
     public UserId UserId;
 
+#pragma warning disable CS8618
+    private Upvotes() { }
+#pragma warning restore CS8618
+
     private Upvotes(UpvoteId upvoteId,
     UserId userId) : base(upvoteId)
     {

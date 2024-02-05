@@ -15,6 +15,11 @@ public sealed class ReplyId : ValueObject
         return new(Guid.NewGuid());
     }
 
+    public static ReplyId Create(Guid guid)
+    {
+        return new ReplyId(guid);
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

@@ -19,7 +19,8 @@ public class CommunityController : ApiController
 
     [HttpPost]
     public async Task<IActionResult> CreateCommunity(
-        [FromBody]CreateCommunityRequest request, [FromRoute]string userId)
+        [FromBody] CreateCommunityRequest request,
+        [FromRoute] Guid userId)
     {
         var command = MapCreateCommunityCommand(request, userId);
 
@@ -33,13 +34,12 @@ public class CommunityController : ApiController
 
     private static CreateCommunityCommand MapCreateCommunityCommand(
         CreateCommunityRequest request,
-        string userId
-        ){
+        Guid userId
+        )
+    {
         return new CreateCommunityCommand(
-            UserId.Create(userId),
             request.Name,
             request.Description,
-            request.MembersCount,
             request.Topic,
             DateTime.Now,
             DateTime.Now
@@ -51,10 +51,8 @@ public class CommunityController : ApiController
     {
         return new CreateCommunityResponse(
             community.Id.Value.ToString(),
-            community.UserId.Value.ToString(),
             community.Name,
             community.Description,
-            community.MembersCount,
             community.Topic,
             community.CreatedAt,
             community.UpdatedAt

@@ -9,14 +9,18 @@ AggregateRoot<PostId>
 {
     private readonly List<Upvotes> _upvotes = new();
     private readonly List<Downvotes> _downvotes = new();
-    public string Title { get; }
-    public string Content { get; }
-    public UserId UserId { get; }
-    public CommunityId CommunityId { get; }
+    public string Title { get; private set; }
+    public string Content { get; private set; }
+    public UserId UserId { get; private set; }
+    public CommunityId CommunityId { get; private set; }
     public IReadOnlyList<Upvotes> Upvotes => _upvotes.AsReadOnly();
     public IReadOnlyList<Downvotes> Downvotes => _downvotes.AsReadOnly();
-    public DateTime CreatedAt { get; }
-    public DateTime UpdatedAt { get; }
+    public DateTime CreatedAt { get; private set; }
+    public DateTime UpdatedAt { get; private set; }
+
+#pragma warning disable CS8618
+    private PostAggregate() { }
+#pragma warning restore CS8618
 
     private PostAggregate(
         PostId postId,
@@ -50,7 +54,8 @@ AggregateRoot<PostId>
         DateTime updatedAt,
         List<Upvotes> upvotes,
         List<Downvotes> downvotes
-    ){
+    )
+    {
         return new(
             PostId.CreateUnique(),
             title,

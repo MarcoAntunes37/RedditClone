@@ -1,21 +1,22 @@
 using RedditClone.Domain.Common.Models;
-using RedditClone.Domain.UserAggregate.Entities;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 namespace RedditClone.Domain.UserAggregate;
 
-public sealed class UserAggregate :
-AggregateRoot<UserId>
+public sealed class UserAggregate
+    : AggregateRoot<UserId>
 {
-    private readonly List<UserCommunities> _communities = new();
-    public string FirstName { get; }
-    public string LastName { get; }
-    public string Username { get; }
-    public string Password { get; }
-    public string Email { get; }
-    public IReadOnlyList<UserCommunities> Communities => _communities.ToList();
-    public DateTime CreatedAt { get; }
-    public DateTime UpdatedAt { get; }
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
+    public string Username { get; private set; }
+    public string Password { get; private set; }
+    public string Email { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public DateTime UpdatedAt { get; private set; }
+
+#pragma warning disable CS8618
+    private UserAggregate() { }
+#pragma warning restore
 
     private UserAggregate(
         UserId userId,
@@ -25,8 +26,7 @@ AggregateRoot<UserId>
         string password,
         string email,
         DateTime createdAt,
-        DateTime updatedAt,
-        List<UserCommunities> communities
+        DateTime updatedAt
 
     ) : base(userId)
     {
@@ -37,7 +37,6 @@ AggregateRoot<UserId>
         Email = email;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
-        _communities = communities ?? new List<UserCommunities>();
     }
 
     public static UserAggregate Create(
@@ -47,9 +46,9 @@ AggregateRoot<UserId>
         string password,
         string email,
         DateTime createdAt,
-        DateTime updatedAt,
-        List<UserCommunities> communities
-    ){
+        DateTime updatedAt
+    )
+    {
         return new(
             UserId.CreateUnique(),
             firstName,
@@ -58,8 +57,7 @@ AggregateRoot<UserId>
             password,
             email,
             createdAt,
-            updatedAt,
-            communities
+            updatedAt
         );
     }
 }

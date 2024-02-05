@@ -6,7 +6,8 @@ public sealed class PostId : ValueObject
 {
     public Guid Value { get; }
 
-    public PostId(Guid value){
+    public PostId(Guid value)
+    {
         Value = value;
     }
 
@@ -15,12 +16,9 @@ public sealed class PostId : ValueObject
         return new(Guid.NewGuid());
     }
 
-    public static PostId Create(string PostId){
-        Guid guidPostId = new(PostId);
-
-        return new PostId(
-            value: guidPostId
-        );
+    public static PostId Create(Guid guid)
+    {
+        return new PostId(guid);
     }
 
     public override IEnumerable<object> GetEqualityComponents()

@@ -5,4 +5,4 @@ namespace RedditClone.Application.User.Queries.Login;
 
 public record LoginQuery(
     string Email,
-    string Password):IRequest<LoginResult>;
+    string Password) : IRequest<LoginResult>;

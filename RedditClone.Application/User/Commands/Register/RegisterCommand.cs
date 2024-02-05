@@ -1,6 +1,5 @@
 using MediatR;
 using RedditClone.Application.User.Results.Register;
-using RedditClone.Domain.UserAggregate.Entities;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 namespace RedditClone.Application.User.Commands.Register;
@@ -13,5 +12,4 @@ public record RegisterCommand(
     string Password,
     string Email,
     DateTime CreatedAt,
-    DateTime UpdatedAt,
-    List<UserCommunities> UserCommunities):IRequest<RegisterResult>;
+    DateTime UpdatedAt) : IRequest<RegisterResult>;

@@ -6,7 +6,8 @@ public sealed class CommentId : ValueObject
 {
     public Guid Value { get; }
 
-    public CommentId(Guid value){
+    public CommentId(Guid value)
+    {
         Value = value;
     }
 
@@ -15,12 +16,9 @@ public sealed class CommentId : ValueObject
         return new(Guid.NewGuid());
     }
 
-    public static CommentId Create(string CommentId){
-        Guid guidCommentId = new(CommentId);
-
-        return new CommentId(
-            value: guidCommentId
-        );
+    public static CommentId Create(Guid guid)
+    {
+        return new CommentId(guid);
     }
 
     public override IEnumerable<object> GetEqualityComponents()

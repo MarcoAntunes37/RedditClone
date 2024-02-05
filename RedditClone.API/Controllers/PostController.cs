@@ -21,9 +21,9 @@ public class PostController : ApiController
 
     [HttpPost]
     public async Task<IActionResult> CreatePost(
-        [FromBody]CreatePostRequest request,
-        [FromRoute]string communityId,
-        [FromRoute]string userId)
+        [FromBody] CreatePostRequest request,
+        [FromRoute] Guid communityId,
+        [FromRoute] Guid userId)
     {
         var command = MapCreatePostCommand(request, communityId, userId);
 
@@ -37,9 +37,10 @@ public class PostController : ApiController
 
     private static CreatePostCommand MapCreatePostCommand(
         CreatePostRequest request,
-        string communityId,
-        string userId
-        ){
+        Guid communityId,
+        Guid userId
+        )
+    {
         List<Upvotes> upvotes = new();
         List<Downvotes> downvotes = new();
 

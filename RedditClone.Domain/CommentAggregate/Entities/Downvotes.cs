@@ -8,6 +8,10 @@ Entity<DownvoteId>
 {
     public UserId UserId;
 
+#pragma warning disable CS8618
+    private Downvotes() { }
+#pragma warning restore CS8618
+
     private Downvotes(DownvoteId downvoteId,
     UserId userId) : base(downvoteId)
     {

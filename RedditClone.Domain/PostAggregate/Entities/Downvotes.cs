@@ -6,7 +6,11 @@ namespace RedditClone.Domain.PostAggregate.Entities;
 public sealed class Downvotes :
 Entity<DownvoteId>
 {
-    public UserId UserId;
+    public UserId UserId { get; private set; }
+
+#pragma warning disable CS8618
+    private Downvotes() { }
+#pragma warning restore CS8618
 
     private Downvotes(DownvoteId downvoteId,
     UserId userId) : base(downvoteId)

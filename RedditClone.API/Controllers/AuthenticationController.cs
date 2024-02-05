@@ -10,7 +10,6 @@ using RedditClone.Application.User.Queries.Login;
 using RedditClone.Application.User.Results.Login;
 using RedditClone.Contracts.Register;
 using RedditClone.Domain.UserAggregate.ValueObjects;
-using RedditClone.Domain.UserAggregate.Entities;
 using RedditClone.Contracts.Community;
 
 [Route("auth")]
@@ -58,9 +57,6 @@ public class AuthenticationController : ApiController
 
     private static RegisterCommand MapRegisterRequest(RegisterRequest request)
     {
-
-        List<UserCommunities> communities = new();
-
         return new RegisterCommand(
             UserId.CreateUnique(),
             request.FirstName,
@@ -69,8 +65,7 @@ public class AuthenticationController : ApiController
             request.Password,
             request.Email,
             request.CreatedAt,
-            request.UpdatedAt,
-            communities
+            request.UpdatedAt
         );
     }
 

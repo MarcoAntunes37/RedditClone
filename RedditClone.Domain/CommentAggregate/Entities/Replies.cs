@@ -17,6 +17,11 @@ Entity<ReplyId>
         _upvotes.AsReadOnly();
     public IReadOnlyList<Downvotes> Downvotes =>
         _downvotes.AsReadOnly();
+
+#pragma warning disable CS8618
+    private Replies() { }
+#pragma warning restore CS8618
+
     private Replies(
         ReplyId replyId,
         UserId userId,

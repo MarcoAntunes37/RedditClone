@@ -22,9 +22,9 @@ public class CommentController : ApiController
 
     [HttpPost]
     public async Task<IActionResult> CreateCommunity(
-        [FromBody]CreateCommentRequest request,
-        [FromRoute]string userId,
-        [FromRoute]string postId)
+        [FromBody] CreateCommentRequest request,
+        [FromRoute] Guid userId,
+        [FromRoute] Guid postId)
     {
         var command = MapCreateCommentCommand(request, userId, postId);
 
@@ -38,8 +38,8 @@ public class CommentController : ApiController
 
     private static CreateCommentCommand MapCreateCommentCommand(
         CreateCommentRequest request,
-        string userId,
-        string postId)
+        Guid userId,
+        Guid postId)
     {
         List<Replies> replies = new();
         List<Upvotes> upvotes = new();

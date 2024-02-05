@@ -23,10 +23,8 @@ public class CreateCommunityCommandHandler :
 
         //create community
         var community = CommunityAggregate.Create(
-            command.UserId,
             command.Name,
             command.Description,
-            command.MembersCount,
             command.Topic,
             command.CreatedAt,
             command.UpdatedAt

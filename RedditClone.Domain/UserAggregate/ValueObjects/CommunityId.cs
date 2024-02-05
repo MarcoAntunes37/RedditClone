@@ -4,9 +4,10 @@ namespace RedditClone.Domain.UserAggregate.ValueObjects;
 
 public sealed class CommunityId : ValueObject
 {
-    public Guid Value { get; }
+    public Guid Value { get; private set; }
 
-    public CommunityId(Guid value){
+    public CommunityId(Guid value)
+    {
         Value = value;
     }
 
@@ -15,9 +16,9 @@ public sealed class CommunityId : ValueObject
         return new(Guid.NewGuid());
     }
 
-    public static CommunityId Create(Guid existingGuid)
+    public static CommunityId Create(Guid guid)
     {
-        return new CommunityId(existingGuid);
+        return new CommunityId(guid);
     }
 
     public override IEnumerable<object> GetEqualityComponents()

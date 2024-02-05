@@ -1,6 +1,4 @@
-using System.Reflection;
 using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using RedditClone.Application.User.Commands.Register;
 using RedditClone.Application.User.Queries.Login;
