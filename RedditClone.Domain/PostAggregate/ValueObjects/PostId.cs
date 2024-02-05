@@ -4,7 +4,7 @@ namespace RedditClone.Domain.PostAggregate.ValueObjects;
 
 public sealed class PostId : ValueObject
 {
-    public Guid Value { get; }
+    public Guid Value { get; private set; }
 
     public PostId(Guid value)
     {

@@ -1,5 +1,8 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using RedditClone.Application.Comment.Commands.CreateCommentCommand;
+using RedditClone.Application.Community.Commands.CreateCommunity;
+using RedditClone.Application.Post.Commands.CreatePost;
 using RedditClone.Application.User.Commands.Register;
 using RedditClone.Application.User.Queries.Login;
 
@@ -20,6 +23,9 @@ public static class DependencyInjection
     {
         services.AddScoped<IValidator<RegisterCommand>, RegisterCommandValidator>();
         services.AddScoped<IValidator<LoginQuery>, LoginQueryValidator>();
+        services.AddScoped<IValidator<CreateCommunityCommand>, CreateCommunityCommandValidator>();
+        services.AddScoped<IValidator<CreatePostCommand>, CreatePostCommandValidator>();
+        services.AddScoped<IValidator<CreateCommentCommand>, CreateCommentCommandValidator>();
 
         return services;
     }

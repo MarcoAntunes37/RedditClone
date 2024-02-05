@@ -10,7 +10,6 @@ using RedditClone.Application.User.Queries.Login;
 using RedditClone.Application.User.Results.Login;
 using RedditClone.Contracts.Register;
 using RedditClone.Domain.UserAggregate.ValueObjects;
-using RedditClone.Contracts.Community;
 
 [Route("auth")]
 [AllowAnonymous]
@@ -71,15 +70,15 @@ public class AuthenticationController : ApiController
 
     private static RegisterResponse MapRegisterResult(RegisterResult result)
     {
+        var user = result.User;
         return new RegisterResponse(
-            result.User.FirstName,
-            result.User.LastName,
-            result.User.Email,
-            result.User.Username,
-            result.User.Password,
-            result.User.CreatedAt,
-            result.User.UpdatedAt,
-            new List<RegisterUserCommunities>(),
+            user.FirstName,
+            user.LastName,
+            user.Email,
+            user.Username,
+            user.Password,
+            user.CreatedAt,
+            user.UpdatedAt,
             result.Token
         );
     }

@@ -1,15 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RedditClone.Application.Post.Commands.CreatePost;
-using RedditClone.Domain.PostAggregate.Entities;
-using RedditClone.Domain.PostAggregate;
-using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Contracts.Post;
-using RedditClone.Contracts.Post.CreatePost.Models;
+using RedditClone.Application.Post.Results;
 
 namespace RedditClone.API.Controllers;
 
-[Route("communities/{communityId}/posts/{userId}/new-post")]
+[Route("communities/posts/new-post")]
 public class PostController : ApiController
 {
     private readonly ISender _sender;
@@ -21,54 +18,36 @@ public class PostController : ApiController
 
     [HttpPost]
     public async Task<IActionResult> CreatePost(
-        [FromBody] CreatePostRequest request,
-        [FromRoute] Guid communityId,
-        [FromRoute] Guid userId)
+        [FromBody] CreatePostRequest request)
     {
-        var command = MapCreatePostCommand(request, communityId, userId);
+        var command = MapCreatePostCommand(request);
 
-        var createPostResult = await _sender.Send(command);
+        CreatePostResult result = await _sender.Send(command);
 
-        return createPostResult.Match(
-            post => Ok(MapCreatePostResponse(post)),
-            errors => Problem(errors)
-        );
+        return Ok(MapCreatePostResponse(result));
     }
 
     private static CreatePostCommand MapCreatePostCommand(
-        CreatePostRequest request,
-        Guid communityId,
-        Guid userId
-        )
+        CreatePostRequest request)
     {
-        List<Upvotes> upvotes = new();
-        List<Downvotes> downvotes = new();
-
         return new CreatePostCommand(
             request.Title,
             request.Content,
-            UserId.Create(userId),
-            CommunityId.Create(communityId),
             DateTime.Now,
-            DateTime.Now,
-            upvotes,
-            downvotes
+            DateTime.Now
         );
     }
 
     private static CreatePostResponse MapCreatePostResponse(
-        PostAggregate post)
+        CreatePostResult result)
     {
+        var post = result.Post;
         return new CreatePostResponse(
             post.Id.Value.ToString(),
             post.Title,
             post.Content,
-            post.UserId.Value.ToString(),
-            post.CommunityId.Value.ToString(),
             post.CreatedAt,
-            post.UpdatedAt,
-            new List<CreatePostUpvotes>(),
-            new List<CreatePostDownvotes>()
+            post.UpdatedAt
         );
     }
 }

@@ -12,4 +12,5 @@ public record RegisterCommand(
     string Password,
     string Email,
     DateTime CreatedAt,
-    DateTime UpdatedAt) : IRequest<RegisterResult>;
+    DateTime UpdatedAt
+) : IRequest<RegisterResult>;

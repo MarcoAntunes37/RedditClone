@@ -5,9 +5,16 @@ namespace RedditClone.Infrastructure.Persistence;
 
 public class PostRepository : IPostRepository
 {
-    private static readonly List<PostAggregate> _post = new();
+    private readonly RedditCloneDbContext _dbContext;
+
+    public PostRepository(RedditCloneDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
     public void Add(PostAggregate post)
     {
-        _post.Add(post);
+        _dbContext.Posts.Add(post);
+        _dbContext.SaveChangesAsync();
     }
 }

@@ -1,12 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RedditClone.Application.Comment.Commands.CreateCommentCommand;
+using RedditClone.Application.Comment.Results.CreateCommentResult;
 using RedditClone.Contracts.Comment;
-using RedditClone.Contracts.Comment.CreateComment.Models;
 using RedditClone.Contracts.Community;
-using RedditClone.Domain.CommentAggregate;
-using RedditClone.Domain.CommentAggregate.Entities;
-using RedditClone.Domain.CommentAggregate.ValueObjects;
 
 namespace RedditClone.API.Controllers;
 
@@ -22,53 +19,34 @@ public class CommentController : ApiController
 
     [HttpPost]
     public async Task<IActionResult> CreateCommunity(
-        [FromBody] CreateCommentRequest request,
-        [FromRoute] Guid userId,
-        [FromRoute] Guid postId)
+        [FromBody] CreateCommentRequest request)
     {
-        var command = MapCreateCommentCommand(request, userId, postId);
+        var command = MapCreateCommentCommand(request);
 
-        var createCommentResult = await _sender.Send(command);
+        CreateCommentResult result = await _sender.Send(command);
 
-        return createCommentResult.Match(
-            comment => Ok(MapCreateCommentResponse(comment)),
-            errors => Problem(errors)
-        );
+        return Ok(MapCreateCommentResponse(result));
     }
 
     private static CreateCommentCommand MapCreateCommentCommand(
-        CreateCommentRequest request,
-        Guid userId,
-        Guid postId)
+        CreateCommentRequest request)
     {
-        List<Replies> replies = new();
-        List<Upvotes> upvotes = new();
-        List<Downvotes> downvotes = new();
         return new CreateCommentCommand(
-            UserId.Create(userId),
-            PostId.Create(postId),
             request.Content,
             DateTime.Now,
-            DateTime.Now,
-            replies,
-            upvotes,
-            downvotes
+            DateTime.Now
         );
     }
 
     private static CreateCommentResponse MapCreateCommentResponse(
-        CommentAggregate comment)
+        CreateCommentResult result)
     {
+        var comment = result.Comment;
         return new CreateCommentResponse(
             comment.Id.Value.ToString(),
-            comment.UserId.Value.ToString(),
-            comment.PostId.Value.ToString(),
             comment.Content,
             comment.CreatedAt,
-            comment.UpdatedAt,
-            new List<CreateCommentReplies>(),
-            new List<CreateCommentUpvotes>(),
-            new List<CreateCommentDownvotes>()
+            comment.UpdatedAt
         );
     }
 }

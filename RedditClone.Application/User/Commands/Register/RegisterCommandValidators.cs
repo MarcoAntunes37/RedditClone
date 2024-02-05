@@ -12,24 +12,24 @@ public partial class RegisterCommandValidator : AbstractValidator<RegisterComman
                 .WithMessage("Firstname cannot be empty")
             .NotNull()
                 .WithMessage("Firstname cannot be null")
-            .Length(2, 50)
-                .WithMessage("Firstname must have at least 2 and at maximum 50 characters");
+            .Length(2, 100)
+                .WithMessage("Firstname must have at least 2 and at maximum 100 characters");
 
         RuleFor(u => u.LastName)
             .NotEmpty()
                 .WithMessage("Lastname cannot be empty")
             .NotNull()
                 .WithMessage("Lastname cannot be null")
-            .Length(2, 50)
-                .WithMessage("Lastname must have at least 2 and at maximum 50 characters");
+            .Length(2, 100)
+                .WithMessage("Lastname must have at least 2 and at maximum 100 characters");
 
         RuleFor(u => u.Username)
             .NotEmpty()
                 .WithMessage("Username cannot be empty")
             .NotNull()
                 .WithMessage("Username cannot be null")
-            .Length(8, 24)
-                .WithMessage("Username must have at least 8 and at maximum 24 characters");
+            .Length(8, 100)
+                .WithMessage("Username must have at least 8 and at maximum 100 characters");
 
         RuleFor(u => u.Email)
             .NotEmpty()

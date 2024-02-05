@@ -10,7 +10,6 @@ public record RegisterResponse(
     string Password,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    List<RegisterUserCommunities> Communities,
     string Token
 );
 

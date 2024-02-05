@@ -9,6 +9,5 @@ public record RegisterRequest(
     string Username,
     string Password,
     DateTime CreatedAt,
-    DateTime UpdatedAt,
-    List<RegisterUserCommunities> Communities
+    DateTime UpdatedAt
 );

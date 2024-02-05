@@ -1,13 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RedditClone.Application.Community.Commands.CreateCommunity;
+using RedditClone.Application.Community.Results.CreateCommunityResult;
 using RedditClone.Contracts.Community;
-using RedditClone.Domain.CommunityAggregate;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 namespace RedditClone.API.Controllers;
 
-[Route("communities/{userId}/new-community")]
+[Route("communities/new-community")]
 public class CommunityController : ApiController
 {
     private readonly ISender _sender;
@@ -19,22 +18,17 @@ public class CommunityController : ApiController
 
     [HttpPost]
     public async Task<IActionResult> CreateCommunity(
-        [FromBody] CreateCommunityRequest request,
-        [FromRoute] Guid userId)
+        [FromBody] CreateCommunityRequest request)
     {
-        var command = MapCreateCommunityCommand(request, userId);
+        var command = MapCreateCommunityCommand(request);
 
-        var createCommunityResult = await _sender.Send(command);
+        CreateCommunityResult result = await _sender.Send(command);
 
-        return createCommunityResult.Match(
-            community => Ok(MapCreateCommunityResponse(community)),
-            errors => Problem(errors)
-        );
+        return Ok(MapCreateCommunityResponse(result));
     }
 
     private static CreateCommunityCommand MapCreateCommunityCommand(
-        CreateCommunityRequest request,
-        Guid userId
+        CreateCommunityRequest request
         )
     {
         return new CreateCommunityCommand(
@@ -47,8 +41,9 @@ public class CommunityController : ApiController
     }
 
     private static CreateCommunityResponse MapCreateCommunityResponse(
-        CommunityAggregate community)
+        CreateCommunityResult result)
     {
+        var community = result.Community;
         return new CreateCommunityResponse(
             community.Id.Value.ToString(),
             community.Name,

@@ -26,6 +26,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserAggregate>
 
         builder.Property(m => m.Id)
             .ValueGeneratedNever()
+            .HasColumnName("UserId")
             .HasConversion(Id => Id.Value,
                 value => UserId.Create(value));
 

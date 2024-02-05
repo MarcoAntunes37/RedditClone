@@ -30,7 +30,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<RedditCloneDbContext>(options =>
             options.UseNpgsql(
-                "Host=http://localhost:5432/;Database=DB;Username=postgres;Password=postgres"));
+                "Host=localhost;Port=5432;Database=DB;Username=postgres;Password=postgres"));
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICommunityRepository, CommunityRepository>();
         services.AddScoped<IPostRepository, PostRepository>();
