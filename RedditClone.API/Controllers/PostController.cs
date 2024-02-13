@@ -1,12 +1,15 @@
+namespace RedditClone.API.Controllers;
+
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RedditClone.Application.Post.Commands.CreatePost;
 using RedditClone.Contracts.Post;
 using RedditClone.Application.Post.Results;
+using RedditClone.Domain.PostAggregate.Entities;
+using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Contracts.Post.CreatePost.Models;
 
-namespace RedditClone.API.Controllers;
-
-[Route("communities/posts/new-post")]
+[Route("{userId}/communities/{communityId}/posts/new-post")]
 public class PostController : ApiController
 {
     private readonly ISender _sender;
@@ -18,9 +21,11 @@ public class PostController : ApiController
 
     [HttpPost]
     public async Task<IActionResult> CreatePost(
-        [FromBody] CreatePostRequest request)
+        [FromBody] CreatePostRequest request,
+        [FromRoute] Guid communityId,
+        [FromRoute] Guid userId)
     {
-        var command = MapCreatePostCommand(request);
+        var command = MapCreatePostCommand(request, userId, communityId);
 
         CreatePostResult result = await _sender.Send(command);
 
@@ -28,13 +33,19 @@ public class PostController : ApiController
     }
 
     private static CreatePostCommand MapCreatePostCommand(
-        CreatePostRequest request)
+        CreatePostRequest request,
+        Guid communityId,
+        Guid userId)
     {
+        List<Votes> votes = new();
         return new CreatePostCommand(
+            CommunityId.Create(communityId),
+            UserId.Create(userId),
             request.Title,
             request.Content,
-            DateTime.Now,
-            DateTime.Now
+            DateTime.UtcNow,
+            DateTime.UtcNow,
+            votes
         );
     }
 
@@ -42,12 +53,16 @@ public class PostController : ApiController
         CreatePostResult result)
     {
         var post = result.Post;
+        List<CreatePostVotes> votes = new();
         return new CreatePostResponse(
             post.Id.Value.ToString(),
+            post.CommunityId.Value.ToString(),
+            post.UserId.Value.ToString(),
             post.Title,
             post.Content,
             post.CreatedAt,
-            post.UpdatedAt
+            post.UpdatedAt,
+            votes
         );
     }
 }

@@ -1,10 +1,10 @@
+namespace RedditClone.Application.Post.Commands.CreatePost;
+
 using FluentValidation;
 using MediatR;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.Post.Results;
 using RedditClone.Domain.PostAggregate;
-
-namespace RedditClone.Application.Post.Commands.CreatePost;
 
 public class CreatePostCommandHandler
     : IRequestHandler<CreatePostCommand, CreatePostResult>
@@ -28,11 +28,14 @@ public class CreatePostCommandHandler
         _validator.ValidateAndThrow(command);
 
         //create post
-        var post = PostAggregate.Create(
+        var post = Post.Create(
+            command.CommunityId,
+            command.UserId,
             command.Title,
             command.Content,
             command.CreatedAt,
-            command.UpdatedAt
+            command.UpdatedAt,
+            command.Votes
         );
 
         //persist post

@@ -5,14 +5,14 @@ using RedditClone.Domain.UserAggregate.ValueObjects;
 
 namespace RedditClone.Infrastructure.Persistence.Configuration;
 
-public class UserConfiguration : IEntityTypeConfiguration<UserAggregate>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<UserAggregate> builder)
+    public void Configure(EntityTypeBuilder<User> builder)
     {
         ConfigureUserTable(builder);
     }
 
-    private void ConfigureUserTable(EntityTypeBuilder<UserAggregate> builder)
+    private void ConfigureUserTable(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("Users");
 
@@ -26,14 +26,14 @@ public class UserConfiguration : IEntityTypeConfiguration<UserAggregate>
 
         builder.Property(m => m.Id)
             .ValueGeneratedNever()
-            .HasColumnName("UserId")
+            .HasColumnName("Id")
             .HasConversion(Id => Id.Value,
                 value => UserId.Create(value));
 
-        builder.Property(m => m.FirstName)
+        builder.Property(m => m.Firstname)
             .HasMaxLength(100);
 
-        builder.Property(m => m.LastName)
+        builder.Property(m => m.Lastname)
             .HasMaxLength(100);
 
         builder.Property(m => m.Username)

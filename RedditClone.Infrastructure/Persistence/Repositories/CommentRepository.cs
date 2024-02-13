@@ -1,13 +1,20 @@
+namespace RedditClone.Infrastructure.Persistence;
+
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommentAggregate;
 
-namespace RedditClone.Infrastructure.Persistence;
-
 public class CommentRepository : ICommentRepository
 {
-    private static readonly List<CommentAggregate> _comment = new();
-    public void Add(CommentAggregate comment)
+    private readonly RedditCloneDbContext _dbContext;
+
+    public CommentRepository(RedditCloneDbContext dbContext)
     {
-        _comment.Add(comment);
+        _dbContext = dbContext;
+    }
+
+    public void Add(Comment comment)
+    {
+        _dbContext.Comments.Add(comment);
+        _dbContext.SaveChangesAsync();
     }
 }

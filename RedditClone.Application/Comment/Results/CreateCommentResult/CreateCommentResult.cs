@@ -1,7 +1,7 @@
-using RedditClone.Domain.CommentAggregate;
-
 namespace RedditClone.Application.Comment.Results.CreateCommentResult;
 
+using RedditClone.Domain.CommentAggregate;
+
 public record CreateCommentResult(
-    CommentAggregate Comment
+    Comment Comment
 );

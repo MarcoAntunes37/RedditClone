@@ -1,9 +1,8 @@
-using RedditClone.Domain.CommentAggregate;
-using RedditClone.Domain.PostAggregate;
-
 namespace RedditClone.Application.Persistence;
+
+using RedditClone.Domain.CommentAggregate;
 
 public interface ICommentRepository
 {
-    void Add(CommentAggregate comment);
+    void Add(Comment comment);
 }

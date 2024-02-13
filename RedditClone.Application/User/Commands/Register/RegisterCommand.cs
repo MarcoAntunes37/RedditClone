@@ -6,8 +6,8 @@ namespace RedditClone.Application.User.Commands.Register;
 
 public record RegisterCommand(
     UserId UserId,
-    string FirstName,
-    string LastName,
+    string Firstname,
+    string Lastname,
     string Username,
     string Password,
     string Email,

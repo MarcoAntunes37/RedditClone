@@ -1,8 +1,14 @@
-namespace RedditClone.Contracts.Community;
+namespace RedditClone.Contracts.Comment;
+
+using RedditClone.Contracts.Comment.CreateComment.Models;
 
 public record CreateCommentResponse(
     string Id,
+    string UserId,
+    string PostId,
     string Content,
     DateTime CreatedAt,
-    DateTime UpdatedAt
+    DateTime UpdatedAt,
+    List<CreateCommentVotes> Votes,
+    List<CreateCommentReplies> Replies
 );

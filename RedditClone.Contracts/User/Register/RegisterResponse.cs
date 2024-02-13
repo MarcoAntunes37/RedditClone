@@ -1,10 +1,8 @@
-using RedditClone.Contracts.Community;
-
 namespace RedditClone.Contracts.Register;
 
 public record RegisterResponse(
-    string FirstName,
-    string LastName,
+    string Firstname,
+    string Lastname,
     string Email,
     string Username,
     string Password,

@@ -1,7 +1,7 @@
+namespace RedditClone.Infrastructure.Persistence;
+
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.PostAggregate;
-
-namespace RedditClone.Infrastructure.Persistence;
 
 public class PostRepository : IPostRepository
 {
@@ -12,7 +12,7 @@ public class PostRepository : IPostRepository
         _dbContext = dbContext;
     }
 
-    public void Add(PostAggregate post)
+    public void Add(Post post)
     {
         _dbContext.Posts.Add(post);
         _dbContext.SaveChangesAsync();

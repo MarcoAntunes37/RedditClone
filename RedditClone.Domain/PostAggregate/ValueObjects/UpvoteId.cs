@@ -1,10 +1,10 @@
-using RedditClone.Domain.Common.Models;
-
 namespace RedditClone.Domain.PostAggregate.ValueObjects;
+
+using RedditClone.Domain.Common.Models;
 
 public sealed class UpvoteId : ValueObject
 {
-    public Guid Value { get; }
+    public Guid Value { get; private set; }
 
     public UpvoteId(Guid value)
     {

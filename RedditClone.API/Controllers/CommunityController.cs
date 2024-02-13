@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using RedditClone.Application.Community.Commands.CreateCommunity;
 using RedditClone.Application.Community.Results.CreateCommunityResult;
 using RedditClone.Contracts.Community;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 namespace RedditClone.API.Controllers;
 
-[Route("communities/new-community")]
+[Route("communities/{ownerId}/new-community")]
 public class CommunityController : ApiController
 {
     private readonly ISender _sender;
@@ -18,9 +19,10 @@ public class CommunityController : ApiController
 
     [HttpPost]
     public async Task<IActionResult> CreateCommunity(
-        [FromBody] CreateCommunityRequest request)
+        [FromBody] CreateCommunityRequest request,
+        [FromRoute] Guid ownerId)
     {
-        var command = MapCreateCommunityCommand(request);
+        var command = MapCreateCommunityCommand(request, ownerId);
 
         CreateCommunityResult result = await _sender.Send(command);
 
@@ -28,15 +30,16 @@ public class CommunityController : ApiController
     }
 
     private static CreateCommunityCommand MapCreateCommunityCommand(
-        CreateCommunityRequest request
-        )
+        CreateCommunityRequest request,
+        Guid ownerId)
     {
         return new CreateCommunityCommand(
             request.Name,
             request.Description,
             request.Topic,
-            DateTime.Now,
-            DateTime.Now
+            DateTime.UtcNow,
+            DateTime.UtcNow,
+            UserId.Create(ownerId)
         );
     }
 
@@ -50,7 +53,8 @@ public class CommunityController : ApiController
             community.Description,
             community.Topic,
             community.CreatedAt,
-            community.UpdatedAt
+            community.UpdatedAt,
+            community.UserId.Value.ToString()
         );
     }
 }

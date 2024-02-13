@@ -1,7 +1,7 @@
-using RedditClone.Domain.PostAggregate;
-
 namespace RedditClone.Application.Post.Results;
 
+using RedditClone.Domain.PostAggregate;
+
 public record CreatePostResult(
-    PostAggregate Post
+    Post Post
 );

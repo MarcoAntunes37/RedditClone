@@ -1,7 +1,7 @@
-using RedditClone.Domain.CommunityAggregate;
-
 namespace RedditClone.Application.Community.Results.CreateCommunityResult;
 
+using RedditClone.Domain.CommunityAggregate;
+
 public record CreateCommunityResult(
-    CommunityAggregate Community
+    Community Community
 );

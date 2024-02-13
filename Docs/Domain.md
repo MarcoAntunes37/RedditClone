@@ -4,8 +4,8 @@
 ```json
 {
     "id": "000000000-0000-0000-000000",
-    "firstName": "Marco",
-    "lastName": "Aurelio",
+    "firstname": "Marco",
+    "lastname": "Aurelio",
     "username": "marcodev",
     "password": "123$Asdsa",
     "email": "emailteste@gmail.com",

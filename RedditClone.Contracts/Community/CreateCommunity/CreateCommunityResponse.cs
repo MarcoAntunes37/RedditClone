@@ -6,5 +6,6 @@ public record CreateCommunityResponse(
     string Description,
     string Topic,
     DateTime CreatedAt,
-    DateTime UpdatedAt
+    DateTime UpdatedAt,
+    string UserId
 );

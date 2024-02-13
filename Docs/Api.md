@@ -76,8 +76,8 @@ POST {{host}}/auth/register
 #### Register Request
 ```json
 {
-    "firstName": "User first name",
-    "lastName": "User last name",
+    "firstname": "User first name",
+    "lastname": "User last name",
     "username": "Username",
     "password": "123$Asdsa",
     "email": "emailteste@gmail.com"
@@ -87,8 +87,8 @@ POST {{host}}/auth/register
 #### Register Response
 ```json
 {
-    "firstName": "Marco",
-    "lastName": "Aurelio",
+    "firstname": "Marco",
+    "lastname": "Aurelio",
     "email": "emailteste@gmail.com",
     "username": "marcodev",
     "password": "A123&!",

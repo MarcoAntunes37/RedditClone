@@ -27,6 +27,7 @@
                 "appProject": "${workspaceFolder}/RedditClone.API/RedditClone.API.csproj",
                 "buildWithSdk": true
             }
+
         }
-    ]
+    ],
 }

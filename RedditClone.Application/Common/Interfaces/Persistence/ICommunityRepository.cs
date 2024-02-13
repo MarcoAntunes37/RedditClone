@@ -1,8 +1,8 @@
-using RedditClone.Domain.CommunityAggregate;
-
 namespace RedditClone.Application.Persistence;
+
+using RedditClone.Domain.CommunityAggregate;
 
 public interface ICommunityRepository
 {
-    void Add(CommunityAggregate community);
+    void Add(Community community);
 }

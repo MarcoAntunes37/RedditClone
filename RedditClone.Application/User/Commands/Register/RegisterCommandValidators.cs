@@ -1,13 +1,16 @@
-using System.Text.RegularExpressions;
-using FluentValidation;
-
 namespace RedditClone.Application.User.Commands.Register;
+
+using FluentValidation;
+using RedditClone.Application.Persistence;
+using System.Text.RegularExpressions;
 
 public partial class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 {
+    [GeneratedRegex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*\\W).*$")]
+    private static partial Regex StrongPassword();
     public RegisterCommandValidator()
     {
-        RuleFor(u => u.FirstName)
+        RuleFor(u => u.Firstname)
             .NotEmpty()
                 .WithMessage("Firstname cannot be empty")
             .NotNull()
@@ -15,7 +18,7 @@ public partial class RegisterCommandValidator : AbstractValidator<RegisterComman
             .Length(2, 100)
                 .WithMessage("Firstname must have at least 2 and at maximum 100 characters");
 
-        RuleFor(u => u.LastName)
+        RuleFor(u => u.Lastname)
             .NotEmpty()
                 .WithMessage("Lastname cannot be empty")
             .NotNull()
@@ -40,6 +43,7 @@ public partial class RegisterCommandValidator : AbstractValidator<RegisterComman
                 .WithMessage("Email must be a valid email address");
 
         Regex strongPassword = StrongPassword();
+
         RuleFor(u => u.Password)
             .NotEmpty()
                 .WithMessage("Password cannot be empty")
@@ -48,9 +52,6 @@ public partial class RegisterCommandValidator : AbstractValidator<RegisterComman
             .Length(8, 100)
                 .WithMessage("Password must have at least 8 and at maximum 100 characters")
             .Matches(StrongPassword())
-                .WithMessage("Password must have at least upper case letter, at least one lower case letter and at least one special character");
+                .WithMessage("Password must have at a number, a upper case letter, a one lower case letter and a special character");
     }
-
-    [GeneratedRegex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*\\W).*$")]
-    private static partial Regex StrongPassword();
 }

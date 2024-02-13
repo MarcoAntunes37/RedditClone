@@ -1,10 +1,10 @@
+namespace RedditClone.Application.Comment.Commands.CreateCommentCommand;
+
 using FluentValidation;
 using MediatR;
 using RedditClone.Application.Comment.Results.CreateCommentResult;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommentAggregate;
-
-namespace RedditClone.Application.Comment.Commands.CreateCommentCommand;
 
 public class CreateCommentCommandHandler :
     IRequestHandler<CreateCommentCommand, CreateCommentResult>
@@ -28,10 +28,14 @@ public class CreateCommentCommandHandler :
         _validator.ValidateAndThrow(command);
 
         //create comment
-        var comment = CommentAggregate.Create(
+        var comment = Comment.Create(
+            command.UserId,
+            command.PostId,
             command.Content,
             command.CreatedAt,
-            command.UpdatedAt
+            command.UpdatedAt,
+            command.Votes,
+            command.Replies
         );
 
         //persist comment

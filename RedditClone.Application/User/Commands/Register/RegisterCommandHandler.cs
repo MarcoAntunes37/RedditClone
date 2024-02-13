@@ -1,11 +1,12 @@
+namespace RedditClone.Application.User.Commands.Register;
+
 using MediatR;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results.Register;
 using RedditClone.Application.Common.Interfaces.Authentication;
 using RedditClone.Domain.UserAggregate;
+using BCrypt.Net;
 using FluentValidation;
-
-namespace RedditClone.Application.User.Commands.Register;
 
 public partial class RegisterCommandHandler :
 IRequestHandler<RegisterCommand, RegisterResult>
@@ -29,19 +30,20 @@ IRequestHandler<RegisterCommand, RegisterResult>
     {
         await Task.CompletedTask;
 
+        _validator.ValidateAndThrow(command);
+
         if (_userRepository.GetUserByEmail(command.Email) is not null)
             throw new Exception("Email is already in use");
 
         if (_userRepository.GetUserByUsername(command.Username) is not null)
             throw new Exception("Username is already in use");
 
-        _validator.ValidateAndThrow(command);
-
-        var user = UserAggregate.Create(
-            command.FirstName,
-            command.LastName,
+        var user = User.Create(
+            command.Firstname,
+            command.Lastname,
             command.Username,
-            command.Password,
+            BCrypt.HashPassword(
+                command.Password, BCrypt.GenerateSalt(), false, HashType.SHA256),
             command.Email,
             command.CreatedAt,
             command.UpdatedAt
@@ -49,7 +51,7 @@ IRequestHandler<RegisterCommand, RegisterResult>
 
         _userRepository.Add(user);
 
-        var token = _jwtTokenGenerator.GenerateToken(user.Id.Value, user.FirstName, user.LastName);
+        var token = _jwtTokenGenerator.GenerateToken(user.Id.Value, user.Firstname, user.Lastname);
 
         return new RegisterResult(
             user,

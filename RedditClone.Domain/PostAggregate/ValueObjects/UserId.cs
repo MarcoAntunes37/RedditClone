@@ -1,10 +1,10 @@
-using RedditClone.Domain.Common.Models;
-
 namespace RedditClone.Domain.PostAggregate.ValueObjects;
+
+using RedditClone.Domain.Common.Models;
 
 public sealed class UserId : ValueObject
 {
-    public Guid Value { get; }
+    public Guid Value { get; private set;}
 
     public UserId(Guid value)
     {

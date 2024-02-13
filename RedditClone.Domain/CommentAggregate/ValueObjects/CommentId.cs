@@ -4,7 +4,7 @@ namespace RedditClone.Domain.CommentAggregate.ValueObjects;
 
 public sealed class CommentId : ValueObject
 {
-    public Guid Value { get; }
+    public Guid Value { get; private set; }
 
     public CommentId(Guid value)
     {

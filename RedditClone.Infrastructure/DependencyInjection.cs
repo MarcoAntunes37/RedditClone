@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using RedditClone.Infrastructure.Services;
 
 namespace RedditClone.Infrastructure;
 public static class DependencyInjection
@@ -20,6 +21,8 @@ public static class DependencyInjection
     {
         services.AddAuth(configuration)
             .AddPersistence();
+        services.AddSingleton<IRecoveryCodeManager, RecoveryCodeManager>();
+        services.AddSingleton<IEmailRecovery, EmailRecovery>();
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
         return services;
@@ -39,6 +42,26 @@ public static class DependencyInjection
         return services;
     }
 
+    public static IServiceCollection AddDatabase(this IServiceCollection services,
+            ConfigurationManager configuration)
+    {
+        var dbSettings = new DbSettings();
+
+        configuration.Bind(DbSettings.SectionName, dbSettings);
+
+        services.AddSingleton(Options.Create(dbSettings));
+
+        services.AddDbContext<RedditCloneDbContext>(options =>
+            options.UseNpgsql(
+                $"Host={dbSettings.Host};" +
+                $"Port={dbSettings.Port};" +
+                $"Database={dbSettings.DB};" +
+                $"Username={dbSettings.Username}" +
+                $"Password={dbSettings.Password}"
+            ));
+
+        return services;
+    }
     public static IServiceCollection AddAuth(this IServiceCollection services,
         ConfigurationManager configuration)
     {

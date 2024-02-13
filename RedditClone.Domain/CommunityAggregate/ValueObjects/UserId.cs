@@ -1,6 +1,6 @@
-using RedditClone.Domain.Common.Models;
-
 namespace RedditClone.Domain.CommunityAggregate.ValueObjects;
+
+using RedditClone.Domain.Common.Models;
 
 public sealed class UserId : ValueObject
 {

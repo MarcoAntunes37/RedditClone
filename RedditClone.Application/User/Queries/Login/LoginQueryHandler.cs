@@ -1,11 +1,12 @@
+namespace RedditClone.Application.User.Queries.Login;
+
 using FluentValidation;
 using MediatR;
 using RedditClone.Application.Common.Interfaces.Authentication;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results.Login;
 using RedditClone.Domain.UserAggregate;
-
-namespace RedditClone.Application.User.Queries.Login;
+using BCrypt.Net;
 
 public class LoginQueryHandler :
 IRequestHandler<LoginQuery, LoginResult>
@@ -13,9 +14,10 @@ IRequestHandler<LoginQuery, LoginResult>
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IUserRepository _userRepository;
     private readonly IValidator<LoginQuery> _validator;
-    public LoginQueryHandler(IJwtTokenGenerator jwtTokenGenerator,
-    IUserRepository userRepository,
-    IValidator<LoginQuery> validator)
+    public LoginQueryHandler(
+        IJwtTokenGenerator jwtTokenGenerator,
+        IUserRepository userRepository,
+        IValidator<LoginQuery> validator)
     {
         _jwtTokenGenerator = jwtTokenGenerator;
         _userRepository = userRepository;
@@ -28,14 +30,13 @@ IRequestHandler<LoginQuery, LoginResult>
 
         _validator.ValidateAndThrow(query);
 
-        if (_userRepository.GetUserByEmail(query.Email) is not UserAggregate user)
+        if (_userRepository.GetUserByEmail(query.Email) is not User user)
             throw new Exception("Invalid credentials");
 
-        if (user.Password != query.Password)
+        if (!BCrypt.Verify(query.Password, user.Password))
             throw new Exception("Invalid credentials");
 
-
-        var token = _jwtTokenGenerator.GenerateToken(user.Id.Value, user.FirstName, user.LastName);
+        var token = _jwtTokenGenerator.GenerateToken(user.Id.Value, user.Firstname, user.Lastname);
 
         return new LoginResult(
             token

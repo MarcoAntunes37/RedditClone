@@ -1,8 +1,8 @@
-using RedditClone.Domain.PostAggregate;
-
 namespace RedditClone.Application.Persistence;
+
+using RedditClone.Domain.PostAggregate;
 
 public interface IPostRepository
 {
-    void Add(PostAggregate post);
+    void Add(Post post);
 }

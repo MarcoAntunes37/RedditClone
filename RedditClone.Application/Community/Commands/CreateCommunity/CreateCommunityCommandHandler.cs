@@ -1,10 +1,10 @@
+namespace RedditClone.Application.Community.Commands.CreateCommunity;
+
 using FluentValidation;
 using MediatR;
 using RedditClone.Application.Community.Results.CreateCommunityResult;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommunityAggregate;
-
-namespace RedditClone.Application.Community.Commands.CreateCommunity;
 
 public class CreateCommunityCommandHandler :
     IRequestHandler<CreateCommunityCommand, CreateCommunityResult>
@@ -28,7 +28,8 @@ public class CreateCommunityCommandHandler :
         _validator.ValidateAndThrow(command);
 
         //create community
-        var community = CommunityAggregate.Create(
+        var community = Community.Create(
+            command.UserId,
             command.Name,
             command.Description,
             command.Topic,
