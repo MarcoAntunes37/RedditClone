@@ -5,7 +5,7 @@ using RedditClone.Domain.CommentAggregate.Entities;
 namespace RedditClone.Domain.CommentAggregate;
 
 public sealed class Comment
-    : AggregateRoot<CommentId>
+    : AggregateRoot<CommentId, Guid>
 {
     private readonly List<Votes> _votes = new();
     private readonly List<Replies> _replies = new();
@@ -63,4 +63,9 @@ public sealed class Comment
             replies ?? new());
     }
 
+    public void UpdateComment(string content)
+    {
+        Content = content;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

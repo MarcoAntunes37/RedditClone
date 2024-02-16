@@ -4,7 +4,7 @@ using RedditClone.Domain.Common.Models;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 public sealed class Community
-    :AggregateRoot<CommunityId>
+    : AggregateRoot<CommunityId, Guid>
 {
     public UserId UserId { get; private set; }
     public string Name { get; private set; }
@@ -54,5 +54,16 @@ public sealed class Community
             createdAt,
             updatedAt
         );
+    }
+
+    public void UpdateCommunity(
+        string name,
+        string description,
+        string topic)
+    {
+        Name = name;
+        Description = description;
+        Topic = topic;
+        UpdatedAt = DateTime.UtcNow;
     }
 }

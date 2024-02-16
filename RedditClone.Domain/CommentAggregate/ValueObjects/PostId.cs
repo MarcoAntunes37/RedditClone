@@ -1,10 +1,10 @@
-using RedditClone.Domain.Common.Models;
-
 namespace RedditClone.Domain.CommentAggregate.ValueObjects;
 
-public sealed class PostId : ValueObject
+using RedditClone.Domain.Common.Models;
+
+public sealed class PostId : AggregateRootId<Guid>
 {
-    public Guid Value { get; private set; }
+    public override Guid Value { get; protected set; }
 
     public PostId(Guid value)
     {

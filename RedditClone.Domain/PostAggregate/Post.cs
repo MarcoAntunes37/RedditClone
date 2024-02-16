@@ -5,7 +5,7 @@ using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 
 public sealed class Post
-    : AggregateRoot<PostId>
+    : AggregateRoot<PostId, Guid>
 {
     private readonly List<Votes> _votes = new();
     public CommunityId CommunityId { get; private set; }
@@ -60,5 +60,12 @@ public sealed class Post
             createdAt,
             updatedAt,
             votes ?? new());
+    }
+
+    public void UpdatePost(string title, string content)
+    {
+        Title = title;
+        Content = content;
+        UpdatedAt = DateTime.UtcNow;
     }
 }

@@ -2,9 +2,9 @@ using RedditClone.Domain.Common.Models;
 
 namespace RedditClone.Domain.CommentAggregate.ValueObjects;
 
-public sealed class ReplyId : ValueObject
+public sealed class ReplyId : AggregateRootId<Guid>
 {
-    public Guid Value { get; private set;}
+    public override Guid Value { get; protected set;}
 
     public ReplyId(Guid value){
         Value = value;

@@ -11,15 +11,15 @@ public partial class UpdatePasswordRequestValidators : AbstractValidator<UpdateP
             .NotEmpty()
                 .WithMessage("New password cannot be empty")
             .NotNull()
-                .WithMessage("Password cannot be null")
-            .Matches(u => u.RepeatNewPassword)
-                .WithMessage("Repeat password need to match with new password");
+                .WithMessage("New password cannot be null");
 
         RuleFor(u => u.RepeatNewPassword)
             .NotEmpty()
                 .WithMessage("Repeat password cannot be empty")
             .NotNull()
-                .WithMessage("Repeat password cannot be null");
+                .WithMessage("Repeat password cannot be null")
+            .Matches(u => u.NewPassword)
+                .WithMessage("Repeat password need to match with new password");;
 
         RuleFor(u => u.OldPassword)
             .NotEmpty()

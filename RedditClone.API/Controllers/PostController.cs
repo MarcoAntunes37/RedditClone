@@ -2,14 +2,15 @@ namespace RedditClone.API.Controllers;
 
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using RedditClone.Application.Post.Commands.CreatePost;
 using RedditClone.Contracts.Post;
-using RedditClone.Application.Post.Results;
-using RedditClone.Domain.PostAggregate.Entities;
-using RedditClone.Domain.PostAggregate.ValueObjects;
-using RedditClone.Contracts.Post.CreatePost.Models;
+using RedditClone.Application.Post.Results.CreatePostResult;
+using RedditClone.API.Mappers;
+using RedditClone.Contracts.Community.UpdatePost;
+using RedditClone.Application.Post.Results.UpdatePostResult;
+using RedditClone.Contracts.Community.DeletePost;
+using RedditClone.Application.Post.Results.DeletePostResult;
 
-[Route("{userId}/communities/{communityId}/posts/new-post")]
+[Route("posts/")]
 public class PostController : ApiController
 {
     private readonly ISender _sender;
@@ -19,50 +20,38 @@ public class PostController : ApiController
         _sender = sender;
     }
 
-    [HttpPost]
+    [HttpPost("new-post")]
     public async Task<IActionResult> CreatePost(
-        [FromBody] CreatePostRequest request,
-        [FromRoute] Guid communityId,
-        [FromRoute] Guid userId)
+        [FromBody] CreatePostRequest request)
     {
-        var command = MapCreatePostCommand(request, userId, communityId);
+        var command = PostMappers.MapCreatePostRequest(request);
 
         CreatePostResult result = await _sender.Send(command);
 
-        return Ok(MapCreatePostResponse(result));
+        return Ok(PostMappers.MapCreatePostResponse(result));
     }
 
-    private static CreatePostCommand MapCreatePostCommand(
-        CreatePostRequest request,
-        Guid communityId,
-        Guid userId)
+    [HttpPut("update-post/{postId}")]
+    public async Task<IActionResult> UpdatePost(
+        [FromRoute] Guid postId,
+        [FromBody] UpdatePostRequest request)
     {
-        List<Votes> votes = new();
-        return new CreatePostCommand(
-            CommunityId.Create(communityId),
-            UserId.Create(userId),
-            request.Title,
-            request.Content,
-            DateTime.UtcNow,
-            DateTime.UtcNow,
-            votes
-        );
+        var command = PostMappers.MapUpdatePostRequest(postId, request);
+
+        UpdatePostResult result = await _sender.Send(command);
+
+        return Ok(result);
     }
 
-    private static CreatePostResponse MapCreatePostResponse(
-        CreatePostResult result)
+    [HttpDelete("delete-post/{postId}")]
+    public async Task<IActionResult> DeletePost(
+        [FromRoute] Guid postId,
+        [FromBody] DeletePostRequest request)
     {
-        var post = result.Post;
-        List<CreatePostVotes> votes = new();
-        return new CreatePostResponse(
-            post.Id.Value.ToString(),
-            post.CommunityId.Value.ToString(),
-            post.UserId.Value.ToString(),
-            post.Title,
-            post.Content,
-            post.CreatedAt,
-            post.UpdatedAt,
-            votes
-        );
+        var command = PostMappers.MapDeletePostRequest(postId, request);
+
+        DeletePostResult result = await _sender.Send(command);
+
+        return Ok(result);
     }
 }

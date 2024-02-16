@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Community;
+namespace RedditClone.Contracts.Community.CreateCommunity;
 
 public record CreateCommunityResponse(
     string Id,

@@ -1,5 +1,6 @@
 namespace RedditClone.Application.User.Results.PasswordRecoveryCodeValidate;
 
 public record PasswordRecoveryCodeValidateResult(
-    bool IsValid
+    bool IsValid,
+    string Email
 );

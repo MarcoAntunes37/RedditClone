@@ -19,7 +19,8 @@ public partial class PasswordRecoveryCodeValidateCommandHandler
         await Task.CompletedTask;
 
         return new PasswordRecoveryCodeValidateResult(
-            _recoveryCodeManager.ValidateCode(command.Email, command.Code)
+            _recoveryCodeManager.ValidateCode(command.Email, command.Code),
+            command.Email
         );
     }
 }

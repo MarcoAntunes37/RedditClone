@@ -1,4 +1,4 @@
-namespace RedditClone.Application.Post.Results;
+namespace RedditClone.Application.Post.Results.CreatePostResult;
 
 using RedditClone.Domain.PostAggregate;
 

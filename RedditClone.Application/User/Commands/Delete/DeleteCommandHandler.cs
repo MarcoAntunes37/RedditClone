@@ -5,21 +5,21 @@ using RedditClone.Application.Persistence;
 using FluentValidation;
 using RedditClone.Application.User.Results;
 
-public partial class DeleteCommandHandler
-    : IRequestHandler<DeleteCommand, DeleteResult>
+public partial class DeleteUserCommandHandler
+    : IRequestHandler<DeleteUserCommand, DeleteResult>
 {
     private readonly IUserRepository _userRepository;
-    private readonly IValidator<DeleteCommand> _validator;
+    private readonly IValidator<DeleteUserCommand> _validator;
 
-    public DeleteCommandHandler(
+    public DeleteUserCommandHandler(
         IUserRepository userRepository,
-        IValidator<DeleteCommand> validator)
+        IValidator<DeleteUserCommand> validator)
     {
         _userRepository = userRepository;
         _validator = validator;
     }
 
-    public async Task<DeleteResult> Handle(DeleteCommand command,
+    public async Task<DeleteResult> Handle(DeleteUserCommand command,
     CancellationToken cancellationToken)
     {
         await Task.CompletedTask;

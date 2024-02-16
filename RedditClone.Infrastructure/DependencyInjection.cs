@@ -20,6 +20,7 @@ public static class DependencyInjection
         ConfigurationManager configuration)
     {
         services.AddAuth(configuration)
+            .AddDatabase(configuration)
             .AddPersistence();
         services.AddSingleton<IRecoveryCodeManager, RecoveryCodeManager>();
         services.AddSingleton<IEmailRecovery, EmailRecovery>();
@@ -31,9 +32,6 @@ public static class DependencyInjection
     public static IServiceCollection AddPersistence(
         this IServiceCollection services)
     {
-        services.AddDbContext<RedditCloneDbContext>(options =>
-            options.UseNpgsql(
-                "Host=localhost;Port=5432;Database=DB;Username=postgres;Password=postgres"));
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICommunityRepository, CommunityRepository>();
         services.AddScoped<IPostRepository, PostRepository>();

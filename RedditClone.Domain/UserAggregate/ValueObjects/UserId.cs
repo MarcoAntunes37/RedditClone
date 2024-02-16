@@ -2,9 +2,9 @@ namespace RedditClone.Domain.UserAggregate.ValueObjects;
 
 using RedditClone.Domain.Common.Models;
 
-public sealed class UserId : ValueObject
+public sealed class UserId : AggregateRootId<Guid>
 {
-    public Guid Value { get; private set; }
+    public override Guid Value { get; protected set; }
 
     public UserId(Guid value)
     {

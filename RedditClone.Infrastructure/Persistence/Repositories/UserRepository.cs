@@ -24,8 +24,8 @@ public class UserRepository : IUserRepository
 
     public void DeleteUserById(UserId id)
     {
-        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)!;
-
+        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)
+            ?? throw new Exception("An error occurred invalid user");
         _dbContext.Users.Remove(user);
 
         _dbContext.SaveChanges();
@@ -33,7 +33,8 @@ public class UserRepository : IUserRepository
 
     public void UpdateProfileById(UserId id, string firstname, string lastname, string email)
     {
-        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)!;
+        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)
+            ?? throw new Exception("An error occurred invalid user");
 
         user.UpdateProfile(firstname, lastname, email);
 
@@ -45,9 +46,10 @@ public class UserRepository : IUserRepository
 
     public void UpdatePasswordById(UserId id, string oldPassword, string newPassword)
     {
-        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)!;
+        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)
+            ?? throw new Exception("An error occurred invalid user");
 
-        if(!BCrypt.Verify(oldPassword, user.Password))
+        if (!BCrypt.Verify(oldPassword, user.Password))
             throw new Exception("Invalid password");
 
         user.UpdatePassword(BCrypt.HashPassword(
@@ -62,7 +64,8 @@ public class UserRepository : IUserRepository
 
     public void UpdateRecoveredPassword(string email, string newPassword)
     {
-        User user = _dbContext.Users.SingleOrDefault(u => u.Email == email)!;
+        User user = _dbContext.Users.SingleOrDefault(u => u.Email == email)
+            ?? throw new Exception("Not found a user with email");
 
         user.UpdatePassword(BCrypt.HashPassword(
                 newPassword, BCrypt.GenerateSalt(), false, HashType.SHA256));

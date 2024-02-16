@@ -1,8 +1,13 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using RedditClone.Application.Comment.Commands.CreateCommentCommand;
-using RedditClone.Application.Community.Commands.CreateCommunity;
+using RedditClone.Application.Comment.Commands.Update;
+using RedditClone.Application.Community.Commands.Create;
+using RedditClone.Application.Community.Commands.Delete;
+using RedditClone.Application.Community.Commands.Update;
 using RedditClone.Application.Post.Commands.CreatePost;
+using RedditClone.Application.Post.Commands.DeletePost;
+using RedditClone.Application.Post.Commands.UpdatePost;
 using RedditClone.Application.User.Commands.Delete;
 using RedditClone.Application.User.Commands.Register;
 using RedditClone.Application.User.Commands.Update;
@@ -26,9 +31,36 @@ public static class DependencyInjection
     public static IServiceCollection AddValidation(this IServiceCollection services)
     {
         services.AddUserValidations();
-        services.AddScoped<IValidator<CreateCommunityCommand>, CreateCommunityCommandValidator>();
-        services.AddScoped<IValidator<CreatePostCommand>, CreatePostCommandValidator>();
+        services.AddCommunityValidations();
+        services.AddPostValidations();
+        services.AddCommentValidations();
+
+        return services;
+    }
+
+    public static IServiceCollection AddCommentValidations(this IServiceCollection services)
+    {
         services.AddScoped<IValidator<CreateCommentCommand>, CreateCommentCommandValidator>();
+        services.AddScoped<IValidator<UpdateCommentCommand>, UpdateCommentCommandValidator>();
+        services.AddScoped<IValidator<DeleteCommentCommand>, DeleteCommentCommandValidator>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddPostValidations(this IServiceCollection services)
+    {
+        services.AddScoped<IValidator<CreatePostCommand>, CreatePostCommandValidator>();
+        services.AddScoped<IValidator<UpdatePostCommand>, UpdatePostCommandValidator>();
+        services.AddScoped<IValidator<DeletePostCommand>, DeletePostCommandValidator>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddCommunityValidations(this IServiceCollection services)
+    {
+        services.AddScoped<IValidator<CreateCommunityCommand>, CreateCommunityCommandValidator>();
+        services.AddScoped<IValidator<UpdateCommunityCommand>, UpdateCommunityCommandValidator>();
+        services.AddScoped<IValidator<DeleteCommunityCommand>, DeleteCommunityCommandValidator>();
 
         return services;
     }
@@ -37,7 +69,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IValidator<RegisterCommand>, RegisterCommandValidator>();
         services.AddScoped<IValidator<LoginQuery>, LoginQueryValidator>();
-        services.AddScoped<IValidator<DeleteCommand>, DeleteCommandValidator>();
+        services.AddScoped<IValidator<DeleteUserCommand>, DeleteUserCommandValidator>();
         services.AddScoped<IValidator<UpdateProfileCommand>, UpdateProfileCommandValidator>();
         services.AddScoped<IValidator<UpdatePasswordCommand>, UpdatePasswordCommandValidator>();
 

@@ -31,10 +31,6 @@ public class RedditCloneDbContext : DbContext
     {
         modelBuilder.Entity<User>()
             .HasMany<Community>()
-            .WithOne();
-
-        modelBuilder.Entity<User>()
-            .HasMany<Community>()
             .WithMany()
             .UsingEntity<Dictionary<string, object>>(
             "UserCommunities",

@@ -1,10 +1,10 @@
-namespace RedditClone.Domain.UserAggregate.ValueObjects;
+namespace RedditClone.Domain.PostAggregate.ValueObjects;
 
 using RedditClone.Domain.Common.Models;
 
-public sealed class CommunityId : ValueObject
+public sealed class CommunityId : AggregateRootId<Guid>
 {
-    public Guid Value { get; private set; }
+    public override Guid Value { get; protected set; }
 
     public CommunityId(Guid value)
     {
@@ -20,7 +20,6 @@ public sealed class CommunityId : ValueObject
     {
         return new CommunityId(guid);
     }
-
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

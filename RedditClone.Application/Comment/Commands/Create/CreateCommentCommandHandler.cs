@@ -27,7 +27,6 @@ public class CreateCommentCommandHandler :
 
         _validator.ValidateAndThrow(command);
 
-        //create comment
         var comment = Comment.Create(
             command.UserId,
             command.PostId,
@@ -38,10 +37,8 @@ public class CreateCommentCommandHandler :
             command.Replies
         );
 
-        //persist comment
         _commentRepository.Add(comment);
 
-        //return comment
         return new CreateCommentResult(
             comment
         );

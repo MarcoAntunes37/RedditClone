@@ -3,7 +3,7 @@ namespace RedditClone.Application.Post.Commands.CreatePost;
 using FluentValidation;
 using MediatR;
 using RedditClone.Application.Persistence;
-using RedditClone.Application.Post.Results;
+using RedditClone.Application.Post.Results.CreatePostResult;
 using RedditClone.Domain.PostAggregate;
 
 public class CreatePostCommandHandler

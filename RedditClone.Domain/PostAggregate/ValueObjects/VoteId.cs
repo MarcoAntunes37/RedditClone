@@ -2,9 +2,9 @@ namespace RedditClone.Domain.PostAggregate.ValueObjects;
 
 using RedditClone.Domain.Common.Models;
 
-public sealed class VoteId : ValueObject
+public sealed class VoteId : AggregateRootId<Guid>
 {
-    public Guid Value { get; private set; }
+    public override Guid Value { get; protected set; }
 
     public VoteId(Guid value)
     {

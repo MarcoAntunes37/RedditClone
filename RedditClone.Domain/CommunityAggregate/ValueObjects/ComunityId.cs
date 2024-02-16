@@ -2,9 +2,9 @@ namespace RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 using RedditClone.Domain.Common.Models;
 
-public sealed class CommunityId : ValueObject
+public sealed class CommunityId : AggregateRootId<Guid>
 {
-    public Guid Value { get; private set; }
+    public override Guid Value { get; protected set; }
 
     public CommunityId(Guid value)
     {

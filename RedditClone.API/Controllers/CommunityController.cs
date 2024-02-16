@@ -1,13 +1,16 @@
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using RedditClone.Application.Community.Commands.CreateCommunity;
-using RedditClone.Application.Community.Results.CreateCommunityResult;
-using RedditClone.Contracts.Community;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
-
 namespace RedditClone.API.Controllers;
 
-[Route("communities/{ownerId}/new-community")]
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using RedditClone.API.Mappers;
+using RedditClone.Application.Community.Results.CreateCommunityResult;
+using RedditClone.Application.Community.Results.DeleteCommunityResult;
+using RedditClone.Application.Community.Results.UpdateCommunityResult;
+using RedditClone.Contracts.Community.CreateCommunity;
+using RedditClone.Contracts.Community.DeleteCommunity;
+using RedditClone.Contracts.Community.UpdateCommunity;
+
+[Route("communities")]
 public class CommunityController : ApiController
 {
     private readonly ISender _sender;
@@ -17,44 +20,39 @@ public class CommunityController : ApiController
         _sender = sender;
     }
 
-    [HttpPost]
+    [HttpPost("new-community/{ownerId}")]
     public async Task<IActionResult> CreateCommunity(
         [FromBody] CreateCommunityRequest request,
         [FromRoute] Guid ownerId)
     {
-        var command = MapCreateCommunityCommand(request, ownerId);
+        var command = CommunityMappers.MapCreateCommunityRequest(request, ownerId);
 
         CreateCommunityResult result = await _sender.Send(command);
 
-        return Ok(MapCreateCommunityResponse(result));
+        return Ok(CommunityMappers.MapCreateCommunityResponse(result));
     }
 
-    private static CreateCommunityCommand MapCreateCommunityCommand(
-        CreateCommunityRequest request,
-        Guid ownerId)
+    [HttpPut("update-community/{communityId}")]
+    public async Task<IActionResult> UpdateCommunity(
+        [FromBody] UpdateCommunityRequest request,
+        [FromRoute] Guid communityId)
     {
-        return new CreateCommunityCommand(
-            request.Name,
-            request.Description,
-            request.Topic,
-            DateTime.UtcNow,
-            DateTime.UtcNow,
-            UserId.Create(ownerId)
-        );
+        var command = CommunityMappers.MapUpdateCommunityRequest(request, communityId);
+
+        UpdateCommunityResult result = await _sender.Send(command);
+
+        return Ok(result);
     }
 
-    private static CreateCommunityResponse MapCreateCommunityResponse(
-        CreateCommunityResult result)
+    [HttpDelete("delete-community/{communityId}")]
+    public async Task<IActionResult> DeleteCommunity(
+        [FromRoute] Guid communityId,
+        [FromBody] DeleteCommunityRequest request)
     {
-        var community = result.Community;
-        return new CreateCommunityResponse(
-            community.Id.Value.ToString(),
-            community.Name,
-            community.Description,
-            community.Topic,
-            community.CreatedAt,
-            community.UpdatedAt,
-            community.UserId.Value.ToString()
-        );
+        var command = CommunityMappers.MapDeleteCommunityRequest(communityId, request);
+
+        DeleteCommunityResult result = await _sender.Send(command);
+
+        return Ok(result);
     }
 }

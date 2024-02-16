@@ -2,14 +2,15 @@ namespace RedditClone.API.Controllers;
 
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using RedditClone.Application.Comment.Commands.CreateCommentCommand;
+using RedditClone.API.Mappers;
 using RedditClone.Application.Comment.Results.CreateCommentResult;
+using RedditClone.Application.Community.Results.DeleteCommentResult;
+using RedditClone.Application.Community.Results.UpdateCommentResult;
 using RedditClone.Contracts.Comment;
-using RedditClone.Contracts.Comment.CreateComment.Models;
-using RedditClone.Domain.CommentAggregate.Entities;
-using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Contracts.Community.DeleteComment;
+using RedditClone.Contracts.Community.UpdateComment;
 
-[Route("{userId}/communities/posts/{postId}/new-comment")]
+[Route("comments")]
 public class CommentController : ApiController
 {
     private readonly ISender _sender;
@@ -19,52 +20,39 @@ public class CommentController : ApiController
         _sender = sender;
     }
 
-    [HttpPost]
+    [HttpPost("{postId}/new-comment")]
     public async Task<IActionResult> CreateComment(
         [FromBody] CreateCommentRequest request,
-        [FromRoute] Guid userId,
         [FromRoute] Guid postId)
     {
-        var command = MapCreateCommentCommand(request, userId, postId);
+        var command = CommentMappers.MapCreateCommentRequest(request, postId);
 
         CreateCommentResult result = await _sender.Send(command);
 
-        return Ok(MapCreateCommentResponse(result));
+        return Ok(CommentMappers.MapCreateCommentResponse(result));
     }
 
-    private static CreateCommentCommand MapCreateCommentCommand(
-        CreateCommentRequest request,
-        Guid userId,
-        Guid postId)
+    [HttpPut("update-comment/{commentId}")]
+    public async Task<IActionResult> UpdateComment(
+        [FromBody] UpdateCommentRequest request,
+        [FromRoute] Guid commentId)
     {
-        List<Votes> votes = new();
-        List<Replies> replies = new();
-        return new CreateCommentCommand(
-            UserId.Create(userId),
-            PostId.Create(postId),
-            request.Content,
-            DateTime.UtcNow,
-            DateTime.UtcNow,
-            votes,
-            replies
-        );
+        var command = CommentMappers.MapUpdateCommentRequest(request, commentId);
+
+        UpdateCommentResult result = await _sender.Send(command);
+
+        return Ok(result);
     }
 
-    private static CreateCommentResponse MapCreateCommentResponse(
-        CreateCommentResult result)
+    [HttpDelete("delete-comment/{commentId}")]
+    public async Task<IActionResult> DeleteComment(
+        [FromBody] DeleteCommentRequest request,
+        [FromRoute] Guid commentId)
     {
-        var comment = result.Comment;
-        List<CreateCommentVotes> votes = new();
-        List<CreateCommentReplies> replies = new();
-        return new CreateCommentResponse(
-            comment.Id.Value.ToString(),
-            comment.UserId.Value.ToString(),
-            comment.PostId.Value.ToString(),
-            comment.Content,
-            comment.CreatedAt,
-            comment.UpdatedAt,
-            votes,
-            replies
-        );
+        var command = CommentMappers.MapDeleteCommentRequest(commentId, request);
+
+        DeleteCommentResult result = await _sender.Send(command);
+
+        return Ok(result);
     }
 }

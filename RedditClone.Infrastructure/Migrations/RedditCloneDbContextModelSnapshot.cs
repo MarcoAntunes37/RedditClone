@@ -80,12 +80,7 @@ namespace RedditClone.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("UserId");
 
-                    b.Property<Guid?>("UserId1")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Communities", (string)null);
                 });
@@ -281,13 +276,6 @@ namespace RedditClone.Infrastructure.Migrations
                     b.Navigation("Votes");
                 });
 
-            modelBuilder.Entity("RedditClone.Domain.CommunityAggregate.Community", b =>
-                {
-                    b.HasOne("RedditClone.Domain.UserAggregate.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId1");
-                });
-
             modelBuilder.Entity("RedditClone.Domain.PostAggregate.Post", b =>
                 {
                     b.OwnsMany("RedditClone.Domain.PostAggregate.Entities.Votes", "Votes", b1 =>
@@ -301,17 +289,20 @@ namespace RedditClone.Infrastructure.Migrations
                             b1.Property<Guid>("PostId")
                                 .HasColumnType("uuid");
 
+                            b1.Property<Guid>("PostId1")
+                                .HasColumnType("uuid");
+
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
 
                             b1.HasKey("Id");
 
-                            b1.HasIndex("PostId");
+                            b1.HasIndex("PostId1");
 
                             b1.ToTable("PostsVotes", (string)null);
 
                             b1.WithOwner()
-                                .HasForeignKey("PostId");
+                                .HasForeignKey("PostId1");
                         });
 
                     b.Navigation("Votes");

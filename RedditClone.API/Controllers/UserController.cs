@@ -63,7 +63,7 @@ public class UserController : ApiController
         [FromRoute]Guid userId
     )
     {
-        var command = UserMappers.MapDeleteRequest(userId);
+        var command = UserMappers.MapDeleteUserRequest(userId);
 
         DeleteResult result = await _sender.Send(command);
 

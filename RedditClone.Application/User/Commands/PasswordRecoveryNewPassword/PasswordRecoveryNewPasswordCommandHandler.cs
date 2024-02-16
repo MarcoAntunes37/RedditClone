@@ -4,6 +4,7 @@ using MediatR;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results.PasswordRecoveryNewPassword;
 
+
 public partial class PasswordRecoveryNewPasswordCommandHandler
     : IRequestHandler<PasswordRecoveryNewPasswordCommand,
         PasswordRecoveryNewPasswordResult>
@@ -22,7 +23,7 @@ public partial class PasswordRecoveryNewPasswordCommandHandler
         _userRepository.UpdateRecoveredPassword(command.Email, command.NewPassword);
 
         return new PasswordRecoveryNewPasswordResult(
-            ""
+            "Password updated successfully"
         );
     }
 }

@@ -4,6 +4,6 @@ using MediatR;
 using RedditClone.Application.User.Results;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
-public record DeleteCommand(
+public record DeleteUserCommand(
     UserId UserId
 ) : IRequest<DeleteResult>;

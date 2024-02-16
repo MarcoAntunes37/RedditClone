@@ -4,7 +4,7 @@ using RedditClone.Domain.Common.Models;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public sealed class User
-    : AggregateRoot<UserId>
+    : AggregateRoot<UserId, Guid>
 {
     public string Firstname { get; private set; }
     public string Lastname { get; private set; }

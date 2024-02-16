@@ -65,9 +65,9 @@ public static class UserMappers
         );
     }
 
-    public static DeleteCommand MapDeleteRequest(Guid userId)
+    public static DeleteUserCommand MapDeleteUserRequest(Guid userId)
     {
-        return new DeleteCommand(
+        return new DeleteUserCommand(
             UserId.Create(userId));
     }
 
