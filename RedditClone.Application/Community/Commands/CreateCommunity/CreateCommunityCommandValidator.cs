@@ -1,6 +1,6 @@
-using FluentValidation;
+namespace RedditClone.Application.Community.Commands.CreateCommunity;
 
-namespace RedditClone.Application.Community.Commands.Create;
+using FluentValidation;
 
 public partial class CreateCommunityCommandValidator : AbstractValidator<CreateCommunityCommand>
 {

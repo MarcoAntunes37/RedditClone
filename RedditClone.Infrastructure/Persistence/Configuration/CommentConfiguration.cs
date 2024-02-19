@@ -53,8 +53,6 @@ public class CommentConfiguration
                 rvb.WithOwner()
                     .HasForeignKey();
 
-
-
                 rvb.Property(rv => rv.Id)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value,
@@ -84,7 +82,7 @@ public class CommentConfiguration
             cvb.WithOwner()
                 .HasForeignKey();
 
-            cvb.HasKey("Id", "PostId");
+            cvb.HasKey("Id");
 
             cvb.Property(cv => cv.Id)
             .ValueGeneratedNever()
@@ -102,6 +100,9 @@ public class CommentConfiguration
                 value => UserId.Create(value));
 
             cvb.Property(cv => cv.IsVoted);
+
+            cvb.HasIndex(cv => new {cv.Id, cv.UserId, cv.PostId})
+                .IsUnique();
         });
     }
 

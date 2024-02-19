@@ -485,3 +485,6 @@ appsettings.Development.json
 
 # EF core migrations
 /RedditClone.Infrastructure/Migrations/
+
+# App settings ignore
+/RedditClone.API/appsettings.json

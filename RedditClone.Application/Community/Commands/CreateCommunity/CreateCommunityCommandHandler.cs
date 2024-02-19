@@ -1,4 +1,4 @@
-namespace RedditClone.Application.Community.Commands.Create;
+namespace RedditClone.Application.Community.Commands.CreateCommunity;
 
 using FluentValidation;
 using MediatR;

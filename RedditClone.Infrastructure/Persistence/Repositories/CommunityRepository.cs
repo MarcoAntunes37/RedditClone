@@ -44,4 +44,18 @@ public class CommunityRepository : ICommunityRepository
 
         _dbContext.SaveChanges();
     }
+
+    public void TransferCommunityOwnership(UserId userId, UserId newUserId, CommunityId communityId)
+    {
+        Community community = _dbContext.Communities.SingleOrDefault(c => c.Id == communityId && c.UserId == userId)
+            ?? throw new Exception("An error occurred, community is invalid or you not the owner");
+
+        community.TransferOwnership(newUserId);
+
+        _dbContext.Communities.Update(community);
+
+        _dbContext.Entry(community).State = EntityState.Modified;
+
+        _dbContext.SaveChanges();
+    }
 }

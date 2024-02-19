@@ -1,4 +1,4 @@
-namespace RedditClone.Application.Community.Commands.Update;
+namespace RedditClone.Application.Community.Commands.UpdateCommunity;
 
 using MediatR;
 using RedditClone.Application.Community.Results.UpdateCommunityResult;

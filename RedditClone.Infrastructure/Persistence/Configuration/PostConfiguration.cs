@@ -41,6 +41,9 @@ public class PostConfiguration
                     value => PostId.Create(value));
 
             pvb.Property(pv => pv.IsVoted);
+
+            pvb.HasIndex(pv => new {pv.UserId, pv.PostId})
+                .IsUnique();
         });
     }
 

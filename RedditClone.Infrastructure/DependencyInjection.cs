@@ -19,9 +19,9 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
         ConfigurationManager configuration)
     {
-        services.AddAuth(configuration)
-            .AddDatabase(configuration)
-            .AddPersistence();
+        services.AddAuth(configuration);
+        services.AddDatabase(configuration);
+        services.AddPersistence();
         services.AddSingleton<IRecoveryCodeManager, RecoveryCodeManager>();
         services.AddSingleton<IEmailRecovery, EmailRecovery>();
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
@@ -54,12 +54,13 @@ public static class DependencyInjection
                 $"Host={dbSettings.Host};" +
                 $"Port={dbSettings.Port};" +
                 $"Database={dbSettings.DB};" +
-                $"Username={dbSettings.Username}" +
-                $"Password={dbSettings.Password}"
+                $"Username={dbSettings.Username};" +
+                $"Password={dbSettings.Password};"
             ));
 
         return services;
     }
+
     public static IServiceCollection AddAuth(this IServiceCollection services,
         ConfigurationManager configuration)
     {

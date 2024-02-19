@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RedditClone.Domain.CommunityAggregate;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate;
 
 public class CommunityConfiguration
  : IEntityTypeConfiguration<Community>
@@ -11,6 +12,10 @@ public class CommunityConfiguration
     public void Configure(EntityTypeBuilder<Community> builder)
     {
         ConfigureCommunityTable(builder);
+        builder.HasOne<User>()
+            .WithMany()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     private void ConfigureCommunityTable(EntityTypeBuilder<Community> builder)

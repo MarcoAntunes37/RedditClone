@@ -66,4 +66,10 @@ public sealed class Community
         Topic = topic;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void TransferOwnership(UserId userId)
+    {
+        UserId = userId;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

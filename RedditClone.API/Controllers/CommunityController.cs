@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using RedditClone.API.Mappers;
 using RedditClone.Application.Community.Results.CreateCommunityResult;
 using RedditClone.Application.Community.Results.DeleteCommunityResult;
+using RedditClone.Application.Community.Results.TransferCommunityResult;
 using RedditClone.Application.Community.Results.UpdateCommunityResult;
 using RedditClone.Contracts.Community.CreateCommunity;
 using RedditClone.Contracts.Community.DeleteCommunity;
+using RedditClone.Contracts.Community.TransferCommunityOwnership;
 using RedditClone.Contracts.Community.UpdateCommunity;
 
 [Route("communities")]
@@ -40,6 +42,18 @@ public class CommunityController : ApiController
         var command = CommunityMappers.MapUpdateCommunityRequest(request, communityId);
 
         UpdateCommunityResult result = await _sender.Send(command);
+
+        return Ok(result);
+    }
+
+    [HttpPut("update-community/transfer/{communityId}")]
+    public async Task<IActionResult> UpdateCommunityOwnership(
+        [FromBody] TransferCommunityOwnershipRequest request,
+        [FromRoute] Guid communityId)
+    {
+        var command = CommunityMappers.MapTransferCommunity(communityId, request);
+
+        TransferCommunityResult result = await _sender.Send(command);
 
         return Ok(result);
     }
