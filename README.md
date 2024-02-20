@@ -11,7 +11,7 @@
 <div align="center">  
 <img src="images/logo.png" alt="Logo" width="80" height="80">  
 
-<h3 align="center">Todo list Clean Arquitecture DDD</h3>
+<h3 align="center">Reddit clone Clean Arquitecture DDD</h3>
 
   <p align="center">
     This project is a Todo list following the principles of clean arquitecture and DDD.
