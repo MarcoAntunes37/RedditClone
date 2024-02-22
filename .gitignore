@@ -482,9 +482,7 @@ $RECYCLE.BIN/
 
 # Development configurations
 appsettings.Development.json
+appsettings.json
 
 # EF core migrations
 /RedditClone.Infrastructure/Migrations/
-
-# App settings ignore
-/RedditClone.API/appsettings.json
