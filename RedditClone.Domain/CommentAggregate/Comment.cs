@@ -1,14 +1,15 @@
-using RedditClone.Domain.Common.Models;
-using RedditClone.Domain.CommentAggregate.ValueObjects;
-using RedditClone.Domain.CommentAggregate.Entities;
-
 namespace RedditClone.Domain.CommentAggregate;
 
+using RedditClone.Domain.CommentAggregate.Entities;
+using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Domain.CommentAggregate.ValueObjects;
+
 public sealed class Comment
-    : AggregateRoot<CommentId, Guid>
 {
     private readonly List<Votes> _votes = new();
     private readonly List<Replies> _replies = new();
+    public CommentId Id { get; private set; }
     public UserId UserId { get; private set; }
     public PostId PostId { get; private set; }
     public string Content { get; private set; }
@@ -22,7 +23,7 @@ public sealed class Comment
 #pragma warning restore CS8618
 
     private Comment(
-        CommentId commentId,
+        CommentId id,
         UserId userId,
         PostId postId,
         string content,
@@ -31,8 +32,8 @@ public sealed class Comment
         List<Votes> votes,
         List<Replies> replies
     )
-    : base(commentId)
     {
+        Id = id;
         UserId = userId;
         PostId = postId;
         Content = content;
@@ -53,7 +54,7 @@ public sealed class Comment
     )
     {
         return new(
-            CommentId.CreateUnique(),
+            new CommentId(Guid.NewGuid()),
             userId,
             postId,
             content,

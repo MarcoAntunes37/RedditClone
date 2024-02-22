@@ -1,8 +1,6 @@
-namespace RedditClone.Application.Comment.Commands.Update;
+namespace RedditClone.Application.Comment.Commands.UpdateComment;
 
 using FluentValidation;
-using RedditClone.Application.Community.Commands.Update;
-
 public partial class UpdateCommentCommandValidator : AbstractValidator<UpdateCommentCommand>
 {
     public UpdateCommentCommandValidator()

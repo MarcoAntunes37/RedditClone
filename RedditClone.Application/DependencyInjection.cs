@@ -1,12 +1,11 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using RedditClone.Application.Comment.Commands.CreateCommentCommand;
-using RedditClone.Application.Comment.Commands.Update;
+using RedditClone.Application.Comment.Commands.CreateComment;
+using RedditClone.Application.Comment.Commands.UpdateComment;
 using RedditClone.Application.Community.Commands.CreateCommunity;
-using RedditClone.Application.Community.Commands.Delete;
+using RedditClone.Application.Community.Commands.DeleteComment;
 using RedditClone.Application.Community.Commands.DeleteCommunity;
 using RedditClone.Application.Community.Commands.TransferCommunity;
-using RedditClone.Application.Community.Commands.Update;
 using RedditClone.Application.Community.Commands.UpdateCommunity;
 using RedditClone.Application.Post.Commands.CreatePost;
 using RedditClone.Application.Post.Commands.DeletePost;

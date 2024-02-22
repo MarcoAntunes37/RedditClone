@@ -1,13 +1,14 @@
 namespace RedditClone.Domain.PostAggregate;
 
-using RedditClone.Domain.Common.Models;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public sealed class Post
-    : AggregateRoot<PostId, Guid>
 {
     private readonly List<Votes> _votes = new();
+    public PostId Id { get; private set; }
     public CommunityId CommunityId { get; private set; }
     public UserId UserId { get; private set; }
     public string Title { get; private set; }
@@ -21,7 +22,7 @@ public sealed class Post
 #pragma warning restore CS8618
 
     private Post(
-        PostId postId,
+        PostId id,
         CommunityId communityId,
         UserId userId,
         string title,
@@ -30,8 +31,8 @@ public sealed class Post
         DateTime updatedAt,
         List<Votes> votes
     )
-    : base(postId)
     {
+        Id = id;
         CommunityId = communityId;
         UserId = userId;
         Title = title;
@@ -52,7 +53,7 @@ public sealed class Post
     )
     {
         return new(
-            PostId.CreateUnique(),
+            new PostId(Guid.NewGuid()),
             communityId,
             userId,
             title,

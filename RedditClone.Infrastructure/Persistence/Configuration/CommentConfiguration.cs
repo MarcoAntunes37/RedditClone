@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.PostAggregate;
+using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class CommentConfiguration
  : IEntityTypeConfiguration<Comment>
@@ -13,31 +17,39 @@ public class CommentConfiguration
     {
         ConfigureCommentsTable(builder);
         ConfigureCommentsVotesTable(builder);
-        ConfigureCommentsRepliesTable(builder);
+        ConfigureCommentRepliesTable(builder);
     }
 
-    private void ConfigureCommentsRepliesTable(EntityTypeBuilder<Comment> builder)
+    private void ConfigureCommentRepliesTable(EntityTypeBuilder<Comment> builder)
     {
         builder.OwnsMany(cr => cr.Replies, crb =>
         {
-            crb.ToTable("RepliesComments");
+            crb.ToTable("CommentsReplies");
+
+            crb.HasKey("Id");
 
             crb.WithOwner()
                 .HasForeignKey();
 
-            crb.HasKey("Id");
-
             crb.Property(cr => cr.Id)
                 .ValueGeneratedNever()
                 .HasConversion(id => id.Value,
-                    value => ReplyId.Create(value));
+                    value => new ReplyId(value));
 
             crb.Property(cr => cr.UserId)
                 .ValueGeneratedNever()
                 .HasConversion(id => id.Value,
-                    value => UserId.Create(value));
+                    value => new UserId(value));
 
-            crb.Property(cr => cr.Username);
+            crb.HasOne<User>()
+                .WithMany()
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            crb.Property(cr => cr.CommentId)
+                .ValueGeneratedNever()
+                .HasConversion(id => id.Value,
+                    value => new CommentId(value));
 
             crb.Property(cr => cr.Content);
 
@@ -45,28 +57,34 @@ public class CommentConfiguration
 
             crb.Property(cr => cr.UpdatedAt);
 
-            crb.OwnsMany(rv => rv.Votes, rvb => {
+            crb.OwnsMany(rv => rv.Votes, rvb =>
+            {
                 rvb.ToTable("RepliesVotes");
 
                 rvb.HasKey("Id");
 
                 rvb.WithOwner()
-                    .HasForeignKey();
+                    .HasForeignKey("ReplyId");
 
                 rvb.Property(rv => rv.Id)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value,
-                        value => VoteId.Create(value));
+                        value => new VoteId(value));
 
                 rvb.Property(rv => rv.UserId)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value,
-                        value => UserId.Create(value));
+                        value => new UserId(value));
 
-                rvb.Property(rv => rv.PostId)
+                rvb.HasOne<User>()
+                    .WithMany()
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                rvb.Property(rv => rv.ReplyId)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value,
-                        value => PostId.Create(value));
+                        value => new ReplyId(value));
 
                 rvb.Property(rv => rv.IsVoted);
             });
@@ -77,7 +95,7 @@ public class CommentConfiguration
     {
         builder.OwnsMany(cv => cv.Votes, cvb =>
         {
-            cvb.ToTable("VotesComments");
+            cvb.ToTable("CommentsVotes");
 
             cvb.WithOwner()
                 .HasForeignKey();
@@ -87,21 +105,26 @@ public class CommentConfiguration
             cvb.Property(cv => cv.Id)
             .ValueGeneratedNever()
             .HasConversion(id => id.Value,
-                value => VoteId.Create(value));
+                value => new VoteId(value));
 
-            cvb.Property(cv => cv.PostId)
+            cvb.Property(cv => cv.CommentId)
             .ValueGeneratedNever()
             .HasConversion(id => id.Value,
-                value => PostId.Create(value));
+                value => new CommentId(value));
+
+            cvb.HasOne<Post>()
+                .WithMany()
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             cvb.Property(cv => cv.UserId)
             .ValueGeneratedNever()
             .HasConversion(id => id.Value,
-                value => UserId.Create(value));
+                value => new UserId(value));
 
             cvb.Property(cv => cv.IsVoted);
 
-            cvb.HasIndex(cv => new {cv.Id, cv.UserId, cv.PostId})
+            cvb.HasIndex(cv => new { cv.UserId, cv.CommentId })
                 .IsUnique();
         });
     }
@@ -115,17 +138,27 @@ public class CommentConfiguration
         builder.Property(c => c.Id)
              .ValueGeneratedNever()
              .HasConversion(id => id.Value,
-                 value => CommentId.Create(value));
+                 value => new CommentId(value));
 
         builder.Property(c => c.UserId)
              .ValueGeneratedNever()
              .HasConversion(id => id.Value,
-                 value => UserId.Create(value));
+                 value => new UserId(value));
+
+        builder.HasOne<User>()
+            .WithMany()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(c => c.PostId)
              .ValueGeneratedNever()
              .HasConversion(id => id.Value,
-                 value => PostId.Create(value));
+                 value => new PostId(value));
+
+        builder.HasOne<Post>()
+            .WithMany()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(c => c.Content)
             .HasMaxLength(255);

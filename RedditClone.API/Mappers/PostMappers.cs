@@ -6,9 +6,10 @@ using RedditClone.Contracts.Community.DeletePost;
 using RedditClone.Contracts.Community.UpdatePost;
 using RedditClone.Contracts.Post;
 using RedditClone.Contracts.Post.CreatePost.Models;
-using RedditClone.Domain.CommunityAggregate;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 namespace RedditClone.API.Mappers;
 
@@ -18,8 +19,8 @@ public class PostMappers{
     {
         List<Votes> votes = new();
         return new CreatePostCommand(
-            CommunityId.Create(request.CommunityId),
-            UserId.Create(request.UserId),
+            new CommunityId(request.CommunityId),
+            new UserId(request.UserId),
             request.Title,
             request.Content,
             DateTime.UtcNow,
@@ -50,8 +51,8 @@ public class PostMappers{
         UpdatePostRequest request)
     {
         return new UpdatePostCommand(
-            PostId.Create(postId),
-            UserId.Create(request.UserId),
+            new PostId(postId),
+            new UserId(request.UserId),
             request.Title,
             request.Content
         );
@@ -62,8 +63,8 @@ public class PostMappers{
         DeletePostRequest request)
     {
         return new DeletePostCommand(
-            PostId.Create(postId),
-            UserId.Create(request.UserId)
+            new PostId(postId),
+            new UserId(request.UserId)
         );
     }
 }

@@ -1,13 +1,14 @@
 namespace RedditClone.Domain.CommentAggregate.Entities;
 
-using RedditClone.Domain.Common.Models;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public sealed class Votes
-    : Entity<VoteId>
 {
+    public VoteId Id;
     public UserId UserId;
-    public PostId PostId;
+    public CommentId CommentId;
     public bool IsVoted;
 
 #pragma warning disable CS8618
@@ -15,24 +16,25 @@ public sealed class Votes
 #pragma warning restore CS8618
 
     private Votes(
-        VoteId voteId,
-        PostId postId,
+        VoteId id,
+        CommentId commentId,
         UserId userId,
-        bool isVoted) : base(voteId)
+        bool isVoted)
     {
-        PostId = postId;
+        Id = id;
+        CommentId = commentId;
         UserId = userId;
         IsVoted = isVoted;
     }
 
     public static Votes Create(
-        PostId postId,
+        CommentId commentId,
         UserId userId,
         bool isVoted)
     {
         return new(
-            VoteId.CreateUnique(),
-            postId,
+            new VoteId(Guid.NewGuid()),
+            commentId,
             userId,
             isVoted);
     }

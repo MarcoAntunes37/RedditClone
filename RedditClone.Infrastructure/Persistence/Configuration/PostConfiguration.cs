@@ -2,8 +2,12 @@ namespace RedditClone.Infrastructure.Persistence.Configuration;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using RedditClone.Domain.CommunityAggregate;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate;
 using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class PostConfiguration
  : IEntityTypeConfiguration<Post>
@@ -28,17 +32,22 @@ public class PostConfiguration
             pvb.Property(pv => pv.Id)
                 .ValueGeneratedNever()
                 .HasConversion(id => id.Value,
-                    value => VoteId.Create(value));
+                    value => new VoteId(value));
 
             pvb.Property(pv => pv.UserId)
                 .ValueGeneratedNever()
                 .HasConversion(id => id.Value,
-                    value => UserId.Create(value));
+                    value => new UserId(value));
+
+            pvb.HasOne<User>()
+                .WithMany()
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             pvb.Property(pv => pv.PostId)
                 .ValueGeneratedNever()
                 .HasConversion(id => id.Value,
-                    value => PostId.Create(value));
+                    value => new PostId(value));
 
             pvb.Property(pv => pv.IsVoted);
 
@@ -56,17 +65,27 @@ public class PostConfiguration
         builder.Property(p => p.Id)
              .ValueGeneratedNever()
              .HasConversion(id => id.Value,
-                 value => PostId.Create(value));
+                 value => new PostId(value));
 
         builder.Property(p => p.UserId)
              .ValueGeneratedNever()
              .HasConversion(id => id.Value,
-                 value => UserId.Create(value));
+                 value => new UserId(value));
+
+        builder.HasOne<User>()
+            .WithMany()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(p => p.CommunityId)
              .ValueGeneratedNever()
              .HasConversion(id => id.Value,
-                 value => CommunityId.Create(value));
+                 value => new CommunityId(value));
+
+        builder.HasOne<Community>()
+            .WithMany()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(p => p.Title)
             .HasMaxLength(100);

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.PostAggregate;
 using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class PostRepository : IPostRepository
 {

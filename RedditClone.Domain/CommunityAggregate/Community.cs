@@ -1,11 +1,11 @@
 namespace RedditClone.Domain.CommunityAggregate;
 
-using RedditClone.Domain.Common.Models;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public sealed class Community
-    : AggregateRoot<CommunityId, Guid>
 {
+    public CommunityId Id { get; private set; }
     public UserId UserId { get; private set; }
     public string Name { get; private set; }
     public string Description { get; private set; }
@@ -18,7 +18,7 @@ public sealed class Community
 #pragma warning restore
 
     private Community(
-        CommunityId communityId,
+        CommunityId id,
         UserId userId,
         string name,
         string description,
@@ -26,8 +26,8 @@ public sealed class Community
         DateTime createdAt,
         DateTime updatedAt
     )
-    : base(communityId)
     {
+        Id = id;
         UserId = userId;
         Name = name;
         Description = description;
@@ -46,7 +46,7 @@ public sealed class Community
     )
     {
         return new(
-            CommunityId.CreateUnique(),
+            new CommunityId(Guid.NewGuid()),
             userId,
             name,
             description,

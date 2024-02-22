@@ -3,11 +3,12 @@ using RedditClone.Application.Community.Commands.DeleteCommunity;
 using RedditClone.Application.Community.Commands.TransferCommunity;
 using RedditClone.Application.Community.Commands.UpdateCommunity;
 using RedditClone.Application.Community.Results.CreateCommunityResult;
-using RedditClone.Contracts.Community.CreateCommunity;
 using RedditClone.Contracts.Community.DeleteCommunity;
 using RedditClone.Contracts.Community.TransferCommunityOwnership;
 using RedditClone.Contracts.Community.UpdateCommunity;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Contracts.Community.CreateCommunity;
 
 namespace RedditClone.API.Mappers;
 
@@ -23,7 +24,7 @@ public class CommunityMappers
             request.Topic,
             DateTime.UtcNow,
             DateTime.UtcNow,
-            UserId.Create(ownerId)
+            new UserId(ownerId)
         );
     }
 
@@ -47,8 +48,8 @@ public class CommunityMappers
             Guid communityId)
     {
         return new UpdateCommunityCommand(
-            CommunityId.Create(communityId),
-            UserId.Create(request.UserId),
+            new CommunityId(communityId),
+            new UserId(request.UserId),
             request.Name,
             request.Description,
             request.Topic
@@ -58,17 +59,17 @@ public class CommunityMappers
     public static DeleteCommunityCommand MapDeleteCommunityRequest(Guid communityId, DeleteCommunityRequest request)
     {
         return new DeleteCommunityCommand(
-            CommunityId.Create(communityId),
-            UserId.Create(request.UserId)
+            new CommunityId(communityId),
+            new UserId(request.UserId)
         );
     }
 
     public static TransferCommunityCommand MapTransferCommunity(Guid communityId, TransferCommunityOwnershipRequest request)
     {
         return new TransferCommunityCommand(
-            UserId.Create(request.OwnerId),
-            UserId.Create(request.NewOwnerId),
-            CommunityId.Create(communityId)
+            new UserId(request.OwnerId),
+            new UserId(request.NewOwnerId),
+            new CommunityId(communityId)
         );
     }
 }

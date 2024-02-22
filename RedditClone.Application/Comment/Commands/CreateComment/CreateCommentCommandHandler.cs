@@ -1,4 +1,4 @@
-namespace RedditClone.Application.Comment.Commands.CreateCommentCommand;
+namespace RedditClone.Application.Comment.Commands.CreateComment;
 
 using FluentValidation;
 using MediatR;
@@ -37,7 +37,7 @@ public class CreateCommentCommandHandler :
             command.Replies
         );
 
-        _commentRepository.Add(comment);
+
 
         return new CreateCommentResult(
             comment

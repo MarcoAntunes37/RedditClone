@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommunityAggregate;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class CommunityRepository : ICommunityRepository
 {

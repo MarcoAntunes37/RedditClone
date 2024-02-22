@@ -24,7 +24,7 @@ public static class UserMappers
     public static RegisterCommand MapRegisterRequest(RegisterRequest request)
     {
         return new RegisterCommand(
-            UserId.CreateUnique(),
+            new UserId(Guid.NewGuid()),
             request.Firstname,
             request.Lastname,
             request.Username,
@@ -68,7 +68,7 @@ public static class UserMappers
     public static DeleteUserCommand MapDeleteUserRequest(Guid userId)
     {
         return new DeleteUserCommand(
-            UserId.Create(userId));
+            new UserId(userId));
     }
 
     public static UpdateProfileCommand MapUpdateProfileRequest(
@@ -76,7 +76,7 @@ public static class UserMappers
         UpdateProfileRequest request)
     {
         return new UpdateProfileCommand(
-            UserId.Create(userId),
+            new UserId(userId),
             request.Firstname,
             request.Lastname,
             request.Email
@@ -88,7 +88,7 @@ public static class UserMappers
         UpdatePasswordRequest request)
     {
         return new UpdatePasswordCommand(
-            UserId.Create(userId),
+            new UserId(userId),
             request.OldPassword,
             request.NewPassword);
     }

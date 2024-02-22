@@ -46,7 +46,5 @@ public class RedditCloneDbContext : DbContext
                     .OnDelete(DeleteBehavior.Cascade),
                 j => j
                     .HasKey("CommunityId", "UserId"));
-
-
     }
 }

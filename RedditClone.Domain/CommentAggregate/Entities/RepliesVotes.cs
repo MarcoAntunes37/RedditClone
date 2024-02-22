@@ -1,39 +1,40 @@
-namespace RedditClone.Domain.PostAggregate.Entities;
+namespace RedditClone.Domain.CommentAggregate.Entities;
 
+using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
-public sealed class Votes
+public sealed class RepliesVotes
 {
     public VoteId Id;
     public UserId UserId;
-    public PostId PostId;
+    public ReplyId ReplyId;
     public bool IsVoted;
 
 #pragma warning disable CS8618
-    private Votes() { }
+    private RepliesVotes() { }
 #pragma warning restore CS8618
 
-    private Votes(
+    private RepliesVotes(
         VoteId id,
-        PostId postId,
+        ReplyId replyId,
         UserId userId,
         bool isVoted)
     {
         Id = id;
-        PostId = postId;
+        ReplyId = replyId;
         UserId = userId;
         IsVoted = isVoted;
     }
 
-    public static Votes Create(
-        PostId postId,
+    public static RepliesVotes Create(
+        ReplyId replyId,
         UserId userId,
         bool isVoted)
     {
         return new(
             new VoteId(Guid.NewGuid()),
-            postId,
+            replyId,
             userId,
             isVoted);
     }

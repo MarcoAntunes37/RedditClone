@@ -2,6 +2,7 @@ namespace RedditClone.Application.Persistence;
 
 using RedditClone.Domain.CommunityAggregate;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public interface ICommunityRepository
 {

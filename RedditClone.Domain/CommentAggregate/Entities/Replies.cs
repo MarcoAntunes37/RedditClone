@@ -1,34 +1,35 @@
 namespace RedditClone.Domain.CommentAggregate.Entities;
 
-using RedditClone.Domain.Common.Models;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public sealed class Replies
-    :Entity<ReplyId>
 {
-    private readonly List<Votes> _votes = new();
+    private readonly List<RepliesVotes> _votes = new();
+    public ReplyId Id { get; private set; }
     public UserId UserId { get; private set; }
-    public string Username { get; private set; }
+    public CommentId CommentId { get; private set; }
     public string Content { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
-    public IReadOnlyList<Votes> Votes => _votes.ToList();
+    public IReadOnlyList<RepliesVotes> Votes => _votes.ToList();
 
 #pragma warning disable CS8618
     private Replies() { }
 #pragma warning restore CS8618
 
     private Replies(
-        ReplyId replyId,
+        ReplyId id,
         UserId userId,
-        string username,
+        CommentId commentId,
         string content,
         DateTime createdAt,
         DateTime updatedAt,
-        List<Votes> votes) : base(replyId)
+        List<RepliesVotes> votes)
     {
+        Id = id;
         UserId = userId;
-        Username = username;
+        CommentId = commentId;
         Content = content;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
@@ -37,16 +38,16 @@ public sealed class Replies
 
     public static Replies Create(
         UserId userId,
-        string username,
+        CommentId commentId,
         string content,
         DateTime createdAt,
         DateTime updatedAt,
-        List<Votes> votes)
+        List<RepliesVotes> votes)
     {
         return new(
-            ReplyId.CreateUnique(),
+            new ReplyId(Guid.NewGuid()),
             userId,
-            username,
+            commentId,
             content,
             createdAt,
             updatedAt,

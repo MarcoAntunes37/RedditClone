@@ -1,9 +1,10 @@
+namespace RedditClone.Infrastructure.Persistence.Configuration;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RedditClone.Domain.UserAggregate;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
-namespace RedditClone.Infrastructure.Persistence.Configuration;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
@@ -28,7 +29,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .ValueGeneratedNever()
             .HasColumnName("Id")
             .HasConversion(Id => Id.Value,
-                value => UserId.Create(value));
+                value => new UserId(value));
 
         builder.Property(m => m.Firstname)
             .HasMaxLength(100);

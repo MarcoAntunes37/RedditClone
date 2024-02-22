@@ -1,4 +1,4 @@
-namespace RedditClone.Application.Community.Commands.Delete;
+namespace RedditClone.Application.Community.Commands.DeleteComment;
 
 using FluentValidation;
 using MediatR;
@@ -26,7 +26,7 @@ public class DeleteCommentCommandHandler :
 
         _validator.ValidateAndThrow(command);
 
-        _commentRepository.DeleteCommentById(command.CommentId, command.UserId);
+
 
         return new DeleteCommentResult(
             "Comment successfully Deleted."

@@ -3,6 +3,7 @@ namespace RedditClone.Application.Community.Commands.UpdateCommunity;
 using MediatR;
 using RedditClone.Application.Community.Results.UpdateCommunityResult;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public record UpdateCommunityCommand(
     CommunityId CommunityId,

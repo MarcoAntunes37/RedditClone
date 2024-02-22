@@ -1,16 +1,17 @@
+namespace RedditClone.API.Mappers;
 
-using RedditClone.Application.Comment.Commands.CreateCommentCommand;
+using RedditClone.Application.Comment.Commands.UpdateComment;
+using RedditClone.Application.Comment.Commands.CreateComment;
 using RedditClone.Application.Comment.Results.CreateCommentResult;
-using RedditClone.Application.Community.Commands.Delete;
-using RedditClone.Application.Community.Commands.Update;
+using RedditClone.Application.Community.Commands.DeleteComment;
 using RedditClone.Contracts.Comment;
 using RedditClone.Contracts.Comment.CreateComment.Models;
-using RedditClone.Contracts.Community.DeleteComment;
-using RedditClone.Contracts.Community.UpdateComment;
+using RedditClone.Contracts.Comment.DeleteComment;
+using RedditClone.Contracts.Comment.UpdateComment;
 using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
-
-namespace RedditClone.API.Mappers;
+using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class CommentMappers
 {
@@ -21,8 +22,8 @@ public class CommentMappers
         List<Votes> votes = new();
         List<Replies> replies = new();
         return new CreateCommentCommand(
-            UserId.Create(request.UserId),
-            PostId.Create(postId),
+            new UserId(request.UserId),
+            new PostId(postId),
             request.Content,
             DateTime.UtcNow,
             DateTime.UtcNow,
@@ -54,8 +55,8 @@ public class CommentMappers
             Guid commentId)
     {
         return new UpdateCommentCommand(
-            CommentId.Create(commentId),
-            UserId.Create(request.UserId),
+            new CommentId(commentId),
+            new UserId(request.UserId),
             request.Content
         );
     }
@@ -63,8 +64,8 @@ public class CommentMappers
     public static DeleteCommentCommand MapDeleteCommentRequest(Guid commentId, DeleteCommentRequest request)
     {
         return new DeleteCommentCommand(
-            CommentId.Create(commentId),
-            UserId.Create(request.UserId)
+            new CommentId(commentId),
+            new UserId(request.UserId)
         );
     }
 }

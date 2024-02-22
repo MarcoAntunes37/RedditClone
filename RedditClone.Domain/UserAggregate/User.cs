@@ -1,11 +1,10 @@
 namespace RedditClone.Domain.UserAggregate;
 
-using RedditClone.Domain.Common.Models;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public sealed class User
-    : AggregateRoot<UserId, Guid>
 {
+    public UserId Id { get; private set; }
     public string Firstname { get; private set; }
     public string Lastname { get; private set; }
     public string Username { get; private set; }
@@ -19,7 +18,7 @@ public sealed class User
 #pragma warning restore
 
     private User(
-        UserId userId,
+        UserId id,
         string firstname,
         string lastname,
         string username,
@@ -28,8 +27,9 @@ public sealed class User
         DateTime createdAt,
         DateTime updatedAt
 
-    ) : base(userId)
+    )
     {
+        Id = id;
         Firstname = firstname;
         Lastname = lastname;
         Username = username;
@@ -50,7 +50,7 @@ public sealed class User
     )
     {
         return new(
-            UserId.CreateUnique(),
+            new UserId(Guid.NewGuid()),
             firstname,
             lastname,
             username,

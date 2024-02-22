@@ -1,7 +1,8 @@
-namespace RedditClone.Application.Community.Commands.Update;
+namespace RedditClone.Application.Community.Commands.UpdateComment;
 
 using FluentValidation;
 using MediatR;
+using RedditClone.Application.Comment.Commands.UpdateComment;
 using RedditClone.Application.Community.Results.UpdateCommentResult;
 using RedditClone.Application.Persistence;
 
@@ -26,7 +27,6 @@ public class UpdateCommentCommandHandler :
 
         _validator.ValidateAndThrow(command);
 
-        _commentRepository.UpdateCommentById(command.CommentId, command.UserId, command.Content);
 
         return new UpdateCommentResult(
             "Comment successfully updated."

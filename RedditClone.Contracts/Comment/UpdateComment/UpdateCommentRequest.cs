@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Community.UpdateComment;
+namespace RedditClone.Contracts.Comment.UpdateComment;
 
 public record UpdateCommentRequest(
     Guid UserId,

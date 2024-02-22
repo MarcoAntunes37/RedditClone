@@ -7,8 +7,8 @@ using RedditClone.Application.Comment.Results.CreateCommentResult;
 using RedditClone.Application.Community.Results.DeleteCommentResult;
 using RedditClone.Application.Community.Results.UpdateCommentResult;
 using RedditClone.Contracts.Comment;
-using RedditClone.Contracts.Community.DeleteComment;
-using RedditClone.Contracts.Community.UpdateComment;
+using RedditClone.Contracts.Comment.DeleteComment;
+using RedditClone.Contracts.Comment.UpdateComment;
 
 [Route("comments")]
 public class CommentController : ApiController

@@ -2,6 +2,7 @@ namespace RedditClone.Application.Persistence;
 
 using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public interface ICommentRepository
 {
