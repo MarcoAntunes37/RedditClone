@@ -6,10 +6,10 @@ using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public sealed class Votes
 {
-    public VoteId Id;
-    public UserId UserId;
-    public CommentId CommentId;
-    public bool IsVoted;
+    public VoteId Id { get; private set; }
+    public UserId UserId { get; private set; }
+    public CommentId CommentId { get; private set; }
+    public bool IsVoted { get; private set; }
 
 #pragma warning disable CS8618
     private Votes() { }
@@ -37,5 +37,10 @@ public sealed class Votes
             commentId,
             userId,
             isVoted);
+    }
+
+    public void UpdateVote(bool isVoted)
+    {
+        IsVoted = isVoted;
     }
 }

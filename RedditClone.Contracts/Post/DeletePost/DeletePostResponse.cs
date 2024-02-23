@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Community.DeletePost;
+namespace RedditClone.Contracts.Post.DeletePost;
 
 public record DeletePostResponse(
     string Message

@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Community.UpdatePost;
+namespace RedditClone.Contracts.Post.UpdatePost;
 
 public record UpdatePostResponse(
     string Message

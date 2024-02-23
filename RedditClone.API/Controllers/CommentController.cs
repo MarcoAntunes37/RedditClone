@@ -4,11 +4,13 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RedditClone.API.Mappers;
 using RedditClone.Application.Comment.Results.CreateCommentResult;
+using RedditClone.Application.Comment.Results.VoteOnCommentResult;
 using RedditClone.Application.Community.Results.DeleteCommentResult;
 using RedditClone.Application.Community.Results.UpdateCommentResult;
-using RedditClone.Contracts.Comment;
+using RedditClone.Contracts.Comment.CreateComment;
 using RedditClone.Contracts.Comment.DeleteComment;
 using RedditClone.Contracts.Comment.UpdateComment;
+using RedditClone.Contracts.Comment.VoteOnComment;
 
 [Route("comments")]
 public class CommentController : ApiController
@@ -52,6 +54,18 @@ public class CommentController : ApiController
         var command = CommentMappers.MapDeleteCommentRequest(commentId, request);
 
         DeleteCommentResult result = await _sender.Send(command);
+
+        return Ok(result);
+    }
+
+    [HttpPut("vote-on-comment/{commentId}")]
+    public async Task<IActionResult> VoteOnPost(
+        [FromRoute] Guid commentId,
+        [FromBody] VoteOnCommentRequest request)
+    {
+        var command = CommentMappers.MapVoteOnCommentRequest(commentId, request);
+
+        VoteOnCommentResult result = await _sender.Send(command);
 
         return Ok(result);
     }

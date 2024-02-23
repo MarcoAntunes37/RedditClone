@@ -112,15 +112,15 @@ public class CommentConfiguration
             .HasConversion(id => id.Value,
                 value => new CommentId(value));
 
-            cvb.HasOne<Post>()
-                .WithMany()
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
-
             cvb.Property(cv => cv.UserId)
             .ValueGeneratedNever()
             .HasConversion(id => id.Value,
                 value => new UserId(value));
+
+            cvb.HasOne<User>()
+                .WithMany()
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             cvb.Property(cv => cv.IsVoted);
 

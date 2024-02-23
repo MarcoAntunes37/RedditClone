@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Comment;
+namespace RedditClone.Contracts.Comment.CreateComment;
 
 public record CreateCommentRequest(
     Guid UserId,

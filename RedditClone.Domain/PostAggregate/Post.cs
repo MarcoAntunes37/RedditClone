@@ -69,4 +69,25 @@ public sealed class Post
         Content = content;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void AddVote(Votes newVote)
+    {
+        _votes.Add(newVote);
+    }
+
+    public void UpdateVote(VoteId voteId, bool isVoted)
+    {
+        var vote = _votes.Find(v => v.Id == voteId)!;
+
+        vote.UpdateVote(isVoted);
+
+        _votes.Insert(_votes.FindIndex(v => v.Id == voteId), vote);
+    }
+
+    public void RemoveVote(VoteId voteId)
+    {
+        var vote = _votes.Find(v => v.Id == voteId)!;
+
+        _votes.Remove(vote);
+    }
 }

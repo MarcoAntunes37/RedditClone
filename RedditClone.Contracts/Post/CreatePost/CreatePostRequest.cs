@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Post;
+namespace RedditClone.Contracts.Post.CreatePost;
 
 public record CreatePostRequest(
     Guid UserId,

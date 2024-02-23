@@ -1,12 +1,20 @@
+
 using RedditClone.Application.Post.Commands.CreatePost;
 using RedditClone.Application.Post.Commands.DeletePost;
+using RedditClone.Application.Post.Commands.DeleteVoteOnPost;
 using RedditClone.Application.Post.Commands.UpdatePost;
+using RedditClone.Application.Post.Commands.UpdateVoteOnPost;
+using RedditClone.Application.Post.Commands.VoteOnPost;
 using RedditClone.Application.Post.Results.CreatePostResult;
-using RedditClone.Contracts.Community.DeletePost;
-using RedditClone.Contracts.Community.UpdatePost;
-using RedditClone.Contracts.Post;
+using RedditClone.Contracts.Post.CreatePost;
 using RedditClone.Contracts.Post.CreatePost.Models;
+using RedditClone.Contracts.Post.DeletePost;
+using RedditClone.Contracts.Post.DeleteVoteOnPost;
+using RedditClone.Contracts.Post.UpdatePost;
+using RedditClone.Contracts.Post.UpdateVoteOnPost;
+using RedditClone.Contracts.Post.VoteOnPost;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Domain.PostAggregate;
 using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
@@ -63,6 +71,44 @@ public class PostMappers{
         DeletePostRequest request)
     {
         return new DeletePostCommand(
+            new PostId(postId),
+            new UserId(request.UserId)
+        );
+    }
+
+    public static VoteOnPostCommand MapVoteOnPostRequest(
+        Guid postId,
+        VoteOnPostRequest request
+    )
+    {
+        return new VoteOnPostCommand(
+            new PostId(postId),
+            new UserId(request.UserId),
+            request.IsVoted
+        );
+    }
+
+    public static UpdateVoteOnPostCommand MapUpdateVoteOnPostRequest(
+        Guid postId,
+        Guid voteId,
+        UpdateVoteOnPostRequest request
+    )
+    {
+        return new UpdateVoteOnPostCommand(
+            new VoteId(voteId),
+            new PostId(postId),
+            new UserId(request.UserId),
+            request.IsVoted
+        );
+    }
+
+    public static DeleteVoteOnPostCommand MapDeleteVoteOnPostRequest(
+        Guid postId,
+        Guid voteId,
+        DeleteVoteOnPostRequest request)
+    {
+        return new DeleteVoteOnPostCommand(
+            new VoteId(voteId),
             new PostId(postId),
             new UserId(request.UserId)
         );

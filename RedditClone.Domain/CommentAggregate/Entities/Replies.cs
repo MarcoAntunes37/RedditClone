@@ -1,5 +1,6 @@
 namespace RedditClone.Domain.CommentAggregate.Entities;
 
+using ErrorOr;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
@@ -52,5 +53,11 @@ public sealed class Replies
             createdAt,
             updatedAt,
             votes);
+    }
+
+    public void UpdateReply(string content)
+    {
+        Content = content;
+        UpdatedAt = DateTime.UtcNow;
     }
 }

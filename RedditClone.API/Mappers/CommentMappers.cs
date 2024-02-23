@@ -4,7 +4,6 @@ using RedditClone.Application.Comment.Commands.UpdateComment;
 using RedditClone.Application.Comment.Commands.CreateComment;
 using RedditClone.Application.Comment.Results.CreateCommentResult;
 using RedditClone.Application.Community.Commands.DeleteComment;
-using RedditClone.Contracts.Comment;
 using RedditClone.Contracts.Comment.CreateComment.Models;
 using RedditClone.Contracts.Comment.DeleteComment;
 using RedditClone.Contracts.Comment.UpdateComment;
@@ -12,6 +11,9 @@ using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Contracts.Comment.CreateComment;
+using RedditClone.Application.Comment.Commands.VoteOnComment;
+using RedditClone.Contracts.Comment.VoteOnComment;
 
 public class CommentMappers
 {
@@ -66,6 +68,15 @@ public class CommentMappers
         return new DeleteCommentCommand(
             new CommentId(commentId),
             new UserId(request.UserId)
+        );
+    }
+
+    public static VoteOnCommentCommand MapVoteOnCommentRequest(Guid commentId, VoteOnCommentRequest request)
+    {
+        return new VoteOnCommentCommand(
+            new CommentId(commentId),
+            new UserId(request.UserId),
+            request.IsVoted
         );
     }
 }

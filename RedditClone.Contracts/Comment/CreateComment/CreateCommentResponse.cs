@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Comment;
+namespace RedditClone.Contracts.Comment.CreateComment;
 
 using RedditClone.Contracts.Comment.CreateComment.Models;
 

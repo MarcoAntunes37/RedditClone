@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using RedditClone.Application.Comment.Commands.CreateComment;
 using RedditClone.Application.Comment.Commands.UpdateComment;
+using RedditClone.Application.Comment.Commands.VoteOnComment;
 using RedditClone.Application.Community.Commands.CreateCommunity;
 using RedditClone.Application.Community.Commands.DeleteComment;
 using RedditClone.Application.Community.Commands.DeleteCommunity;
@@ -9,7 +10,10 @@ using RedditClone.Application.Community.Commands.TransferCommunity;
 using RedditClone.Application.Community.Commands.UpdateCommunity;
 using RedditClone.Application.Post.Commands.CreatePost;
 using RedditClone.Application.Post.Commands.DeletePost;
+using RedditClone.Application.Post.Commands.DeleteVoteOnPost;
 using RedditClone.Application.Post.Commands.UpdatePost;
+using RedditClone.Application.Post.Commands.UpdateVoteOnPost;
+using RedditClone.Application.Post.Commands.VoteOnPost;
 using RedditClone.Application.User.Commands.Delete;
 using RedditClone.Application.User.Commands.Register;
 using RedditClone.Application.User.Commands.Update;
@@ -45,6 +49,7 @@ public static class DependencyInjection
         services.AddScoped<IValidator<CreateCommentCommand>, CreateCommentCommandValidator>();
         services.AddScoped<IValidator<UpdateCommentCommand>, UpdateCommentCommandValidator>();
         services.AddScoped<IValidator<DeleteCommentCommand>, DeleteCommentCommandValidator>();
+        services.AddScoped<IValidator<VoteOnCommentCommand>, VoteOnCommentValidator>();
 
         return services;
     }
@@ -54,6 +59,9 @@ public static class DependencyInjection
         services.AddScoped<IValidator<CreatePostCommand>, CreatePostCommandValidator>();
         services.AddScoped<IValidator<UpdatePostCommand>, UpdatePostCommandValidator>();
         services.AddScoped<IValidator<DeletePostCommand>, DeletePostCommandValidator>();
+        services.AddScoped<IValidator<VoteOnPostCommand>, VoteOnPostCommandValidator>();
+        services.AddScoped<IValidator<UpdateVoteOnPostCommand>, UpdateVoteOnPostCommandValidator>();
+        services.AddScoped<IValidator<DeleteVoteOnPostCommand>, DeleteVoteOnPostCommandValidator>();
 
         return services;
     }

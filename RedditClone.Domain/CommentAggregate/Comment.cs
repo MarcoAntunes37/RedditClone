@@ -69,4 +69,46 @@ public sealed class Comment
         Content = content;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void AddVote(Votes newVote)
+    {
+        _votes.Add(newVote);
+    }
+
+    public void UpdateVote(VoteId voteId, bool isVoted)
+    {
+        var vote = _votes.Find(v => v.Id == voteId)!;
+
+        vote.UpdateVote(isVoted);
+
+        _votes.Insert(_votes.FindIndex(v => v.Id == voteId), vote);
+    }
+
+    public void RemoveVote(VoteId voteId)
+    {
+        var vote = _votes.Find(v => v.Id == voteId)!;
+
+        _votes.Remove(vote);
+    }
+
+    public void AddReply(Replies newReply)
+    {
+        _replies.Add(newReply);
+    }
+
+    public void UpdateReply(ReplyId replyId, string content)
+    {
+        var reply = _replies.Find(v => v.Id == replyId)!;
+
+        reply.UpdateReply(content);
+
+        _replies.Insert(_replies.FindIndex(v => v.Id == replyId), reply);
+    }
+
+    public void RemoveReply(ReplyId replyId)
+    {
+        var reply = _replies.Find(v => v.Id == replyId)!;
+
+        _replies.Remove(reply);
+    }
 }

@@ -37,7 +37,7 @@ public class CreateCommentCommandHandler :
             command.Replies
         );
 
-
+        _commentRepository.Add(comment);
 
         return new CreateCommentResult(
             comment

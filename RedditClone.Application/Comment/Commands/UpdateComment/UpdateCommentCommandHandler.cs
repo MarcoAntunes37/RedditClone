@@ -27,6 +27,7 @@ public class UpdateCommentCommandHandler :
 
         _validator.ValidateAndThrow(command);
 
+        _commentRepository.UpdateCommentById(command.CommentId, command.UserId, command.Content);
 
         return new UpdateCommentResult(
             "Comment successfully updated."

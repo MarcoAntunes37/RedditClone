@@ -286,17 +286,12 @@ namespace RedditClone.Infrastructure.Migrations
                             b1.Property<bool>("IsVoted")
                                 .HasColumnType("boolean");
 
-                            b1.Property<Guid>("PostId")
-                                .HasColumnType("uuid");
-
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
 
                             b1.HasKey("Id");
 
                             b1.HasIndex("CommentId");
-
-                            b1.HasIndex("PostId");
 
                             b1.HasIndex("UserId", "CommentId")
                                 .IsUnique();
@@ -306,9 +301,9 @@ namespace RedditClone.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("CommentId");
 
-                            b1.HasOne("RedditClone.Domain.PostAggregate.Post", null)
+                            b1.HasOne("RedditClone.Domain.UserAggregate.User", null)
                                 .WithMany()
-                                .HasForeignKey("PostId")
+                                .HasForeignKey("UserId")
                                 .OnDelete(DeleteBehavior.Cascade)
                                 .IsRequired();
                         });

@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Community.UpdatePost;
+namespace RedditClone.Contracts.Post.UpdatePost;
 
 public record UpdatePostRequest(
     Guid PostId,

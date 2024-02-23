@@ -26,7 +26,7 @@ public class DeleteCommentCommandHandler :
 
         _validator.ValidateAndThrow(command);
 
-
+        _commentRepository.DeleteCommentById(command.CommentId, command.UserId);
 
         return new DeleteCommentResult(
             "Comment successfully Deleted."

@@ -3,6 +3,7 @@ namespace RedditClone.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.PostAggregate;
+using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
@@ -23,7 +24,7 @@ public class PostRepository : IPostRepository
 
     public void UpdatePostById(PostId id, UserId userId, string title, string content)
     {
-        Post post = _dbContext.Posts.SingleOrDefault(c => c.Id == id && c.UserId == userId)
+        Post post = _dbContext.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId)
             ?? throw new Exception("An error occurred, post is invalid or you not the owner");
 
         post.UpdatePost(title, content);
@@ -37,10 +38,58 @@ public class PostRepository : IPostRepository
 
     public void DeletePostById(PostId id, UserId userId)
     {
-        Post post = _dbContext.Posts.SingleOrDefault(c => c.Id == id && c.UserId == userId)
+        Post post = _dbContext.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId)
             ?? throw new Exception("An error occurred, post is invalid or you not the owner");
 
         _dbContext.Posts.Remove(post);
+
+        _dbContext.SaveChanges();
+    }
+
+    public void AddPostVote(PostId id, UserId userId, bool isVoted)
+    {
+        Post postVote = _dbContext.Posts
+            .Include(p => p.Votes)
+            .SingleOrDefault(p => p.Id == id)
+            ?? throw new Exception("An error occurred, post is invalid.");
+
+        var vote = Votes.Create(id, userId, isVoted);
+
+        postVote.AddVote(vote);
+
+        _dbContext.Posts.Update(postVote);
+
+        _dbContext.Entry(postVote).State = EntityState.Modified;
+
+        _dbContext.SaveChanges();
+    }
+
+    public void UpdatePostVoteById(PostId id, VoteId voteId, UserId userId, bool isVoted)
+    {
+        Post postVote = _dbContext.Posts
+            .Include(p => p.Votes)
+            .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
+            .SingleOrDefault(p => p.Id == id)
+            ?? throw new Exception("An error occurred, post is invalid or vote in post is invalid");
+
+        postVote.UpdateVote(voteId, isVoted);
+
+        _dbContext.Entry(postVote).State = EntityState.Modified;
+
+        _dbContext.SaveChanges();
+    }
+
+    public void DeletePostVoteById(PostId id, VoteId voteId, UserId userId)
+    {
+        Post postVote = _dbContext.Posts
+            .Include(p => p.Votes)
+            .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
+            .SingleOrDefault(p => p.Id == id)
+            ?? throw new Exception("An error occurred, post is invalid or vote in post is invalid");
+
+        postVote.RemoveVote(voteId);
+
+        _dbContext.Entry(postVote).State = EntityState.Modified;
 
         _dbContext.SaveChanges();
     }
