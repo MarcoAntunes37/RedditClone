@@ -14,6 +14,9 @@ using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Contracts.Comment.CreateComment;
 using RedditClone.Application.Comment.Commands.VoteOnComment;
 using RedditClone.Contracts.Comment.VoteOnComment;
+using RedditClone.Application.Comment.Commands.UpdateVoteOnComment;
+using RedditClone.Contracts.Post.UpdateVoteOnComment;
+using RedditClone.Domain.Common.ValueObjects;
 
 public class CommentMappers
 {
@@ -75,6 +78,19 @@ public class CommentMappers
     {
         return new VoteOnCommentCommand(
             new CommentId(commentId),
+            new UserId(request.UserId),
+            request.IsVoted
+        );
+    }
+
+    public static UpdateVoteOnCommentCommand MapUpdateVoteOnCommentRequest(
+            UpdateVoteOnCommentRequest request,
+            Guid commentId,
+            Guid voteId)
+    {
+        return new UpdateVoteOnCommentCommand(
+            new CommentId(commentId),
+            new VoteId(voteId),
             new UserId(request.UserId),
             request.IsVoted
         );

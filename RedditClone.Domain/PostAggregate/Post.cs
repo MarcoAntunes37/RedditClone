@@ -1,5 +1,6 @@
 namespace RedditClone.Domain.PostAggregate;
 
+using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;

@@ -5,6 +5,7 @@ using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
@@ -125,7 +126,7 @@ public class CommentRepository : ICommentRepository
         _dbContext.SaveChanges();
     }
 
-    public void UpdatePostReplyById(CommentId id, ReplyId replyId, UserId userId, string content)
+    public void UpdateCommentReplyById(CommentId id, ReplyId replyId, UserId userId, string content)
     {
         Comment commentReply = _dbContext.Comments
             .Include(p => p.Replies)

@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using RedditClone.Application.Comment.Commands.CreateComment;
 using RedditClone.Application.Comment.Commands.UpdateComment;
+using RedditClone.Application.Comment.Commands.UpdateVoteOnComment;
 using RedditClone.Application.Comment.Commands.VoteOnComment;
 using RedditClone.Application.Community.Commands.CreateCommunity;
 using RedditClone.Application.Community.Commands.DeleteComment;
@@ -50,6 +51,7 @@ public static class DependencyInjection
         services.AddScoped<IValidator<UpdateCommentCommand>, UpdateCommentCommandValidator>();
         services.AddScoped<IValidator<DeleteCommentCommand>, DeleteCommentCommandValidator>();
         services.AddScoped<IValidator<VoteOnCommentCommand>, VoteOnCommentValidator>();
+        services.AddScoped<IValidator<UpdateVoteOnCommentCommand>, UpdateVoteOnCommentCommandValidator>();
 
         return services;
     }

@@ -4,6 +4,7 @@ using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.Common.ValueObjects;
 
 public sealed class Comment
 {
@@ -110,5 +111,20 @@ public sealed class Comment
         var reply = _replies.Find(v => v.Id == replyId)!;
 
         _replies.Remove(reply);
+    }
+
+    public void AddReplyVote(Replies newReply)
+    {
+
+    }
+
+    public void UpdateReplyVote(ReplyId replyId, string content)
+    {
+
+    }
+
+    public void RemoveReplyVote(VoteId voteId)
+    {
+
     }
 }

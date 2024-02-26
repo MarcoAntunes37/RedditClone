@@ -27,7 +27,7 @@ public class RedditCloneDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 
-    protected void ConfigureRelations(ModelBuilder modelBuilder)
+    protected static void ConfigureRelations(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
             .HasMany<Community>()

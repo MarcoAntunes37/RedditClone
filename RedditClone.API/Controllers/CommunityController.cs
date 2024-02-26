@@ -50,7 +50,7 @@ public class CommunityController : ApiController
     public async Task<IActionResult> UpdateCommunityOwnership(
         [FromBody] TransferCommunityOwnershipRequest request,
         [FromRoute] Guid communityId)
-    {
+{
         var command = CommunityMappers.MapTransferCommunity(communityId, request);
 
         TransferCommunityResult result = await _sender.Send(command);

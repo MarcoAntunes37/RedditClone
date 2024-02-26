@@ -2,6 +2,7 @@ namespace RedditClone.Infrastructure.Persistence.Configuration;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.CommunityAggregate;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate;
