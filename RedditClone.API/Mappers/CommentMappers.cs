@@ -17,6 +17,8 @@ using RedditClone.Contracts.Comment.VoteOnComment;
 using RedditClone.Application.Comment.Commands.UpdateVoteOnComment;
 using RedditClone.Contracts.Post.UpdateVoteOnComment;
 using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Contracts.Post.DeleteVoteOnComment;
+using RedditClone.Application.Community.Commands.DeleteVoteOnComment;
 
 public class CommentMappers
 {
@@ -93,6 +95,15 @@ public class CommentMappers
             new VoteId(voteId),
             new UserId(request.UserId),
             request.IsVoted
+        );
+    }
+
+    public static DeleteVoteOnCommentCommand MapDeleteVoteOnCommentRequest(Guid commentId, Guid voteId, DeleteVoteOnCommentRequest request)
+    {
+        return new DeleteVoteOnCommentCommand (
+            new CommentId(commentId),
+            new VoteId(voteId),
+            new UserId(request.UserId)
         );
     }
 }

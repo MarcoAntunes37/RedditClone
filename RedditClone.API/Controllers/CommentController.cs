@@ -6,12 +6,14 @@ using RedditClone.API.Mappers;
 using RedditClone.Application.Comment.Results.CreateCommentResult;
 using RedditClone.Application.Comment.Results.VoteOnCommentResult;
 using RedditClone.Application.Community.Results.DeleteCommentResult;
+using RedditClone.Application.Community.Results.DeleteVoteOnCommentResult;
 using RedditClone.Application.Community.Results.UpdateCommentResult;
 using RedditClone.Application.Community.Results.UpdateVoteOnCommentResult;
 using RedditClone.Contracts.Comment.CreateComment;
 using RedditClone.Contracts.Comment.DeleteComment;
 using RedditClone.Contracts.Comment.UpdateComment;
 using RedditClone.Contracts.Comment.VoteOnComment;
+using RedditClone.Contracts.Post.DeleteVoteOnComment;
 using RedditClone.Contracts.Post.UpdateVoteOnComment;
 
 [Route("comments")]
@@ -81,6 +83,19 @@ public class CommentController : ApiController
         var command = CommentMappers.MapUpdateVoteOnCommentRequest(request, commentId, voteId);
 
         UpdateVoteOnCommentResult result = await _sender.Send(command);
+
+        return Ok(result);
+    }
+
+    [HttpDelete("vote-on-comment/{commentId}/delete/{voteId}")]
+    public async Task<IActionResult> DeleteVoteOnComment(
+        [FromBody] DeleteVoteOnCommentRequest request,
+        [FromRoute] Guid commentId,
+        [FromRoute] Guid voteId)
+    {
+        var command = CommentMappers.MapDeleteVoteOnCommentRequest(commentId, voteId, request);
+
+        DeleteVoteOnCommentResult result = await _sender.Send(command);
 
         return Ok(result);
     }

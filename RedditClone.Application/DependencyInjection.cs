@@ -7,6 +7,7 @@ using RedditClone.Application.Comment.Commands.VoteOnComment;
 using RedditClone.Application.Community.Commands.CreateCommunity;
 using RedditClone.Application.Community.Commands.DeleteComment;
 using RedditClone.Application.Community.Commands.DeleteCommunity;
+using RedditClone.Application.Community.Commands.DeleteVoteOnComment;
 using RedditClone.Application.Community.Commands.TransferCommunity;
 using RedditClone.Application.Community.Commands.UpdateCommunity;
 using RedditClone.Application.Post.Commands.CreatePost;
@@ -52,6 +53,7 @@ public static class DependencyInjection
         services.AddScoped<IValidator<DeleteCommentCommand>, DeleteCommentCommandValidator>();
         services.AddScoped<IValidator<VoteOnCommentCommand>, VoteOnCommentValidator>();
         services.AddScoped<IValidator<UpdateVoteOnCommentCommand>, UpdateVoteOnCommentCommandValidator>();
+        services.AddScoped<IValidator<DeleteVoteOnCommentCommand>, DeleteVoteOnCommentCommandValidator>();
 
         return services;
     }
