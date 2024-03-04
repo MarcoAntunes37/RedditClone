@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Post.DeleteVoteOnComment;
+namespace RedditClone.Contracts.Comment.DeleteVoteOnComment;
 public record DeleteVoteOnCommentRequest(
     Guid UserId
 );

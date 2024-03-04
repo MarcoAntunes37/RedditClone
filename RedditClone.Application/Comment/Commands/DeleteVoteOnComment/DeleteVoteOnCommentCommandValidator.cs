@@ -1,7 +1,6 @@
-namespace RedditClone.Application.Community.Commands.DeleteComment;
+namespace RedditClone.Application.Community.Commands.DeleteVoteOnComment;
 
 using FluentValidation;
-using RedditClone.Application.Community.Commands.DeleteVoteOnComment;
 
 public partial class DeleteVoteOnCommentCommandValidator : AbstractValidator<DeleteVoteOnCommentCommand>
 {

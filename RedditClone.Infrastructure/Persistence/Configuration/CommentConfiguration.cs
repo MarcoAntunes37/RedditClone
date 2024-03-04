@@ -88,6 +88,8 @@ public class CommentConfiguration
                         value => new ReplyId(value));
 
                 rvb.Property(rv => rv.IsVoted);
+
+                rvb.HasIndex(rv => new {rv.ReplyId, rv.UserId});
             });
         });
     }

@@ -1,4 +1,4 @@
-namespace RedditClone.Contracts.Post.UpdateVoteOnComment;
+namespace RedditClone.Contracts.Comment.UpdateVoteOnComment;
 
 public record UpdateVoteOnCommentResponse(
     string Message

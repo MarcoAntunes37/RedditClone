@@ -1,13 +1,19 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using RedditClone.Application.Comment.Commands.CreateComment;
+using RedditClone.Application.Comment.Commands.ReplyOnComment;
 using RedditClone.Application.Comment.Commands.UpdateComment;
+using RedditClone.Application.Comment.Commands.UpdateReplyOnComment;
 using RedditClone.Application.Comment.Commands.UpdateVoteOnComment;
+using RedditClone.Application.Comment.Commands.UpdateVoteOnReply;
 using RedditClone.Application.Comment.Commands.VoteOnComment;
+using RedditClone.Application.Comment.Commands.VoteOnReply;
 using RedditClone.Application.Community.Commands.CreateCommunity;
 using RedditClone.Application.Community.Commands.DeleteComment;
 using RedditClone.Application.Community.Commands.DeleteCommunity;
+using RedditClone.Application.Community.Commands.DeleteReplyOnComment;
 using RedditClone.Application.Community.Commands.DeleteVoteOnComment;
+using RedditClone.Application.Community.Commands.DeleteVoteOnReply;
 using RedditClone.Application.Community.Commands.TransferCommunity;
 using RedditClone.Application.Community.Commands.UpdateCommunity;
 using RedditClone.Application.Post.Commands.CreatePost;
@@ -22,6 +28,9 @@ using RedditClone.Application.User.Commands.Update;
 using RedditClone.Application.User.Commands.UpdatePassword;
 using RedditClone.Application.User.Commands.UpdateProfile;
 using RedditClone.Application.User.Queries.Login;
+using RedditClone.Application.UserCommunities.Commands.AddUserCommunities;
+using RedditClone.Application.UserCommunities.Commands.CreatePost;
+using RedditClone.Application.UserCommunities.Commands.RemoveUserCommunities;
 
 namespace RedditClone.Application;
 public static class DependencyInjection
@@ -40,6 +49,7 @@ public static class DependencyInjection
     {
         services.AddUserValidations();
         services.AddCommunityValidations();
+        services.AddUserCommunitiesValidations();
         services.AddPostValidations();
         services.AddCommentValidations();
 
@@ -51,9 +61,18 @@ public static class DependencyInjection
         services.AddScoped<IValidator<CreateCommentCommand>, CreateCommentCommandValidator>();
         services.AddScoped<IValidator<UpdateCommentCommand>, UpdateCommentCommandValidator>();
         services.AddScoped<IValidator<DeleteCommentCommand>, DeleteCommentCommandValidator>();
-        services.AddScoped<IValidator<VoteOnCommentCommand>, VoteOnCommentValidator>();
+
+        services.AddScoped<IValidator<VoteOnCommentCommand>, VoteOnCommentCommandValidator>();
         services.AddScoped<IValidator<UpdateVoteOnCommentCommand>, UpdateVoteOnCommentCommandValidator>();
         services.AddScoped<IValidator<DeleteVoteOnCommentCommand>, DeleteVoteOnCommentCommandValidator>();
+
+        services.AddScoped<IValidator<ReplyOnCommentCommand>, ReplyOnCommentCommandValidator>();
+        services.AddScoped<IValidator<UpdateReplyOnCommentCommand>, UpdateReplyOnCommentCommandValidator>();
+        services.AddScoped<IValidator<DeleteReplyOnCommentCommand>, DeleteReplyOnCommentCommandValidator>();
+
+        services.AddScoped<IValidator<VoteOnReplyCommand>, VoteOnReplyCommandValidator>();
+        services.AddScoped<IValidator<UpdateVoteOnReplyCommand>, UpdateVoteOnReplyCommandValidator>();
+        services.AddScoped<IValidator<DeleteVoteOnReplyCommand>, DeleteVoteOnReplyCommandValidator>();
 
         return services;
     }
@@ -70,6 +89,13 @@ public static class DependencyInjection
         return services;
     }
 
+    public static IServiceCollection AddUserCommunitiesValidations(this IServiceCollection services)
+    {
+        services.AddScoped<IValidator<AddUserCommunitiesCommand>, AddUserCommunitiesCommandValidator>();
+        services.AddScoped<IValidator<RemoveUserCommunitiesCommand>, RemoveUserCommunitiesCommandValidator>();
+
+        return services;
+    }
     public static IServiceCollection AddCommunityValidations(this IServiceCollection services)
     {
         services.AddScoped<IValidator<CreateCommunityCommand>, CreateCommunityCommandValidator>();

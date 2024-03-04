@@ -173,19 +173,21 @@ namespace RedditClone.Infrastructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("UserCommunities", b =>
+            modelBuilder.Entity("RedditClone.Domain.UserCommunitiesAggregate.UserCommunities", b =>
                 {
-                    b.Property<Guid>("CommunityId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("UserId");
 
-                    b.HasKey("CommunityId", "UserId");
+                    b.Property<Guid>("CommunityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("CommunityId");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "CommunityId");
 
-                    b.ToTable("UserCommunities");
+                    b.HasIndex("CommunityId");
+
+                    b.ToTable("UserCommunities", (string)null);
                 });
 
             modelBuilder.Entity("RedditClone.Domain.CommentAggregate.Comment", b =>
@@ -256,9 +258,9 @@ namespace RedditClone.Infrastructure.Migrations
 
                                     b2.HasKey("Id");
 
-                                    b2.HasIndex("ReplyId");
-
                                     b2.HasIndex("UserId");
+
+                                    b2.HasIndex("ReplyId", "UserId");
 
                                     b2.ToTable("RepliesVotes", (string)null);
 
@@ -372,7 +374,7 @@ namespace RedditClone.Infrastructure.Migrations
                     b.Navigation("Votes");
                 });
 
-            modelBuilder.Entity("UserCommunities", b =>
+            modelBuilder.Entity("RedditClone.Domain.UserCommunitiesAggregate.UserCommunities", b =>
                 {
                     b.HasOne("RedditClone.Domain.CommunityAggregate.Community", null)
                         .WithMany()

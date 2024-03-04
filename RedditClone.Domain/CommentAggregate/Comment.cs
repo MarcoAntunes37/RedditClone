@@ -113,18 +113,24 @@ public sealed class Comment
         _replies.Remove(reply);
     }
 
-    public void AddReplyVote(Replies newReply)
+    public void AddReplyVote(ReplyId replyId, RepliesVotes votes)
     {
+        var reply = _replies.Find(v => v.Id == replyId)!;
 
+        reply.AddReplyVote(votes);
     }
 
-    public void UpdateReplyVote(ReplyId replyId, string content)
+    public void UpdateReplyVote(ReplyId replyId, VoteId voteId, bool isVoted)
     {
+        var reply = _replies.Find(v => v.Id == replyId)!;
 
+        reply.UpdateReplyVote(voteId, isVoted);
     }
 
-    public void RemoveReplyVote(VoteId voteId)
+    public void RemoveReplyVote(ReplyId replyId, VoteId voteId)
     {
+        var reply = _replies.Find(v => v.Id == replyId)!;
 
+        reply.RemoveReplyVote(voteId);
     }
 }

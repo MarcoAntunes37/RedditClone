@@ -2,9 +2,9 @@ namespace RedditClone.Application.Comment.Commands.VoteOnComment;
 
 using FluentValidation;
 
-public partial class VoteOnCommentValidator : AbstractValidator<VoteOnCommentCommand>
+public partial class VoteOnCommentCommandValidator : AbstractValidator<VoteOnCommentCommand>
 {
-    public VoteOnCommentValidator()
+    public VoteOnCommentCommandValidator()
     {
         RuleFor(v => v.CommentId)
             .NotNull()

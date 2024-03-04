@@ -15,10 +15,22 @@ using RedditClone.Contracts.Comment.CreateComment;
 using RedditClone.Application.Comment.Commands.VoteOnComment;
 using RedditClone.Contracts.Comment.VoteOnComment;
 using RedditClone.Application.Comment.Commands.UpdateVoteOnComment;
-using RedditClone.Contracts.Post.UpdateVoteOnComment;
 using RedditClone.Domain.Common.ValueObjects;
-using RedditClone.Contracts.Post.DeleteVoteOnComment;
 using RedditClone.Application.Community.Commands.DeleteVoteOnComment;
+using RedditClone.Application.Comment.Commands.ReplyOnComment;
+using RedditClone.Contracts.Comment.ReplyOnComment;
+using RedditClone.Application.Comment.Commands.UpdateReplyOnComment;
+using RedditClone.Contracts.Comment.UpdateReplyOnComment;
+using RedditClone.Application.Community.Commands.DeleteReplyOnComment;
+using RedditClone.Contracts.Comment.DeleteReplyOnComment;
+using RedditClone.Contracts.Comment.UpdateVoteOnComment;
+using RedditClone.Contracts.Comment.DeleteVoteOnComment;
+using RedditClone.Application.Comment.Commands.VoteOnReply;
+using RedditClone.Contracts.Comment.VoteOnReply;
+using RedditClone.Contracts.Comment.UpdateVoteOnReply;
+using RedditClone.Application.Comment.Commands.UpdateVoteOnReply;
+using RedditClone.Contracts.Comment.DeleteVoteOnReply;
+using RedditClone.Application.Community.Commands.DeleteVoteOnReply;
 
 public class CommentMappers
 {
@@ -68,7 +80,9 @@ public class CommentMappers
         );
     }
 
-    public static DeleteCommentCommand MapDeleteCommentRequest(Guid commentId, DeleteCommentRequest request)
+    public static DeleteCommentCommand MapDeleteCommentRequest(
+        Guid commentId,
+        DeleteCommentRequest request)
     {
         return new DeleteCommentCommand(
             new CommentId(commentId),
@@ -76,7 +90,9 @@ public class CommentMappers
         );
     }
 
-    public static VoteOnCommentCommand MapVoteOnCommentRequest(Guid commentId, VoteOnCommentRequest request)
+    public static VoteOnCommentCommand MapVoteOnCommentRequest(
+        Guid commentId,
+        VoteOnCommentRequest request)
     {
         return new VoteOnCommentCommand(
             new CommentId(commentId),
@@ -98,10 +114,91 @@ public class CommentMappers
         );
     }
 
-    public static DeleteVoteOnCommentCommand MapDeleteVoteOnCommentRequest(Guid commentId, Guid voteId, DeleteVoteOnCommentRequest request)
+    public static DeleteVoteOnCommentCommand MapDeleteVoteOnCommentRequest(
+        Guid commentId,
+        Guid voteId,
+        DeleteVoteOnCommentRequest request)
     {
-        return new DeleteVoteOnCommentCommand (
+        return new DeleteVoteOnCommentCommand(
             new CommentId(commentId),
+            new VoteId(voteId),
+            new UserId(request.UserId)
+        );
+    }
+
+    public static ReplyOnCommentCommand MapReplyOnCommentRequest(
+        Guid commentId,
+        ReplyOnCommentRequest request)
+    {
+        return new ReplyOnCommentCommand(
+            new UserId(request.UserId),
+            new CommentId(commentId),
+            request.Content
+        );
+    }
+
+    public static UpdateReplyOnCommentCommand MapUpdateReplyOnCommentRequest(
+            UpdateReplyOnCommentRequest request,
+            Guid commentId,
+            Guid replyId)
+    {
+        return new UpdateReplyOnCommentCommand(
+            new CommentId(commentId),
+            new ReplyId(replyId),
+            new UserId(request.UserId),
+            request.Content
+        );
+    }
+
+    public static DeleteReplyOnCommentCommand MapDeleteReplyOnCommentRequest(
+        DeleteReplyOnCommentRequest request,
+        Guid commentId,
+        Guid replyId)
+    {
+        return new DeleteReplyOnCommentCommand(
+            new CommentId(commentId),
+            new ReplyId(replyId),
+            new UserId(request.UserId)
+        );
+    }
+
+    public static VoteOnReplyCommand MapVoteOnReplyRequest(
+        VoteOnReplyRequest request,
+        Guid commentId,
+        Guid replyId)
+    {
+        return new VoteOnReplyCommand(
+            new CommentId(commentId),
+            new ReplyId(replyId),
+            new UserId(request.UserId),
+            request.IsVoted
+        );
+    }
+
+    public static UpdateVoteOnReplyCommand MapUpdateVoteOnReplyRequest(
+        UpdateVoteOnReplyRequest request,
+        Guid replyId,
+        Guid voteId,
+        Guid commentId)
+    {
+        return new UpdateVoteOnReplyCommand(
+            new CommentId(commentId),
+            new ReplyId(replyId),
+            new VoteId(voteId),
+            new UserId(request.UserId),
+            request.IsVoted
+        );
+    }
+
+    public static DeleteVoteOnReplyCommand MapDeleteVoteOnReplyRequest(
+        DeleteVoteOnReplyRequest request,
+        Guid commentId,
+        Guid replyId,
+        Guid voteId)
+    {
+        return new DeleteVoteOnReplyCommand(
+            new CommentId(commentId),
+            new ReplyId(replyId),
             new VoteId(voteId),
             new UserId(request.UserId)
         );

@@ -56,7 +56,9 @@ public class CommunityMappers
         );
     }
 
-    public static DeleteCommunityCommand MapDeleteCommunityRequest(Guid communityId, DeleteCommunityRequest request)
+    public static DeleteCommunityCommand MapDeleteCommunityRequest(
+        Guid communityId,
+        DeleteCommunityRequest request)
     {
         return new DeleteCommunityCommand(
             new CommunityId(communityId),
@@ -64,7 +66,9 @@ public class CommunityMappers
         );
     }
 
-    public static TransferCommunityCommand MapTransferCommunity(Guid communityId, TransferCommunityOwnershipRequest request)
+    public static TransferCommunityCommand MapTransferCommunity(
+        Guid communityId,
+        TransferCommunityOwnershipRequest request)
     {
         return new TransferCommunityCommand(
             new UserId(request.OwnerId),

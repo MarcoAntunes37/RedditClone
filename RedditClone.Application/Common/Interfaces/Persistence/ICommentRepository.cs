@@ -18,4 +18,8 @@ public interface ICommentRepository
     void AddCommentReply(CommentId id, UserId userId, string content);
     void UpdateCommentReplyById(CommentId id, ReplyId replyId, UserId userId, string content);
     void DeleteCommentReplyById(CommentId id, ReplyId replyId, UserId userId);
+
+    void AddReplyVote(CommentId commentId, ReplyId id, UserId userId, bool IsVoted);
+    void UpdateReplyVoteById(CommentId id, ReplyId replyId, VoteId voteId, UserId userId, bool isVoted);
+    void DeleteReplyVoteById(CommentId id, ReplyId replyId, VoteId voteId, UserId userId);
 }

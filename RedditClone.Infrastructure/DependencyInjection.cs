@@ -12,6 +12,8 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using RedditClone.Infrastructure.Services;
+using RedditClone.Application.Common.Interfaces.Persistence;
+using RedditClone.Infrastructure.Persistence.Repositories;
 
 namespace RedditClone.Infrastructure;
 public static class DependencyInjection
@@ -34,6 +36,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICommunityRepository, CommunityRepository>();
+        services.AddScoped<IUserCommunitiesRepository, UserCommunitiesRepository>();
         services.AddScoped<IPostRepository, PostRepository>();
         services.AddScoped<ICommentRepository, CommentRepository>();
 

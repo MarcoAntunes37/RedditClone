@@ -2,6 +2,7 @@ namespace RedditClone.Domain.CommentAggregate.Entities;
 
 using ErrorOr;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public sealed class Replies
@@ -59,5 +60,26 @@ public sealed class Replies
     {
         Content = content;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void AddReplyVote(RepliesVotes votes)
+    {
+        _votes.Add(votes);
+    }
+
+    public void UpdateReplyVote(VoteId voteId, bool isVoted)
+    {
+        var votes = _votes.Find(v => v.Id == voteId)!;
+
+        votes.UpdateReplyVote(isVoted);
+
+        _votes.Insert(_votes.FindIndex(v => v.Id == voteId), votes);
+    }
+
+    public void RemoveReplyVote(VoteId voteId)
+    {
+        var votes = _votes.Find(v => v.Id == voteId)!;
+
+        _votes.Remove(votes);
     }
 }

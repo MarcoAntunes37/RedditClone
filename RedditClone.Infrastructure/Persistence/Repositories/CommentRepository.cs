@@ -6,7 +6,6 @@ using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.Common.ValueObjects;
-using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class CommentRepository : ICommentRepository
@@ -134,8 +133,6 @@ public class CommentRepository : ICommentRepository
             .SingleOrDefault(p => p.Id == id)
             ?? throw new Exception("An error occurred, comment is invalid or vote in comment is invalid");
 
-        List<RepliesVotes> repliesVotes = new();
-
         commentReply.UpdateReply(replyId, content);
 
         _dbContext.Entry(commentReply).State = EntityState.Modified;
@@ -154,6 +151,64 @@ public class CommentRepository : ICommentRepository
         commentReply.RemoveReply(replyId);
 
         _dbContext.Entry(commentReply).State = EntityState.Modified;
+
+        _dbContext.SaveChanges();
+    }
+
+    public void AddReplyVote(CommentId id, ReplyId replyId, UserId userId, bool isVoted)
+    {
+        Comment commentReplyVotes =
+            _dbContext.Comments
+                .Include(cr => cr.Replies)
+                .Where(cr => cr.Replies.Any(
+                    r => r.Id == replyId && r.UserId == userId))
+                .SingleOrDefault(c => c.Id == id)!;
+
+        var replyVotes = RepliesVotes.Create(
+                replyId,
+                userId,
+                isVoted
+            );
+
+        commentReplyVotes.AddReplyVote(replyId, replyVotes);
+
+        _dbContext.Comments.Update(commentReplyVotes);
+
+        _dbContext.Entry(commentReplyVotes).State = EntityState.Modified;
+
+        _dbContext.SaveChanges();
+    }
+
+    public void UpdateReplyVoteById(CommentId id, ReplyId replyId, VoteId voteId, UserId userId, bool isVoted)
+    {
+        Comment commentReplyVotes =
+            _dbContext.Comments
+                .Include(cr => cr.Replies)
+                .Where(cr => cr.Replies.Any(
+                    r => r.Id == replyId && r.UserId == userId))
+                .SingleOrDefault(c => c.Id == id)!;
+
+        commentReplyVotes.UpdateReplyVote(replyId, voteId, isVoted);
+
+        _dbContext.Comments.Update(commentReplyVotes);
+
+        _dbContext.Entry(commentReplyVotes).State = EntityState.Modified;
+
+        _dbContext.SaveChanges();
+    }
+
+    public void DeleteReplyVoteById(CommentId id, ReplyId replyId, VoteId voteId, UserId userId)
+    {
+        Comment commentReplyVotes =
+            _dbContext.Comments
+                .Include(cr => cr.Replies)
+                .Where(cr => cr.Replies.Any(
+                    r => r.Id == replyId && r.UserId == userId))
+                .SingleOrDefault(c => c.Id == id)!;
+
+        commentReplyVotes.RemoveReplyVote(replyId, voteId);
+
+        _dbContext.Entry(commentReplyVotes).State = EntityState.Modified;
 
         _dbContext.SaveChanges();
     }
