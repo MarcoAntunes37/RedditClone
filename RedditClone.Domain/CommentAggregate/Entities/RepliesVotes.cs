@@ -39,7 +39,7 @@ public sealed class RepliesVotes
             isVoted);
     }
 
-     public void UpdateReplyVote(bool isVoted)
+    public void UpdateReplyVote(bool isVoted)
     {
        IsVoted = isVoted;
     }

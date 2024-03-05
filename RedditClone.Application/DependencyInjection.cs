@@ -1,3 +1,5 @@
+namespace RedditClone.Application;
+
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using RedditClone.Application.Comment.Commands.CreateComment;
@@ -32,7 +34,6 @@ using RedditClone.Application.UserCommunities.Commands.AddUserCommunities;
 using RedditClone.Application.UserCommunities.Commands.CreatePost;
 using RedditClone.Application.UserCommunities.Commands.RemoveUserCommunities;
 
-namespace RedditClone.Application;
 public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)

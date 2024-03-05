@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditClone.Domain", "Reddi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditClone.Infrastructure", "RedditClone.Infrastructure\RedditClone.Infrastructure.csproj", "{2B8DBF73-C80E-4810-B33A-5DB0BF8F80E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditClone.Tests", "RedditClone.Tests\RedditClone.Tests.csproj", "{9FC8BED7-01A7-4CF6-9CE6-43589D1F8E93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,13 @@ Global
 		{2B8DBF73-C80E-4810-B33A-5DB0BF8F80E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B8DBF73-C80E-4810-B33A-5DB0BF8F80E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B8DBF73-C80E-4810-B33A-5DB0BF8F80E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5266A706-F385-4055-B43B-A2B4EB404B51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5266A706-F385-4055-B43B-A2B4EB404B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5266A706-F385-4055-B43B-A2B4EB404B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5266A706-F385-4055-B43B-A2B4EB404B51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FC8BED7-01A7-4CF6-9CE6-43589D1F8E93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FC8BED7-01A7-4CF6-9CE6-43589D1F8E93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FC8BED7-01A7-4CF6-9CE6-43589D1F8E93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FC8BED7-01A7-4CF6-9CE6-43589D1F8E93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
