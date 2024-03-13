@@ -28,6 +28,7 @@ using RedditClone.Application.Post.Commands.UpdatePost;
 using RedditClone.Application.Post.Commands.UpdateVoteOnPost;
 using RedditClone.Application.Post.Commands.VoteOnPost;
 using RedditClone.Application.Post.Queries.GetPostById;
+using RedditClone.Application.Post.Queries.GetPostListByCommunityId;
 using RedditClone.Application.User.Commands.Delete;
 using RedditClone.Application.User.Commands.Register;
 using RedditClone.Application.User.Commands.Update;

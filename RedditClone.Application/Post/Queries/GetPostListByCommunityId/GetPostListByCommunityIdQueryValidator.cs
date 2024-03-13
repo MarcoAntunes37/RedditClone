@@ -1,4 +1,4 @@
-namespace RedditClone.Application.Post.Queries.GetCommentListByCommunityId;
+namespace RedditClone.Application.Post.Queries.GetPostListByCommunityId;
 
 using FluentValidation;
 using RedditClone.Application.Community.Queries.GetPostListByCommunityId;
