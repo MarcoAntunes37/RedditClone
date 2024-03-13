@@ -29,7 +29,7 @@ public class TransferCommunityCommandHandler :
         _communityRepository.TransferCommunityOwnership(command.UserId, command.NewUserId, command.CommunityId);
 
         return new TransferCommunityResult(
-            "Community successfully updated."
+            "Community successfully transferred."
         );
     }
 }

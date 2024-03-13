@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using RedditClone.Application.Common.Interfaces.Persistence;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
@@ -14,6 +15,14 @@ public class UserCommunitiesRepository : IUserCommunitiesRepository
         _dbContext = dbContext;
     }
 
+    public bool ValidateRelationship(UserId userId, CommunityId communityId)
+    {
+        UserCommunities userCommunities = _dbContext.UserCommunities
+            .SingleOrDefault(uc => uc.UserId == userId && uc.CommunityId == communityId)!;
+
+        return userCommunities != null;
+    }
+
     public void Add(UserCommunities userCommunities)
     {
         _dbContext.UserCommunities.Add(userCommunities);
@@ -24,10 +33,10 @@ public class UserCommunitiesRepository : IUserCommunitiesRepository
     public void Remove(UserId userId, CommunityId communityId)
     {
         UserCommunities userCommunities =
-            _dbContext.UserCommunities.SingleOrDefault(uc => uc.UserId == userId && uc.CommunityId == communityId)
-            ?? throw new Exception("An error occurred violated fk");
+            _dbContext.UserCommunities
+            .SingleOrDefault(uc => uc.UserId == userId && uc.CommunityId == communityId)
+            ?? throw new Exception("An error occurred");
 
-        Console.WriteLine(userCommunities);
         _dbContext.UserCommunities.Remove(userCommunities);
 
         _dbContext.SaveChanges();

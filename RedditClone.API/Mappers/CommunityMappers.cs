@@ -1,3 +1,5 @@
+namespace RedditClone.API.Mappers;
+
 using RedditClone.Application.Community.Commands.CreateCommunity;
 using RedditClone.Application.Community.Commands.DeleteCommunity;
 using RedditClone.Application.Community.Commands.TransferCommunity;
@@ -9,11 +11,29 @@ using RedditClone.Contracts.Community.UpdateCommunity;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Contracts.Community.CreateCommunity;
-
-namespace RedditClone.API.Mappers;
+using RedditClone.Application.Community.Results.UpdateCommunityResult;
+using RedditClone.Application.Community.Queries.GetCommunitiesById;
+using RedditClone.Application.Community.Queries.GetCommunitiesList;
 
 public class CommunityMappers
 {
+    public static GetCommunityByIdQuery MapGetCommunityByIdRequest(Guid communityId)
+    {
+        return new GetCommunityByIdQuery(
+            new CommunityId(communityId)
+        );
+    }
+
+    public static GetCommunitiesListQuery MapGetCommunitiesListRequest(string name, string topic, int page, int pageSize)
+    {
+        return new GetCommunitiesListQuery(
+            name,
+            topic,
+            page,
+            pageSize
+        );
+    }
+
     public static CreateCommunityCommand MapCreateCommunityRequest(
             CreateCommunityRequest request,
             Guid ownerId)
@@ -33,13 +53,12 @@ public class CommunityMappers
     {
         var community = result.Community;
         return new CreateCommunityResponse(
-            community.Id.Value.ToString(),
+            result.Message,
             community.Name,
             community.Description,
             community.Topic,
             community.CreatedAt,
-            community.UpdatedAt,
-            community.UserId.Value.ToString()
+            community.UpdatedAt
         );
     }
 
@@ -53,6 +72,18 @@ public class CommunityMappers
             request.Name,
             request.Description,
             request.Topic
+        );
+    }
+
+    public static UpdateCommunityResponse MapUpdateCommunityResponse(
+        UpdateCommunityResult result)
+    {
+        var community = result.Community;
+        return new UpdateCommunityResponse(
+            result.Message,
+            community.Name,
+            community.Description,
+            community.Topic
         );
     }
 

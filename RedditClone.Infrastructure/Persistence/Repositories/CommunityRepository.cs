@@ -15,6 +15,22 @@ public class CommunityRepository : ICommunityRepository
         _dbContext = dbContext;
     }
 
+    public Community GetCommunityById(CommunityId communityId)
+    {
+        Community community = _dbContext.Communities.FirstOrDefault(c => c.Id == communityId)
+        ?? throw new Exception("Invalid community");
+
+        return community;
+    }
+
+    public List<Community> GetCommunitiesList()
+    {
+
+        List<Community> communities = _dbContext.Communities.ToList();
+
+        return communities;
+    }
+
     public void Add(Community community)
     {
         _dbContext.Communities.Add(community);

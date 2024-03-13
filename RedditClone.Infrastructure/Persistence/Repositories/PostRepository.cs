@@ -3,9 +3,11 @@ namespace RedditClone.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate;
 using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Domain.UserAggregate;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class PostRepository : IPostRepository
@@ -15,6 +17,29 @@ public class PostRepository : IPostRepository
     public PostRepository(RedditCloneDbContext dbContext)
     {
         _dbContext = dbContext;
+    }
+    public Post GetPostById(PostId postId)
+    {
+        Post post = _dbContext.Posts.FirstOrDefault(p => p.Id == postId)
+        ?? throw new Exception("Invalid Post");
+
+        return post;
+    }
+
+    public List<Post> GetPostListByUser(UserId userId)
+    {
+
+        List<Post> posts = _dbContext.Posts.Where(p => p.UserId == userId).ToList();
+
+        return posts;
+    }
+
+    public List<Post> GetPostListByCommunity(CommunityId communityId)
+    {
+
+        List<Post> posts = _dbContext.Posts.Where(p => p.CommunityId == communityId).ToList();
+
+        return posts;
     }
 
     public void Add(Post post)

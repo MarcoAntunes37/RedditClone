@@ -2,7 +2,6 @@ namespace RedditClone.Application.Community.Commands.CreateCommunity;
 
 using MediatR;
 using RedditClone.Application.Community.Results.CreateCommunityResult;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public record CreateCommunityCommand(

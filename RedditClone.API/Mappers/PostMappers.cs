@@ -1,10 +1,13 @@
+namespace RedditClone.API.Mappers;
 
+using RedditClone.Application.Community.Queries.GetPostListByCommunityId;
 using RedditClone.Application.Post.Commands.CreatePost;
 using RedditClone.Application.Post.Commands.DeletePost;
 using RedditClone.Application.Post.Commands.DeleteVoteOnPost;
 using RedditClone.Application.Post.Commands.UpdatePost;
 using RedditClone.Application.Post.Commands.UpdateVoteOnPost;
 using RedditClone.Application.Post.Commands.VoteOnPost;
+using RedditClone.Application.Post.Queries.GetPostById;
 using RedditClone.Application.Post.Results.CreatePostResult;
 using RedditClone.Contracts.Post.CreatePost;
 using RedditClone.Contracts.Post.CreatePost.Models;
@@ -19,9 +22,23 @@ using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
-namespace RedditClone.API.Mappers;
-
 public class PostMappers{
+    public static GetPostByIdQuery MapGetPostByIdRequest(Guid postId)
+    {
+        return new GetPostByIdQuery(
+            new PostId(postId)
+        );
+    }
+
+    public static GetPostListByCommunityIdQuery MapGetPostListByCommunityIdRequest(Guid communityId, int page, int pageSize)
+    {
+        return new GetPostListByCommunityIdQuery(
+            new CommunityId(communityId),
+            page,
+            pageSize
+        );
+    }
+
     public static CreatePostCommand MapCreatePostRequest(
         CreatePostRequest request)
     {

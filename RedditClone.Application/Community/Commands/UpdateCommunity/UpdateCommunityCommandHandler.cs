@@ -28,8 +28,10 @@ public class UpdateCommunityCommandHandler :
 
         _communityRepository.UpdateCommunityById(command.CommunityId, command.UserId, command.Name, command.Description, command.Topic);
 
+        var community = _communityRepository.GetCommunityById(command.CommunityId);
         return new UpdateCommunityResult(
-            "Community successfully updated."
+            "Community successfully updated.",
+            community
         );
     }
 }

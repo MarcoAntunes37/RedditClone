@@ -16,14 +16,18 @@ using RedditClone.Application.Community.Commands.DeleteCommunity;
 using RedditClone.Application.Community.Commands.DeleteReplyOnComment;
 using RedditClone.Application.Community.Commands.DeleteVoteOnComment;
 using RedditClone.Application.Community.Commands.DeleteVoteOnReply;
+using RedditClone.Application.Community.Commands.GetCommunityById;
 using RedditClone.Application.Community.Commands.TransferCommunity;
 using RedditClone.Application.Community.Commands.UpdateCommunity;
+using RedditClone.Application.Community.Queries.GetCommunitiesById;
+using RedditClone.Application.Community.Queries.GetPostListByCommunityId;
 using RedditClone.Application.Post.Commands.CreatePost;
 using RedditClone.Application.Post.Commands.DeletePost;
 using RedditClone.Application.Post.Commands.DeleteVoteOnPost;
 using RedditClone.Application.Post.Commands.UpdatePost;
 using RedditClone.Application.Post.Commands.UpdateVoteOnPost;
 using RedditClone.Application.Post.Commands.VoteOnPost;
+using RedditClone.Application.Post.Queries.GetPostById;
 using RedditClone.Application.User.Commands.Delete;
 using RedditClone.Application.User.Commands.Register;
 using RedditClone.Application.User.Commands.Update;
@@ -80,6 +84,8 @@ public static class DependencyInjection
 
     public static IServiceCollection AddPostValidations(this IServiceCollection services)
     {
+        services.AddScoped<IValidator<GetPostByIdQuery>, GetPostByIdQueryValidator>();
+        services.AddScoped<IValidator<GetPostListByCommunityIdQuery>, GetPostListByCommunityIdQueryValidator>();
         services.AddScoped<IValidator<CreatePostCommand>, CreatePostCommandValidator>();
         services.AddScoped<IValidator<UpdatePostCommand>, UpdatePostCommandValidator>();
         services.AddScoped<IValidator<DeletePostCommand>, DeletePostCommandValidator>();
@@ -99,6 +105,7 @@ public static class DependencyInjection
     }
     public static IServiceCollection AddCommunityValidations(this IServiceCollection services)
     {
+        services.AddScoped<IValidator<GetCommunityByIdQuery>, GetCommunityByIdQueryValidator>();
         services.AddScoped<IValidator<CreateCommunityCommand>, CreateCommunityCommandValidator>();
         services.AddScoped<IValidator<UpdateCommunityCommand>, UpdateCommunityCommandValidator>();
         services.AddScoped<IValidator<TransferCommunityCommand>, TransferCommunityCommandValidator>();

@@ -131,7 +131,7 @@ public class CommentRepository : ICommentRepository
             .Include(p => p.Replies)
             .Where(p => p.Replies.Any(pv => pv.Id == replyId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, comment is invalid or vote in comment is invalid");
+            ?? throw new Exception("An error occurred, comment is invalid or reply in comment is invalid");
 
         commentReply.UpdateReply(replyId, content);
 
@@ -146,7 +146,7 @@ public class CommentRepository : ICommentRepository
             .Include(p => p.Replies)
             .Where(p => p.Replies.Any(pv => pv.Id == replyId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, comment is invalid or vote in comment is invalid");
+            ?? throw new Exception("An error occurred, comment is invalid or reply in comment is invalid");
 
         commentReply.RemoveReply(replyId);
 
@@ -162,7 +162,8 @@ public class CommentRepository : ICommentRepository
                 .Include(cr => cr.Replies)
                 .Where(cr => cr.Replies.Any(
                     r => r.Id == replyId && r.UserId == userId))
-                .SingleOrDefault(c => c.Id == id)!;
+                .SingleOrDefault(c => c.Id == id)
+                ?? throw new Exception("An error occurred, comment is invalid or reply in comment is invalid");;
 
         var replyVotes = RepliesVotes.Create(
                 replyId,
@@ -186,7 +187,8 @@ public class CommentRepository : ICommentRepository
                 .Include(cr => cr.Replies)
                 .Where(cr => cr.Replies.Any(
                     r => r.Id == replyId && r.UserId == userId))
-                .SingleOrDefault(c => c.Id == id)!;
+                .SingleOrDefault(c => c.Id == id)
+                ?? throw new Exception("An error occurred, comment is invalid, reply in comment is invalid or vote in reply is invalid");
 
         commentReplyVotes.UpdateReplyVote(replyId, voteId, isVoted);
 
@@ -204,7 +206,8 @@ public class CommentRepository : ICommentRepository
                 .Include(cr => cr.Replies)
                 .Where(cr => cr.Replies.Any(
                     r => r.Id == replyId && r.UserId == userId))
-                .SingleOrDefault(c => c.Id == id)!;
+                .SingleOrDefault(c => c.Id == id)
+                ?? throw new Exception("An error occurred, comment is invalid, reply in comment is invalid or vote in reply is invalid");
 
         commentReplyVotes.RemoveReplyVote(replyId, voteId);
 

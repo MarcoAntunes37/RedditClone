@@ -27,7 +27,6 @@ public class CreateCommunityCommandHandler :
 
         _validator.ValidateAndThrow(command);
 
-        //create community
         var community = Community.Create(
             command.UserId,
             command.Name,
@@ -37,12 +36,11 @@ public class CreateCommunityCommandHandler :
             command.UpdatedAt
         );
 
-        //persist community
         _communityRepository.Add(community);
 
-        //return community
         return new CreateCommunityResult(
-            community
+            community,
+            "Community created successfully"
         );
     }
 }

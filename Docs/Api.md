@@ -13,6 +13,8 @@
             - [New community request](#new-community-request)
             - [New community response](#new-community-response)
         - [Get communities](#get-communities)
+            - [Get communities parameters](#parameters)
+            - [Get communities response](#get-communities-request)
             - [Get communities response](#get-communities-response)
         - [Update community](#update-community)
             - [Update community request](#update-community-request)
@@ -20,12 +22,9 @@
         - [Delete community](#delete-community)
             - [Delete community request](#delete-community-request)
             - [Delete community response](#delete-community-response)
-        - [Add moderator](#add-moderator)
-            - [Add moderator request](#add-moderator-request)
-            - [Add moderator response](#add-moderator-response)
-        - [Remove moderator](#remove-moderator)
-            - [Remove moderator request](#remove-moderator-request)
-            - [Remove moderator response](#remove-moderator-response)
+        - [Transfer ownership](#transfer-ownership)
+            - [Transfer ownership request](#transfer-ownership-request)
+            - [Transfer ownership response](#transfer-ownership-response)
     - [Post](#post)
         - [New post](#new-post)
             - [New post request](#new-post-request)
@@ -39,12 +38,6 @@
         - [Delete post](#delete-post)
             - [Delete post request](#delete-post-request)
             - [Delete post response](#delete-post-response)
-        - [Upvote post](#upvote-post)
-            - [Upvote post request](#upvote-post-request)
-            - [Upvote post response](#upvote-post-response)
-        - [Downvote post](#downvote-post)
-            - [Downvote post request](#downvote-post-request)
-            - [Downvote post response](#downvote-post-response)
     - [Comment](#comment)
         - [New comment](#new-comment)
             - [New comment request](#new-comment-request)
@@ -58,12 +51,6 @@
         - [Delete comment](#delete-comment)
             - [Delete comment request](#delete-comment-request)
             - [Delete comment response](#delete-comment-response)
-        - [Upvote comment](#upvote-comment)
-            - [Upvote comment request](#upvote-comment-request)
-            - [Upvote comment response](#upvote-comment-response)
-        - [Downvote comment](#downvote-comment)
-            - [Downvote comment request](#downvote-comment-request)
-            - [Downvote comment response](#downvote-comment-response)
 
 ## Auth
 
@@ -76,11 +63,12 @@ POST {{host}}/auth/register
 #### Register Request
 ```json
 {
-    "firstname": "User first name",
-    "lastname": "User last name",
-    "username": "Username",
-    "password": "123$Asdsa",
-    "email": "emailteste@gmail.com"
+    "firstname": "Marco",
+    "lastname": "Aurelio",
+    "email": "joloma5537@rohoza.com",
+    "username": "kgbstrike",
+    "password": "A123&!aaaaa",
+    "repeatPassword": "A123&!aaaaa"
 }
 ```
 
@@ -89,13 +77,12 @@ POST {{host}}/auth/register
 {
     "firstname": "Marco",
     "lastname": "Aurelio",
-    "email": "emailteste@gmail.com",
-    "username": "marcodev",
-    "password": "A123&!",
-    "createdAt": "0001-01-01T00:00:00",
-    "updatedAt": "0001-01-01T00:00:00",
-    "communities": [],
-    "token": "eyJ...aBa8"
+    "email": "joloma5537@rohoza.com",
+    "username": "kgbstrike",
+    "password": "$2a$11$L1QiGeptxaQavEgp0TiinerO0oJUkxLu4Qa63JRJlPyvk4OCx9NES",
+    "createdAt": "2024-03-11T15:55:05.8045765Z",
+    "updatedAt": "2024-03-11T15:55:05.8045768Z",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...v3M2_2rFe0I-7VTR1NYwGyIR6MEbQydZOAZkyDgHHIQ"
 }
 ```
 
@@ -113,7 +100,7 @@ POST {{host}}/auth/register
 
 ```json
 {
-    "token": "eyJ...aBa8"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...v3M2_2rFe0I-7VTR1NYwGyIR6MEbQydZOAZkyDgHHIQ"
 }
 ```
 
@@ -123,13 +110,12 @@ POST {{host}}/auth/register
 
 #### New community request
 ```js
-POST {{host}}/communities/{{userid}}/new-community
+POST {{host}}/communities/{{userId}}/new-community
 ```
 ```json
 {
     "name": "C#",
     "description": "Microsoft C# enjoyers community",
-    "membersCount": 1,
     "topic": "Programming"
 }
 ```
@@ -137,11 +123,9 @@ POST {{host}}/communities/{{userid}}/new-community
 #### New community response
 ```json
 {
-    "id": "b5c7fad0-f74e-40ed-910e-b3432e9d9af7",
-    "userId": "9f7e0a0d-36e0-4239-b600-97aa785c4621",
+    "message": "Community created successfully",
     "name": "C#",
     "description": "Microsoft C# enjoyers community",
-    "membersCount": 1,
     "topic": "Programming",
     "createdAt": "2024-01-30T10:29:32.5521843-03:00",
     "updatedAt": "2024-01-30T10:29:32.5537954-03:00"
@@ -149,41 +133,106 @@ POST {{host}}/communities/{{userid}}/new-community
 ```
 
 ### Get communities
+```js
+GET {{host}}/communities/list-communities?name=C#&topic=Programming&page=1&pageSize=20,
+```
+
+#### Parameters
+- Name(optional): This parameter allows you to filter communities by name. If provided, only communities with names containing the specified string will be returned.
+
+- Topic(optional): This parameter allows you to filter communities by topic. If provided, only communities with the specified topic will be returned.
+
+- Page(optional): This parameter specifies the desired page number in the results list. Each page contains a fixed number of communities.
+
+- PageSize (optional): This parameter specifies the maximum number of communities that will be returned per page. If not specified, the default page size will be used.
 
 #### Get communities request
-```js
-
-```
 ```json
+{
+    "name": "C#",
+    "topic": "Programming",
+    "page": 1,
+    "pageSize": 20
+}
 ```
 #### Get communities response
 ```json
+{
+    "communities": [
+        {
+            "name": "C#",
+            "description": "Microsoft C# enjoyers community",
+            "topic": "Programming"
+        },
+        {
+            "name": "C#1",
+            "description": "Microsoft C#1 enjoyers community",
+            "topic": "Programming"
+        }
+    ]
+}
 ```
 
 ### Update community
-
-#### Update community request
 ```js
-
+POST {{host}}/communities/update-community/{{communityId}}
 ```
+#### Update community request
 ```json
+{
+    "userId": "04d64e02-c25a-4238-8519-50e924552984",
+    "name": "C#",
+    "description": "Microsoft C# enjoyers community",
+    "topic": "Programming"
+}
 ```
 
 #### Update community response
 ```json
 {
+    "message": "Community update successfully",
+    "name": "C#",
+    "description": "Microsoft C# enjoyers community",
+    "topic": "Programming"
 }
 ```
 
 ### Delete community
+```js
+DELETE {{host}}/communities/delete-community/{{communityId}}
+```
 
 #### Delete community request
-```js
+```json
+{
+    "userId": "04d64e02-c25a-4238-8519-50e924552984"
+}
 ```
 
 #### Delete community response
 ```json
 {
+    "Message": "Community deleted successfully"
+}
+```
+
+### Transfer ownership
+```js
+POST {{host}}/communities/update-community/transfer/{{communityId}}
+```
+
+#### Transfer ownership request
+```json
+{
+    "userId": "04d64e02-c25a-4238-8519-50e924552984",
+    "newUserId": "d7524584-e5b7-43a2-af56-27d97cf59e6a"
+}
+```
+
+#### Transfer ownership response
+```json
+{
+    "Message": "Community successfully transferred"
 }
 ```
 

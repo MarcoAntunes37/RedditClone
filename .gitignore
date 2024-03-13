@@ -486,3 +486,6 @@ appsettings.json
 
 # EF core migrations
 /RedditClone.Infrastructure/Migrations/
+
+# Tools
+/Tools

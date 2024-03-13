@@ -1,5 +1,8 @@
 namespace RedditClone.Application.Community.Results.UpdateCommunityResult;
 
+using RedditClone.Domain.CommunityAggregate;
+
 public record UpdateCommunityResult(
-    string Message
+    string Message,
+    Community Community
 );

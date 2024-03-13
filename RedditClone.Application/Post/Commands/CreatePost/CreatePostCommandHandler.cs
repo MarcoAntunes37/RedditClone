@@ -2,6 +2,7 @@ namespace RedditClone.Application.Post.Commands.CreatePost;
 
 using FluentValidation;
 using MediatR;
+using RedditClone.Application.Common.Interfaces.Persistence;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.Post.Results.CreatePostResult;
 using RedditClone.Domain.PostAggregate;
@@ -10,13 +11,17 @@ public class CreatePostCommandHandler
     : IRequestHandler<CreatePostCommand, CreatePostResult>
 {
     private readonly IPostRepository _postRepository;
+    private readonly IUserCommunitiesRepository _userCommunitiesRepository;
+
     private readonly IValidator<CreatePostCommand> _validator;
 
     public CreatePostCommandHandler(
         IPostRepository postRepository,
+        IUserCommunitiesRepository userCommunitiesRepository,
         IValidator<CreatePostCommand> validator)
     {
         _postRepository = postRepository;
+        _userCommunitiesRepository = userCommunitiesRepository;
         _validator = validator;
     }
 
@@ -25,9 +30,10 @@ public class CreatePostCommandHandler
     {
         await Task.CompletedTask;
 
+        bool isValid = _userCommunitiesRepository.ValidateRelationship(command.UserId, command.CommunityId);
+
         _validator.ValidateAndThrow(command);
 
-        //create post
         var post = Post.Create(
             command.CommunityId,
             command.UserId,
@@ -38,10 +44,8 @@ public class CreatePostCommandHandler
             command.Votes
         );
 
-        //persist post
         _postRepository.Add(post);
 
-        //return post
         return new CreatePostResult(
             post
         );

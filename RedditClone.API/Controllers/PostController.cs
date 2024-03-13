@@ -15,6 +15,8 @@ using RedditClone.Contracts.Post.UpdatePost;
 using RedditClone.Contracts.Post.CreatePost;
 using RedditClone.Contracts.Post.DeleteVoteOnPost;
 using RedditClone.Application.Post.Results.DeleteVoteOnPostResult;
+using RedditClone.Application.Post.Results.GetPostByIdResult;
+using RedditClone.Application.Post.Results.GetPostListByCommunityIdResult;
 
 [Route("posts/")]
 public class PostController : ApiController
@@ -24,6 +26,30 @@ public class PostController : ApiController
     public PostController(ISender sender)
     {
         _sender = sender;
+    }
+
+    [HttpGet("get-post/{postId}")]
+    public async Task<IActionResult> GetPostById(
+        [FromRoute] Guid postId)
+    {
+        var query = PostMappers.MapGetPostByIdRequest(postId);
+
+        GetPostByIdResult result = await _sender.Send(query);
+
+        return Ok(result);
+    }
+
+    [HttpGet("list-posts/{communityId}")]
+    public async Task<IActionResult> GetPostListByCommunityId(
+        [FromRoute] Guid communityId,
+        [FromQuery] int page,
+        [FromQuery] int pageSize)
+    {
+        var query = PostMappers.MapGetPostListByCommunityIdRequest(communityId, page, pageSize);
+
+        GetPostListByCommunityIdResult result = await _sender.Send(query);
+
+        return Ok(result);
     }
 
     [HttpPost("new-post")]
