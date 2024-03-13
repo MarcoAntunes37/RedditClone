@@ -29,7 +29,7 @@ public class DeleteVoteOnPostCommandHandler
         _postRepository.DeletePostVoteById(command.PostId, command.VoteId, command.UserId);
 
         return new DeleteVoteOnPostResult(
-            "Post updated successfully"
+            "Vote on post deleted successfully"
         );
     }
 }

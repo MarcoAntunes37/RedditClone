@@ -1,4 +1,4 @@
-namespace RedditClone.Application.Comment.Queries.GetCommunityById;
+namespace RedditClone.Application.Comment.Queries.GetPostById;
 
 using MediatR;
 using RedditClone.Application.Persistence;

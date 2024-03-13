@@ -29,9 +29,12 @@
         - [New post](#new-post)
             - [New post request](#new-post-request)
             - [New post response](#new-post-response)
-        - [Get posts](#get-posts)
-            - [Get posts request](#get-posts-request)
-            - [Get posts response](#get-posts-response)
+        - [Get post by id](#get-post-by-id)
+            - [Get posts request](#get-post-by-id-request)
+            - [Get posts response](#get-post-by-id-response)
+        - [Get posts list by community id](#get-posts-list-by-communityid)
+            - [Get posts list by community id request](#get-posts-list-by-communityid-request)
+            - [Get posts list by community id response](#get-posts-list-by-communityid-response)
         - [Update post](#update-post)
             - [Update post request](#update-post-request)
             - [Update post response](#update-post-response)
@@ -53,12 +56,10 @@
             - [Delete comment response](#delete-comment-response)
 
 ## Auth
-
+### Register
 ```js
 POST {{host}}/auth/register
 ```
-
-### Register
 
 #### Register Request
 ```json
@@ -78,7 +79,7 @@ POST {{host}}/auth/register
     "firstname": "Marco",
     "lastname": "Aurelio",
     "email": "joloma5537@rohoza.com",
-    "username": "kgbstrike",
+    "username": "marcoaureliodev",
     "password": "$2a$11$L1QiGeptxaQavEgp0TiinerO0oJUkxLu4Qa63JRJlPyvk4OCx9NES",
     "createdAt": "2024-03-11T15:55:05.8045765Z",
     "updatedAt": "2024-03-11T15:55:05.8045768Z",
@@ -87,6 +88,9 @@ POST {{host}}/auth/register
 ```
 
 ### Login
+```js
+POST {{host}}/auth/login
+```
 
 #### Login request
 ```json
@@ -107,11 +111,11 @@ POST {{host}}/auth/register
 ## Community
 
 ### New community
-
-#### New community request
 ```js
 POST {{host}}/communities/{{userId}}/new-community
 ```
+
+#### New community request
 ```json
 {
     "name": "C#",
@@ -239,11 +243,11 @@ POST {{host}}/communities/update-community/transfer/{{communityId}}
 ## Post
 
 ### New post
-
-#### New post request
 ```js
 POST {{host}}/communities/{{communityid}}/posts/{{userid}}/new-post
 ```
+#### New post request
+
 ```json
 {
     "title": "Post title example",
@@ -254,98 +258,202 @@ POST {{host}}/communities/{{communityid}}/posts/{{userid}}/new-post
 #### New post response
 ```json
 {
-    "postId": "42fa1dcb-1ed6-45af-be9f-d55a06b8a49f",
-    "title": "Post title example",
-    "content": "Post title content",
-    "userId": "9f7e0a0d-36e0-4239-b600-97aa785c4621",
-    "communityId": "e5787ea2-4fd3-4876-88dd-1085760d0d3e",
-    "createdAt": "2024-01-30T10:34:25.3111036-03:00",
-    "updatedAt": "2024-01-30T10:34:25.3111049-03:00",
-    "upvotes": [],
-    "downvotes": []
+    "id": "e663e89d-2708-4858-a14b-8f8b4359d792",
+    "communityId": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    "userId": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    "title": "Clean code with .net core",
+    "content": "This is a example of content",
+    "createdAt": "2024-03-13T16:47:41.5176044Z",
+    "updatedAt": "2024-03-13T16:47:41.5176045Z",
+    "votes": []
 }
 ```
-### Get posts
 
-#### Get posts request
+### Get post by id
 ```js
+GET {{host}}/posts/get-post/{{postId}}
 ```
+#### Get post by id request
+
 ```json
 {
 }
 ```
 
-#### Get posts response
+#### Get post by id response
 ```json
 {
+    "post":
+    {
+        "id": {
+            "value": "d7f182d7-f1e7-469d-8c1f-1d0e19a54138"
+        },
+        "communityId": {
+            "value": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        },
+        "userId": {
+            "value": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        },
+        "title": "Introduction to Cooking",
+        "content": "Welcome to our cooking community! Feel free to share your favorite recipes and cooking tips here.",
+        "votes": [
+            {
+                "id": {
+                    "value": "9ad89002-3b4b-4797-8a7a-9210c6cf51b5"
+                },
+                "userId": {
+                    "value": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+                },
+                "postId": {
+                    "value": "d7f182d7-f1e7-469d-8c1f-1d0e19a54138"
+                },
+                "isVoted": true
+            },
+        ]
+    }
+}
+```
+
+### Get posts list by communityId
+```js
+GET {{host}}/posts/list-posts/{{communityId}}?page=1&pageSize=20
+```
+
+#### Get posts list by communityId request
+```json
+{
+
+}
+```
+
+#### Get posts list by communityId response
+```json
+{
+    "posts": [
+        {
+            "id": {
+                "value": "d7f182d7-f1e7-469d-8c1f-1d0e19a54138"
+            },
+            "communityId": {
+                "value": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+            },
+            "userId": {
+                "value": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+            },
+            "title": "Introduction to Cooking",
+            "content": "Welcome to our cooking community! Feel free to share your favorite recipes and cooking tips here.",
+            "votes": [
+                {
+                    "id": {
+                        "value": "9ad89002-3b4b-4797-8a7a-9210c6cf51b5"
+                    },
+                    "userId": {
+                        "value": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+                    },
+                    "postId": {
+                        "value": "d7f182d7-f1e7-469d-8c1f-1d0e19a54138"
+                    },
+                    "isVoted": true
+                },
+            ]
+        }
+    ]
 }
 ```
 
 ### Update post
-
-#### Update post request
 ```js
-
+PUT {{host}}/posts/update-post/{{postId}}
 ```
+#### Update post request
 ```json
-
+{
+    "userId": "6fc3d752-7ec5-4ca4-a3a6-6d6f41255ac0",
+    "title": "Language exchange patterns",
+    "content": "Looking for someone to practice Spanish with. Any takers?"
+}
 ```
 
 #### Update post response
 ```json
 {
-
+    "message": "Post updated successfully"
 }
 ```
 
 ### Delete post
+```js
+DELETE {{host}}/posts/delete-post/{{postId}}
+```
 
 #### Delete post request
-```js
-
-```
 ```json
 {
+    "userId": "6fc3d752-7ec5-4ca4-a3a6-6d6f41255ac0",
 }
 ```
 
 #### Delete post response
 ```json
 {
+    "message": "Post deleted successfully"
 }
 ```
 
-### Upvote post
-
-#### Upvote post request
+### Vote on post
 ```js
+PUT {{host}}/posts/vote-on-post/{{postId}}
 ```
+#### Vote on post request
 ```json
 {
-
+    "UserId": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    "IsVoted": true
 }
 ```
 
-#### Upvote post response
+#### Vote on post response
 ```json
 {
-
+    "message": "Vote on post successfully"
 }
 ```
 
-### Downvote post
-
-#### Downvote post request
+### Update vote on post
 ```js
+PUT {{host}}/posts/vote-on-post/{{postId}}/update/{{voteId}}
 ```
+#### Update vote on post request
 ```json
 {
+    "UserId": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    "IsVoted": false
 }
 ```
 
-#### Downvote post response
+#### Update vote on post response
 ```json
 {
+    "Message": "Vote on post updated successfully"
+}
+```
+
+### Delete vote on post
+```js
+DELETE {{localhost}}/posts/vote-on-post/{{postId}}/delete/{{voteId}}
+```
+
+### Delete vote on post request
+```json
+{
+    "UserId": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+}
+```
+
+### Delete vote on post response
+```json
+{
+    "Message": "Vote on post deleted successfully"
 }
 ```
 

@@ -29,7 +29,7 @@ public class VoteOnPostCommandHandler
         _postRepository.AddPostVote(command.PostId, command.UserId, command.IsVoted);
 
         return new VoteOnPostResult(
-            "Post updated successfully"
+            "Vote on post successfully"
         );
     }
 }
