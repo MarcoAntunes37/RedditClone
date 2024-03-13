@@ -3,6 +3,7 @@ namespace RedditClone.Application.Persistence;
 using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public interface ICommentRepository
@@ -15,7 +16,7 @@ public interface ICommentRepository
     void UpdateCommentVoteById(CommentId id, VoteId voteId, UserId userId, bool isVoted);
     void DeleteCommentVoteById(CommentId id, VoteId voteId, UserId userId);
 
-    void AddCommentReply(CommentId id, UserId userId, string content);
+    void AddCommentReply(CommentId id, UserId userId, CommunityId communityId, string content);
     void UpdateCommentReplyById(CommentId id, ReplyId replyId, UserId userId, string content);
     void DeleteCommentReplyById(CommentId id, ReplyId replyId, UserId userId);
 

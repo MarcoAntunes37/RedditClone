@@ -5,6 +5,7 @@ using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 public sealed class Comment
 {
@@ -12,6 +13,7 @@ public sealed class Comment
     private readonly List<Replies> _replies = new();
     public CommentId Id { get; private set; }
     public UserId UserId { get; private set; }
+    public CommunityId CommunityId { get; private set; }
     public PostId PostId { get; private set; }
     public string Content { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -26,6 +28,7 @@ public sealed class Comment
     private Comment(
         CommentId id,
         UserId userId,
+        CommunityId communityId,
         PostId postId,
         string content,
         DateTime createdAt,
@@ -36,6 +39,7 @@ public sealed class Comment
     {
         Id = id;
         UserId = userId;
+        CommunityId = communityId;
         PostId = postId;
         Content = content;
         CreatedAt = createdAt;
@@ -46,6 +50,7 @@ public sealed class Comment
 
     public static Comment Create(
         UserId userId,
+        CommunityId communityId,
         PostId postId,
         string content,
         DateTime createdAt,
@@ -57,6 +62,7 @@ public sealed class Comment
         return new(
             new CommentId(Guid.NewGuid()),
             userId,
+            communityId,
             postId,
             content,
             createdAt,

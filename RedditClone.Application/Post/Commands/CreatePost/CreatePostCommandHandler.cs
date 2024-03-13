@@ -32,6 +32,9 @@ public class CreatePostCommandHandler
 
         bool isValid = _userCommunitiesRepository.ValidateRelationship(command.UserId, command.CommunityId);
 
+        if(!isValid)
+            throw new Exception("You need to join into community to post");
+
         _validator.ValidateAndThrow(command);
 
         var post = Post.Create(

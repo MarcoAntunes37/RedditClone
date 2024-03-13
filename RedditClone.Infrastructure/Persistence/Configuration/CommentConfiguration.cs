@@ -1,11 +1,12 @@
 namespace RedditClone.Infrastructure.Persistence.Configuration;
 
-using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.CommunityAggregate;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate;
@@ -43,6 +44,16 @@ public class CommentConfiguration
                     value => new UserId(value));
 
             crb.HasOne<User>()
+                .WithMany()
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            crb.Property(cr => cr.CommunityId)
+                .ValueGeneratedNever()
+                .HasConversion(id => id.Value,
+                    value => new CommunityId(value));
+
+            crb.HasOne<Community>()
                 .WithMany()
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -89,7 +100,7 @@ public class CommentConfiguration
 
                 rvb.Property(rv => rv.IsVoted);
 
-                rvb.HasIndex(rv => new {rv.ReplyId, rv.UserId});
+                rvb.HasIndex(rv => new { rv.ReplyId, rv.UserId });
             });
         });
     }
@@ -149,6 +160,16 @@ public class CommentConfiguration
                  value => new UserId(value));
 
         builder.HasOne<User>()
+            .WithMany()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(c => c.CommunityId)
+            .ValueGeneratedNever()
+            .HasConversion(id => id.Value,
+                value => new CommunityId(value));
+
+        builder.HasOne<Community>()
             .WithMany()
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);

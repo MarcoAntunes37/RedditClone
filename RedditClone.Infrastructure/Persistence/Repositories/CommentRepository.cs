@@ -6,6 +6,7 @@ using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class CommentRepository : ICommentRepository
@@ -99,7 +100,7 @@ public class CommentRepository : ICommentRepository
         _dbContext.SaveChanges();
     }
 
-    public void AddCommentReply(CommentId id, UserId userId, string content)
+    public void AddCommentReply(CommentId id, UserId userId, CommunityId communityId, string content)
     {
         Comment commentReply = _dbContext.Comments
             .Include(p => p.Replies)
@@ -110,6 +111,7 @@ public class CommentRepository : ICommentRepository
 
         var reply = Replies.Create(
             userId,
+            communityId,
             id,
             content,
             DateTime.UtcNow,

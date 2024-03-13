@@ -3,6 +3,7 @@ namespace RedditClone.Domain.CommentAggregate.Entities;
 using ErrorOr;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public sealed class Replies
@@ -10,6 +11,7 @@ public sealed class Replies
     private readonly List<RepliesVotes> _votes = new();
     public ReplyId Id { get; private set; }
     public UserId UserId { get; private set; }
+    public CommunityId CommunityId { get; private set; }
     public CommentId CommentId { get; private set; }
     public string Content { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -23,6 +25,7 @@ public sealed class Replies
     private Replies(
         ReplyId id,
         UserId userId,
+        CommunityId communityId,
         CommentId commentId,
         string content,
         DateTime createdAt,
@@ -31,6 +34,7 @@ public sealed class Replies
     {
         Id = id;
         UserId = userId;
+        CommunityId = communityId;
         CommentId = commentId;
         Content = content;
         CreatedAt = createdAt;
@@ -40,6 +44,7 @@ public sealed class Replies
 
     public static Replies Create(
         UserId userId,
+        CommunityId communityId,
         CommentId commentId,
         string content,
         DateTime createdAt,
@@ -49,6 +54,7 @@ public sealed class Replies
         return new(
             new ReplyId(Guid.NewGuid()),
             userId,
+            communityId,
             commentId,
             content,
             createdAt,

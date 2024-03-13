@@ -2,6 +2,8 @@ using System.Configuration.Assemblies;
 using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.CommunityAggregate;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
@@ -13,6 +15,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectOnCreate()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         var content = "This is a comment content example";
         var createdAt = DateTime.UtcNow;
@@ -23,6 +26,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -45,6 +49,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectWithNewDataOnUpdate()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         var content = "This is a comment content example";
         var createdAt = DateTime.UtcNow;
@@ -57,6 +62,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -76,6 +82,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectWithAnEntryInVotesList()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid voteUserId = new("e041fd03-f6f1-4d79-8d25-b81f6d9cfbec");
         var content = "This is a comment content example";
@@ -87,6 +94,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -110,6 +118,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectWithVotesListEntryDataUpdated()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid voteUserId = new("e041fd03-f6f1-4d79-8d25-b81f6d9cfbec");
         var content = "This is a comment content example";
@@ -121,6 +130,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -146,6 +156,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectWithVotesListEntryDataRemoved()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid voteUserId = new("e041fd03-f6f1-4d79-8d25-b81f6d9cfbec");
         var content = "This is a comment content example";
@@ -157,6 +168,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -181,6 +193,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectWithAnEntryInRepliesList()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
         var replyContent = "This is a reply content example";
@@ -194,6 +207,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -203,6 +217,7 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
+            new CommunityId(communityId),
             comment.Id,
             replyContent,
             DateTime.UtcNow,
@@ -220,6 +235,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectWithAnEntryInRepliesListDataUpdated()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
         var replyContent = "This is a reply content example";
@@ -234,6 +250,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -243,6 +260,7 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
+            new CommunityId(communityId),
             comment.Id,
             replyContent,
             DateTime.UtcNow,
@@ -262,6 +280,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectWithAnEntryInRepliesListDataRemoved()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
         var replyContent = "This is a reply content example";
@@ -275,6 +294,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -284,6 +304,7 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
+            new CommunityId(communityId),
             comment.Id,
             replyContent,
             DateTime.UtcNow,
@@ -302,6 +323,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectWithAnEntryInRepliesVotesList()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
         Guid voteUserId = new("cef60ad4-6361-4271-a5d7-b0166b5c8f3b");
@@ -316,6 +338,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -325,6 +348,7 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
+            new CommunityId(communityId),
             comment.Id,
             replyContent,
             DateTime.UtcNow,
@@ -349,6 +373,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectWithAnEntryInRepliesVotesListDataUpdated()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
         Guid voteUserId = new("cef60ad4-6361-4271-a5d7-b0166b5c8f3b");
@@ -363,6 +388,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -372,6 +398,7 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
+            new CommunityId(communityId),
             comment.Id,
             replyContent,
             DateTime.UtcNow,
@@ -399,6 +426,7 @@ public class DomainCommentsTests
     public void ShouldReturnCommentObjectWithAnEntryInRepliesVotesListDataRemoved()
     {
         Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
+        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
         Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
         Guid voteUserId = new("cef60ad4-6361-4271-a5d7-b0166b5c8f3b");
@@ -413,6 +441,7 @@ public class DomainCommentsTests
 
         var comment = Comment.Create(
             new UserId(userId),
+            new CommunityId(communityId),
             new PostId(postId),
             content,
             createdAt,
@@ -422,6 +451,7 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
+            new CommunityId(communityId),
             comment.Id,
             replyContent,
             DateTime.UtcNow,
@@ -436,8 +466,5 @@ public class DomainCommentsTests
             true);
 
         reply.AddReplyVote(replyVote);
-
-        // Assert.NotNull(comment.Replies[0].Votes);
-        // Assert.Empty(comment.Replies[0].Votes);
     }
 }

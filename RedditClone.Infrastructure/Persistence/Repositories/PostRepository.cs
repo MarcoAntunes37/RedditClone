@@ -36,7 +36,6 @@ public class PostRepository : IPostRepository
 
     public List<Post> GetPostListByCommunity(CommunityId communityId)
     {
-
         List<Post> posts = _dbContext.Posts.Where(p => p.CommunityId == communityId).ToList();
 
         return posts;
@@ -45,6 +44,7 @@ public class PostRepository : IPostRepository
     public void Add(Post post)
     {
         _dbContext.Posts.Add(post);
+
         _dbContext.SaveChangesAsync();
     }
 

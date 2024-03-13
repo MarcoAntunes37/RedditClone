@@ -31,6 +31,7 @@ using RedditClone.Contracts.Comment.UpdateVoteOnReply;
 using RedditClone.Application.Comment.Commands.UpdateVoteOnReply;
 using RedditClone.Contracts.Comment.DeleteVoteOnReply;
 using RedditClone.Application.Community.Commands.DeleteVoteOnReply;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 public class CommentMappers
 {
@@ -42,6 +43,7 @@ public class CommentMappers
         List<Replies> replies = new();
         return new CreateCommentCommand(
             new UserId(request.UserId),
+            new CommunityId(request.CommunityId),
             new PostId(postId),
             request.Content,
             DateTime.UtcNow,
@@ -132,6 +134,7 @@ public class CommentMappers
     {
         return new ReplyOnCommentCommand(
             new UserId(request.UserId),
+            new CommunityId(request.CommunityId),
             new CommentId(commentId),
             request.Content
         );
