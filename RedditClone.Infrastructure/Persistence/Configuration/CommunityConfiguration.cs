@@ -50,5 +50,8 @@ public class CommunityConfiguration
         builder.Property(c => c.CreatedAt);
 
         builder.Property(c => c.UpdatedAt);
+
+        builder.HasIndex(c => c.Name)
+            .IsUnique();
     }
 }

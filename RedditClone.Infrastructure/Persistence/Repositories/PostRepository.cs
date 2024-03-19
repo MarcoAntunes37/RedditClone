@@ -1,13 +1,14 @@
 namespace RedditClone.Infrastructure.Persistence;
 
+using System.Net;
 using Microsoft.EntityFrameworkCore;
+using RedditClone.Application.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate;
 using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;
-using RedditClone.Domain.UserAggregate;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class PostRepository : IPostRepository
@@ -21,14 +22,14 @@ public class PostRepository : IPostRepository
     public Post GetPostById(PostId postId)
     {
         Post post = _dbContext.Posts.FirstOrDefault(p => p.Id == postId)
-        ?? throw new Exception("Invalid Post");
+        ?? throw new HttpCustomException(
+        HttpStatusCode.NotFound, "Post not found");
 
         return post;
     }
 
     public List<Post> GetPostListByUser(UserId userId)
     {
-
         List<Post> posts = _dbContext.Posts.Where(p => p.UserId == userId).ToList();
 
         return posts;
@@ -51,7 +52,8 @@ public class PostRepository : IPostRepository
     public void UpdatePostById(PostId id, UserId userId, string title, string content)
     {
         Post post = _dbContext.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId)
-            ?? throw new Exception("An error occurred, post is invalid or you not the owner");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Post not found on you posts");
 
         post.UpdatePost(title, content);
 
@@ -65,7 +67,8 @@ public class PostRepository : IPostRepository
     public void DeletePostById(PostId id, UserId userId)
     {
         Post post = _dbContext.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId)
-            ?? throw new Exception("An error occurred, post is invalid or you not the owner");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Post not found on you posts");;
 
         _dbContext.Posts.Remove(post);
 
@@ -77,7 +80,8 @@ public class PostRepository : IPostRepository
         Post postVote = _dbContext.Posts
             .Include(p => p.Votes)
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, post is invalid.");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Post not found");;
 
         var vote = Votes.Create(id, userId, isVoted);
 
@@ -96,7 +100,8 @@ public class PostRepository : IPostRepository
             .Include(p => p.Votes)
             .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, post is invalid or vote in post is invalid");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Vote not found on that post");
 
         postVote.UpdateVote(voteId, isVoted);
 
@@ -111,7 +116,8 @@ public class PostRepository : IPostRepository
             .Include(p => p.Votes)
             .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, post is invalid or vote in post is invalid");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Vote not found on that post");
 
         postVote.RemoveVote(voteId);
 

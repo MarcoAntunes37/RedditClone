@@ -1,5 +1,7 @@
+using System.Net;
 using Microsoft.EntityFrameworkCore;
 using RedditClone.Application.Common.Interfaces.Persistence;
+using RedditClone.Application.Errors;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.UserCommunitiesAggregate;
@@ -35,7 +37,8 @@ public class UserCommunitiesRepository : IUserCommunitiesRepository
         UserCommunities userCommunities =
             _dbContext.UserCommunities
             .SingleOrDefault(uc => uc.UserId == userId && uc.CommunityId == communityId)
-            ?? throw new Exception("An error occurred");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "You are not part of this community");
 
         _dbContext.UserCommunities.Remove(userCommunities);
 

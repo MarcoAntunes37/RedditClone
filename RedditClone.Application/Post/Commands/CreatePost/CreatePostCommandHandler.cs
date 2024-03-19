@@ -1,8 +1,10 @@
 namespace RedditClone.Application.Post.Commands.CreatePost;
 
+using System.Net;
 using FluentValidation;
 using MediatR;
 using RedditClone.Application.Common.Interfaces.Persistence;
+using RedditClone.Application.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.Post.Results.CreatePostResult;
 using RedditClone.Domain.PostAggregate;
@@ -33,7 +35,8 @@ public class CreatePostCommandHandler
         bool isValid = _userCommunitiesRepository.ValidateRelationship(command.UserId, command.CommunityId);
 
         if(!isValid)
-            throw new Exception("You need to join into community to post");
+            throw new HttpCustomException(
+            HttpStatusCode.NotFound, "User not part of this community");
 
         _validator.ValidateAndThrow(command);
 

@@ -29,6 +29,7 @@ public static class UserMappers
             request.Lastname,
             request.Username,
             request.Password,
+            request.RepeatPassword,
             request.Email,
             DateTime.UtcNow,
             DateTime.UtcNow
@@ -90,7 +91,8 @@ public static class UserMappers
         return new UpdatePasswordCommand(
             new UserId(userId),
             request.OldPassword,
-            request.NewPassword);
+            request.NewPassword,
+            request.RepeatNewPassword);
     }
 
     public static SendPasswordRecoveryEmailCommand MapSendPasswordRecoveryEmailRequest(

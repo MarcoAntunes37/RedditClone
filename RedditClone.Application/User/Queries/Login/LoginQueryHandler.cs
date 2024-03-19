@@ -7,6 +7,8 @@ using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results.Login;
 using RedditClone.Domain.UserAggregate;
 using BCrypt.Net;
+using RedditClone.Application.Errors;
+using System.Net;
 
 public class LoginQueryHandler :
 IRequestHandler<LoginQuery, LoginResult>
@@ -31,10 +33,12 @@ IRequestHandler<LoginQuery, LoginResult>
         _validator.ValidateAndThrow(query);
 
         if (_userRepository.GetUserByEmail(query.Email) is not User user)
-            throw new Exception("Invalid credentials");
+            throw new HttpCustomException(
+            HttpStatusCode.Unauthorized, "Invalid credentials");
 
         if (!BCrypt.Verify(query.Password, user.Password))
-            throw new Exception("Invalid credentials");
+            throw new HttpCustomException(
+            HttpStatusCode.Unauthorized, "Invalid credentials");
 
         var token = _jwtTokenGenerator.GenerateToken(user.Id.Value, user.Firstname, user.Lastname);
 

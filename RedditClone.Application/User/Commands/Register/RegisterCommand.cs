@@ -10,6 +10,7 @@ public record RegisterCommand(
     string Lastname,
     string Username,
     string Password,
+    string MatchPassword,
     string Email,
     DateTime CreatedAt,
     DateTime UpdatedAt

@@ -28,12 +28,14 @@ public partial class UpdatePasswordCommandValidator : AbstractValidator<UpdatePa
             .Matches(StrongPassword())
                 .WithMessage("Password must have at a number, a upper case letter, a one lower case letter and a special character");
 
+        RuleFor(u => u.MatchPassword)
+            .Equal(u => u.NewPassword)
+                .WithMessage("Confirm password must match with new password");
+
         RuleFor(u => u.OldPassword)
             .NotEmpty()
                 .WithMessage("Old password cannot be empty")
             .NotNull()
                 .WithMessage("Old password cannot be null");
     }
-
-
 }

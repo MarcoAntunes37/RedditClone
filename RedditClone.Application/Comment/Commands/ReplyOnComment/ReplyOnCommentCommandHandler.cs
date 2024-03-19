@@ -1,9 +1,11 @@
 namespace RedditClone.Application.Comment.Commands.ReplyOnComment;
 
+using System.Net;
 using FluentValidation;
 using MediatR;
 using RedditClone.Application.Comment.Results.ReplyOnCommentResult;
 using RedditClone.Application.Common.Interfaces.Persistence;
+using RedditClone.Application.Errors;
 using RedditClone.Application.Persistence;
 
 public class ReplyOnCommentCommandHandler :
@@ -31,7 +33,8 @@ public class ReplyOnCommentCommandHandler :
         bool isValid = _userCommunitiesRepository.ValidateRelationship(command.UserId, command.CommunityId);
 
         if(!isValid)
-            throw new Exception("You need to join into community to reply");
+            throw new HttpCustomException(
+            HttpStatusCode.NotFound, "User is not part of community");
 
         _validator.ValidateAndThrow(command);
 

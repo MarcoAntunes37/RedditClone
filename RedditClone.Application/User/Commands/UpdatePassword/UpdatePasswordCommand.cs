@@ -7,6 +7,7 @@ using RedditClone.Application.User.Results.UpdatePassword;
 public record UpdatePasswordCommand(
     UserId UserId,
     string OldPassword,
-    string NewPassword
+    string NewPassword,
+    string MatchPassword
 
 ) : IRequest<UpdatePasswordResult>;

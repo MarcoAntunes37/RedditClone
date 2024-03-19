@@ -1,4 +1,4 @@
-namespace RedditClone.Infrastructure.Authentication;
+namespace RedditClone.Infrastructure.Settings;
 
 public class JwtSettings
 {
@@ -6,5 +6,5 @@ public class JwtSettings
     public string Secret { get; init; } = null!;
     public string Issuer { get; init; } = null!;
     public string Audience { get; init; } = null!;
-    public int ExpirationTimeInMinutes { get; set; }
+    public int ExpirationTimeInMinutes { get; init; } = 0;
 }

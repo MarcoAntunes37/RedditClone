@@ -17,7 +17,6 @@ using RedditClone.Contracts.SendPasswordRecoveryEmail;
 using RedditClone.Application.User.Results.SendPasswordRecoveryEmail;
 using RedditClone.Contracts.PasswordRecoveryCodeValidate;
 using RedditClone.Application.User.Results.PasswordRecoveryCodeValidate;
-using FluentValidation;
 using RedditClone.Contracts.PasswordRecoveryNewPassword;
 using RedditClone.Application.User.Results.PasswordRecoveryNewPassword;
 
@@ -26,21 +25,15 @@ using RedditClone.Application.User.Results.PasswordRecoveryNewPassword;
 public class UserController : ApiController
 {
     private readonly ISender _sender;
-    private readonly IValidator<RegisterRequest> _validator;
 
-    public UserController(
-        ISender sender,
-        IValidator<RegisterRequest> validator)
+    public UserController(ISender sender)
     {
         _sender = sender;
-        _validator = validator;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        _validator.ValidateAndThrow(request);
-
         var command = UserMappers.MapRegisterRequest(request);
 
         RegisterResult result = await _sender.Send(command);

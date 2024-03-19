@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using RedditClone.Infrastructure.Services;
 using RedditClone.Application.Common.Interfaces.Persistence;
 using RedditClone.Infrastructure.Persistence.Repositories;
+using RedditClone.Infrastructure.Settings;
 
 namespace RedditClone.Infrastructure;
 public static class DependencyInjection
@@ -26,7 +27,24 @@ public static class DependencyInjection
         services.AddPersistence();
         services.AddSingleton<IRecoveryCodeManager, RecoveryCodeManager>();
         services.AddSingleton<IEmailRecovery, EmailRecovery>();
+        services.AddEmailRecovery(configuration);
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddEmailRecovery(
+    this IServiceCollection services,
+    ConfigurationManager configuration)
+    {
+        var smtpSettings = new SmtpSettings();
+
+        configuration.Bind(SmtpSettings.SectionName, smtpSettings);
+
+        services.AddSingleton(Options.Create(smtpSettings));
+
+        services.Configure<SmtpSettings>(
+            configuration.GetSection(SmtpSettings.SectionName));
 
         return services;
     }

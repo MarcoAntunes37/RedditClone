@@ -7,6 +7,8 @@ using RedditClone.Application.Common.Interfaces.Authentication;
 using RedditClone.Domain.UserAggregate;
 using BCrypt.Net;
 using FluentValidation;
+using RedditClone.Application.Errors;
+using System.Net;
 
 public partial class RegisterCommandHandler :
 IRequestHandler<RegisterCommand, RegisterResult>
@@ -33,10 +35,16 @@ IRequestHandler<RegisterCommand, RegisterResult>
         _validator.ValidateAndThrow(command);
 
         if (_userRepository.GetUserByEmail(command.Email) is not null)
-            throw new Exception("Email is already in use");
+            throw new HttpCustomException(
+            HttpStatusCode.Conflict, "Email is already in use");
 
         if (_userRepository.GetUserByUsername(command.Username) is not null)
-            throw new Exception("Username is already in use");
+            throw new HttpCustomException(
+            HttpStatusCode.Conflict, "Username is already in use");
+
+        if(command.Password != command.MatchPassword)
+            throw new HttpCustomException(
+            HttpStatusCode.BadRequest, "Password don't match with confirm password field");
 
         var user = User.Create(
             command.Firstname,

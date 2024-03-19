@@ -1,9 +1,11 @@
 namespace RedditClone.Application.Comment.Commands.CreateComment;
 
+using System.Net;
 using FluentValidation;
 using MediatR;
 using RedditClone.Application.Comment.Results.CreateCommentResult;
 using RedditClone.Application.Common.Interfaces.Persistence;
+using RedditClone.Application.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommentAggregate;
 
@@ -32,7 +34,8 @@ public class CreateCommentCommandHandler :
         bool isValid = _userCommunitiesRepository.ValidateRelationship(command.UserId, command.CommunityId);
 
         if(!isValid)
-            throw new Exception("You need to join into community to comment");
+            throw new HttpCustomException(
+            HttpStatusCode.NotFound, "User is not part of community");
 
         _validator.ValidateAndThrow(command);
 

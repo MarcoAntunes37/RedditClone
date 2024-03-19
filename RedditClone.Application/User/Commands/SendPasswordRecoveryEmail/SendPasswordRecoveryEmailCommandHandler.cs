@@ -1,7 +1,9 @@
 namespace RedditClone.Application.User.Commands.SendPasswordRecoveryEmail;
 
+using System.Net;
 using MediatR;
 using RedditClone.Application.Common.Interfaces.Services;
+using RedditClone.Application.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results.SendPasswordRecoveryEmail;
 
@@ -27,7 +29,8 @@ public partial class SendPasswordRecoveryEmailCommandHandler
         await Task.CompletedTask;
 
         if(_userRepository.GetUserByEmail(command.Email) is null){
-            throw new Exception("Cannot found a user with that email");
+            throw new HttpCustomException(
+            HttpStatusCode.NotFound, $"Cannot found a user with this email {command.Email}");
         }
 
         Random random = new();

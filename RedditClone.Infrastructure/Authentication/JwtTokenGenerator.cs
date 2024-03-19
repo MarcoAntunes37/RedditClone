@@ -5,6 +5,7 @@ using RedditClone.Application.Common.Interfaces.Authentication;
 using RedditClone.Application.Common.Interfaces.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using RedditClone.Infrastructure.Settings;
 
 namespace RedditClone.Infrastructure.Authentication;
 

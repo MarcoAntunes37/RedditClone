@@ -1,8 +1,10 @@
 namespace RedditClone.Application.Community.Commands.CreateCommunity;
 
+using System.Net;
 using FluentValidation;
 using MediatR;
 using RedditClone.Application.Community.Results.CreateCommunityResult;
+using RedditClone.Application.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommunityAggregate;
 
@@ -24,6 +26,10 @@ public class CreateCommunityCommandHandler :
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
+
+        if(_communityRepository.GetCommunityByName(command.Name) is not null)
+            throw new HttpCustomException(
+            HttpStatusCode.Conflict, $"Community {command.Name} already exists");
 
         _validator.ValidateAndThrow(command);
 

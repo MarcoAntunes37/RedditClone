@@ -29,10 +29,11 @@ public partial class UpdatePasswordCommandHandler
         _userRepository.UpdatePasswordById(
             command.UserId,
             command.OldPassword,
-            command.NewPassword);
+            command.NewPassword,
+            command.MatchPassword);
 
         return new UpdatePasswordResult(
-            "Password updated"
+            "Password updated successfully"
         );
     }
 }

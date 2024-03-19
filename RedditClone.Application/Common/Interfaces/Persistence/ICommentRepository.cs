@@ -4,10 +4,13 @@ using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public interface ICommentRepository
 {
+    Comment GetCommentById(CommentId commentId);
+    List<Comment> GetCommentsListByPostId(PostId postId);
     void Add(Comment comment);
     void UpdateCommentById(CommentId id, UserId userId, string content);
     void DeleteCommentById(CommentId id, UserId userId);

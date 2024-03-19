@@ -1,12 +1,15 @@
 namespace RedditClone.Infrastructure.Persistence;
 
+using System.Net;
 using Microsoft.EntityFrameworkCore;
+using RedditClone.Application.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class CommentRepository : ICommentRepository
@@ -16,6 +19,23 @@ public class CommentRepository : ICommentRepository
     public CommentRepository(RedditCloneDbContext dbContext)
     {
         _dbContext = dbContext;
+    }
+
+    public Comment GetCommentById(CommentId commentId)
+    {
+        Comment comment = _dbContext.Comments.FirstOrDefault(c => c.Id == commentId)
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Comment not found");
+
+        return comment;
+    }
+
+    public List<Comment> GetCommentsListByPostId(PostId postId)
+    {
+        List<Comment> comments =
+            _dbContext.Comments.Where(c => c.PostId == postId).ToList();
+
+        return comments;
     }
 
     public void Add(Comment comment)
@@ -28,7 +48,8 @@ public class CommentRepository : ICommentRepository
     public void UpdateCommentById(CommentId id, UserId userId, string content)
     {
         Comment comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id && c.UserId == userId)
-            ?? throw new Exception("An error occurred, comment is invalid or you not the owner");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Comment not found on you comments");
 
         comment.UpdateComment(content);
 
@@ -42,7 +63,8 @@ public class CommentRepository : ICommentRepository
     public void DeleteCommentById(CommentId id, UserId userId)
     {
         Comment comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id && c.UserId == userId)
-            ?? throw new Exception("An error occurred, comment is invalid or you not the owner");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Comment not found on you comments");
 
         _dbContext.Comments.Remove(comment);
 
@@ -54,7 +76,8 @@ public class CommentRepository : ICommentRepository
         Comment commentVote = _dbContext.Comments
             .Include(p => p.Votes)
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, comment is invalid.");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Comment not found");
 
         var vote = Votes.Create(
             id,
@@ -76,7 +99,8 @@ public class CommentRepository : ICommentRepository
             .Include(p => p.Votes)
             .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, comment is invalid or vote in comment is invalid");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Your vote not found on comment");
 
         commentVote.UpdateVote(voteId, isVoted);
 
@@ -91,7 +115,8 @@ public class CommentRepository : ICommentRepository
             .Include(p => p.Votes)
             .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, comment is invalid or vote in comment is invalid");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Your vote not found on comment");
 
         commentVote.RemoveVote(voteId);
 
@@ -105,7 +130,8 @@ public class CommentRepository : ICommentRepository
         Comment commentReply = _dbContext.Comments
             .Include(p => p.Replies)
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, comment is invalid.");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Reply not found on comment");
 
         List<RepliesVotes> repliesVotes = new();
 
@@ -133,7 +159,8 @@ public class CommentRepository : ICommentRepository
             .Include(p => p.Replies)
             .Where(p => p.Replies.Any(pv => pv.Id == replyId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, comment is invalid or reply in comment is invalid");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Reply not found on comment");
 
         commentReply.UpdateReply(replyId, content);
 
@@ -148,7 +175,8 @@ public class CommentRepository : ICommentRepository
             .Include(p => p.Replies)
             .Where(p => p.Replies.Any(pv => pv.Id == replyId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id)
-            ?? throw new Exception("An error occurred, comment is invalid or reply in comment is invalid");
+            ?? throw new HttpCustomException(
+            HttpStatusCode.NotFound, "Reply not found on comment");
 
         commentReply.RemoveReply(replyId);
 
@@ -165,7 +193,8 @@ public class CommentRepository : ICommentRepository
                 .Where(cr => cr.Replies.Any(
                     r => r.Id == replyId && r.UserId == userId))
                 .SingleOrDefault(c => c.Id == id)
-                ?? throw new Exception("An error occurred, comment is invalid or reply in comment is invalid");;
+                ?? throw new HttpCustomException(
+                HttpStatusCode.NotFound, "Vote not found on reply");
 
         var replyVotes = RepliesVotes.Create(
                 replyId,
@@ -190,7 +219,8 @@ public class CommentRepository : ICommentRepository
                 .Where(cr => cr.Replies.Any(
                     r => r.Id == replyId && r.UserId == userId))
                 .SingleOrDefault(c => c.Id == id)
-                ?? throw new Exception("An error occurred, comment is invalid, reply in comment is invalid or vote in reply is invalid");
+                ?? throw new HttpCustomException(
+                HttpStatusCode.NotFound, "Vote not found on reply");
 
         commentReplyVotes.UpdateReplyVote(replyId, voteId, isVoted);
 
@@ -209,7 +239,8 @@ public class CommentRepository : ICommentRepository
                 .Where(cr => cr.Replies.Any(
                     r => r.Id == replyId && r.UserId == userId))
                 .SingleOrDefault(c => c.Id == id)
-                ?? throw new Exception("An error occurred, comment is invalid, reply in comment is invalid or vote in reply is invalid");
+                ?? throw new HttpCustomException(
+                HttpStatusCode.NotFound, "Vote not found on reply");
 
         commentReplyVotes.RemoveReplyVote(replyId, voteId);
 

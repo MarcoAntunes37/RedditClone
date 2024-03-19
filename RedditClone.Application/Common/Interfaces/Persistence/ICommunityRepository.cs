@@ -7,6 +7,7 @@ using RedditClone.Domain.UserAggregate.ValueObjects;
 public interface ICommunityRepository
 {
     Community GetCommunityById(CommunityId communityId);
+    Community GetCommunityByName(string name);
     List<Community> GetCommunitiesList();
     void Add(Community community);
     void UpdateCommunityById(CommunityId id, UserId userId, string name, string description, string topic);

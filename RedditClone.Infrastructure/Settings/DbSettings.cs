@@ -1,4 +1,4 @@
-namespace RedditClone.Infrastructure.Authentication;
+namespace RedditClone.Infrastructure.Settings;
 
 public class DbSettings
 {
