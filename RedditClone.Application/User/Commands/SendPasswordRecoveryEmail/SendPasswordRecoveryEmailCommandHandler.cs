@@ -1,11 +1,15 @@
 namespace RedditClone.Application.User.Commands.SendPasswordRecoveryEmail;
 
 using System.Net;
+using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using RedditClone.Application.Common.Interfaces.Services;
 using RedditClone.Application.Errors;
+using RedditClone.Application.Helpers;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results.SendPasswordRecoveryEmail;
+using Serilog;
 
 public partial class SendPasswordRecoveryEmailCommandHandler
     : IRequestHandler<SendPasswordRecoveryEmailCommand, SendPasswordRecoveryEmailResult>
@@ -13,20 +17,36 @@ public partial class SendPasswordRecoveryEmailCommandHandler
     private readonly IEmailRecovery _emailRecovery;
     private readonly IRecoveryCodeManager _recoveryCodeManager;
     private readonly IUserRepository _userRepository;
+    private readonly IValidator<SendPasswordRecoveryEmailCommand> _validator;
+    private readonly IConfiguration _configuration;
     public SendPasswordRecoveryEmailCommandHandler(
         IEmailRecovery emailRecovery,
         IRecoveryCodeManager recoveryCodeManager,
-        IUserRepository userRepository)
+        IValidator<SendPasswordRecoveryEmailCommand> validator,
+        IUserRepository userRepository,
+        IConfiguration configuration)
     {
         _emailRecovery = emailRecovery;
         _recoveryCodeManager = recoveryCodeManager;
+        _validator = validator;
         _userRepository = userRepository;
+        _configuration = configuration;
     }
 
     public async Task<SendPasswordRecoveryEmailResult> Handle(SendPasswordRecoveryEmailCommand command,
     CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
+
+        new SerilogLoggerConfiguration(_configuration).CreateLogger();
+
+        Log.Information(
+            "{@Message}, {@SendPasswordEmailRecoveryCommand}",
+            "Trying to send email to {@Email}",
+            command,
+            command.Email);
+
+        _validator.ValidateAndThrow(command);
 
         if(_userRepository.GetUserByEmail(command.Email) is null){
             throw new HttpCustomException(
@@ -51,8 +71,14 @@ public partial class SendPasswordRecoveryEmailCommandHandler
             "RedditClone Email recovery",
             body);
 
-        return new SendPasswordRecoveryEmailResult(
-            $"Recovery email sent to {command.Email}, check spam and deleted emails"
-        );
+        SendPasswordRecoveryEmailResult result = new(
+            $"Recovery email sent to {command.Email}, check spam and deleted emails");
+
+        Log.Information(
+            "{@SendPasswordRecoveryEmailResult}, {@Email}",
+            result,
+            command.Email);
+
+        return result;
     }
 }

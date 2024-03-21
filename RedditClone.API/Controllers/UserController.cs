@@ -19,6 +19,7 @@ using RedditClone.Contracts.PasswordRecoveryCodeValidate;
 using RedditClone.Application.User.Results.PasswordRecoveryCodeValidate;
 using RedditClone.Contracts.PasswordRecoveryNewPassword;
 using RedditClone.Application.User.Results.PasswordRecoveryNewPassword;
+using Serilog;
 
 [Route("user")]
 [AllowAnonymous]
@@ -53,7 +54,7 @@ public class UserController : ApiController
 
     [HttpDelete("delete/{userId}")]
     public async Task<IActionResult> Delete(
-        [FromRoute]Guid userId
+        [FromRoute] Guid userId
     )
     {
         var command = UserMappers.MapDeleteUserRequest(userId);
@@ -65,7 +66,7 @@ public class UserController : ApiController
 
     [HttpPut("update-profile/{userId}")]
     public async Task<IActionResult> UpdateProfile(
-        [FromRoute]Guid userId,
+        [FromRoute] Guid userId,
         UpdateProfileRequest request
     )
     {
@@ -78,7 +79,7 @@ public class UserController : ApiController
 
     [HttpPut("update-password/{userId}")]
     public async Task<IActionResult> UpdatePassword(
-        [FromRoute]Guid userId,
+        [FromRoute] Guid userId,
         UpdatePasswordRequest request
     )
     {

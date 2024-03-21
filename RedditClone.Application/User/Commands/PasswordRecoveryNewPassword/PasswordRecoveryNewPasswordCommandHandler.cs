@@ -1,18 +1,28 @@
 namespace RedditClone.Application.User.Commands.PasswordRecoveryNewPassword;
 
+using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Configuration;
+using RedditClone.Application.Helpers;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results.PasswordRecoveryNewPassword;
-
+using Serilog;
 
 public partial class PasswordRecoveryNewPasswordCommandHandler
     : IRequestHandler<PasswordRecoveryNewPasswordCommand,
         PasswordRecoveryNewPasswordResult>
 {
     private readonly IUserRepository _userRepository;
-    public PasswordRecoveryNewPasswordCommandHandler(IUserRepository userRepository)
+    private readonly IValidator<PasswordRecoveryNewPasswordCommand> _validator;
+    private readonly IConfiguration _configuration;
+    public PasswordRecoveryNewPasswordCommandHandler(
+        IUserRepository userRepository,
+        IValidator<PasswordRecoveryNewPasswordCommand> validator,
+        IConfiguration configuration)
     {
         _userRepository = userRepository;
+        _validator = validator;
+        _configuration = configuration;
     }
 
     public async Task<PasswordRecoveryNewPasswordResult> Handle(PasswordRecoveryNewPasswordCommand command,
@@ -20,10 +30,25 @@ public partial class PasswordRecoveryNewPasswordCommandHandler
     {
         await Task.CompletedTask;
 
-        _userRepository.UpdateRecoveredPassword(command.Email, command.NewPassword);
+        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
-        return new PasswordRecoveryNewPasswordResult(
-            "Password updated successfully"
-        );
+        Log.Information(
+            "{@Message}, {@PasswordRecoveryNewPasswordCommand}",
+            "Trying to update password of user with {@Email}",
+            command,
+            command.Email);
+
+        _validator.ValidateAndThrow(command);
+
+        _userRepository.UpdateRecoveredPassword(command.Email, command.NewPassword, command.ConfirmPassword);
+
+        PasswordRecoveryNewPasswordResult result = new("Password updated successfully");
+
+        Log.Information(
+            "{@PasswordRecoveryNewPasswordResult}, {@Email}",
+            result,
+            command.Email);
+
+        return result;
     }
 }

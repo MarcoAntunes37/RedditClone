@@ -1,7 +1,9 @@
 namespace RedditClone.Application;
 
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using RedditClone.Application.Comment.Commands.CreateComment;
 using RedditClone.Application.Comment.Commands.ReplyOnComment;
 using RedditClone.Application.Comment.Commands.UpdateComment;
@@ -30,8 +32,13 @@ using RedditClone.Application.Post.Commands.UpdateVoteOnPost;
 using RedditClone.Application.Post.Commands.VoteOnPost;
 using RedditClone.Application.Post.Queries.GetPostById;
 using RedditClone.Application.Post.Queries.GetPostListByCommunityId;
+using RedditClone.Application.Settings;
 using RedditClone.Application.User.Commands.Delete;
+using RedditClone.Application.User.Commands.PasswordRecoveryCodeValidate;
+using RedditClone.Application.User.Commands.PasswordRecoveryNewPassword;
+using RedditClone.Application.User.Commands.PasswordRecoveryNewPasswordCommandValidator;
 using RedditClone.Application.User.Commands.Register;
+using RedditClone.Application.User.Commands.SendPasswordRecoveryEmail;
 using RedditClone.Application.User.Commands.Update;
 using RedditClone.Application.User.Commands.UpdatePassword;
 using RedditClone.Application.User.Commands.UpdateProfile;
@@ -124,6 +131,23 @@ public static class DependencyInjection
         services.AddScoped<IValidator<DeleteUserCommand>, DeleteUserCommandValidator>();
         services.AddScoped<IValidator<UpdateProfileCommand>, UpdateProfileCommandValidator>();
         services.AddScoped<IValidator<UpdatePasswordCommand>, UpdatePasswordCommandValidator>();
+        services.AddScoped<IValidator<SendPasswordRecoveryEmailCommand>, SendPasswordRecoveryEmailCommandValidator>();
+        services.AddScoped<IValidator<PasswordRecoveryNewPasswordCommand>, PasswordRecoveryNewPasswordCommandValidator>();
+        services.AddScoped<IValidator<PasswordRecoveryCodeValidateCommand>, PasswordRecoveryCodeValidateCommandValidator>();
+
+        return services;
+    }
+    public static IServiceCollection AddSerilog(this IServiceCollection services,
+            ConfigurationManager configuration)
+    {
+        var serilogSettings = new SerilogSettings();
+
+        configuration.Bind(SerilogSettings.SectionName, serilogSettings);
+
+        services.AddSingleton(Options.Create(serilogSettings));
+
+        services.Configure<SerilogSettings>(
+            configuration.GetSection(SerilogSettings.SectionName));
 
         return services;
     }

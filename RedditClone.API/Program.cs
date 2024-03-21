@@ -2,9 +2,13 @@ using RedditClone.API;
 using RedditClone.API.Middlewares;
 using RedditClone.Application;
 using RedditClone.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 {
+    builder.Host.UseSerilog((context, configuration) =>
+        configuration.ReadFrom.Configuration(context.Configuration));
+
     builder.Services.AddPresentation()
                     .AddApplication()
                     .AddInfrastructure(builder.Configuration);
@@ -12,8 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    app.UseSerilogRequestLogging();
     app.UseMiddleware<ExceptionHandlerMiddleware>();
-    app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();

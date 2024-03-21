@@ -1,7 +1,6 @@
 namespace RedditClone.Application.User.Commands.Register;
 
 using FluentValidation;
-using RedditClone.Application.Persistence;
 using System.Text.RegularExpressions;
 
 public partial class RegisterCommandValidator : AbstractValidator<RegisterCommand>

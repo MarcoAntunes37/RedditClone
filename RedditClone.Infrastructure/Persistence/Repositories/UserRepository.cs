@@ -70,11 +70,15 @@ public class UserRepository : IUserRepository
         _dbContext.SaveChanges();
     }
 
-    public void UpdateRecoveredPassword(string email, string newPassword)
+    public void UpdateRecoveredPassword(string email, string newPassword, string matchPassword)
     {
         User user = _dbContext.Users.SingleOrDefault(u => u.Email == email)
             ?? throw new HttpCustomException(
             HttpStatusCode.NotFound, $"Not found a user with email {email}.");
+
+        if(newPassword != matchPassword)
+            throw new HttpCustomException(
+               HttpStatusCode.Conflict, "New password must match with confirm password");
 
         user.UpdatePassword(BCrypt.HashPassword(
                 newPassword, BCrypt.GenerateSalt(), false, HashType.SHA256));

@@ -5,5 +5,6 @@ using RedditClone.Application.User.Results.PasswordRecoveryNewPassword;
 
 public record PasswordRecoveryNewPasswordCommand(
     string Email,
-    string NewPassword
+    string NewPassword,
+    string ConfirmPassword
 ) : IRequest<PasswordRecoveryNewPasswordResult>;

@@ -3,11 +3,11 @@ namespace RedditClone.API.Middlewares;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using RedditClone.Application.Errors;
+using Serilog;
 
 public class ExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionHandlerMiddleware> _logger;
     private static readonly IDictionary<HttpStatusCode, string> _statusCodeLinkMap = new Dictionary<HttpStatusCode, string>()
     {
         { HttpStatusCode.BadRequest, "https://www.rfc-editor.org/rfc/rfc2616#section-10.4.1" },
@@ -19,10 +19,8 @@ public class ExceptionHandlerMiddleware
     };
 
     public ExceptionHandlerMiddleware(
-        ILogger<ExceptionHandlerMiddleware> logger,
         RequestDelegate next)
     {
-        _logger = logger;
         _next = next;
     }
 
@@ -34,9 +32,14 @@ public class ExceptionHandlerMiddleware
         }
         catch (HttpCustomException exception)
         {
-            _logger.LogError(
-                $"Http status code: {exception.HttpStatusCode}",
-                $"Exception occurred: {exception.Message}");
+            var traceId = Guid.NewGuid();
+
+            Log.Error(
+                "Exception: {@Exception}, {@Source}, {@Message}, {@DateTimeUtc}",
+                exception,
+                exception.Message,
+                exception.Source,
+                DateTime.Now);
 
             var problemDetails = new ProblemDetails
             {
@@ -44,8 +47,7 @@ public class ExceptionHandlerMiddleware
                 Detail = exception.Message,
                 Instance = GetMapLinkValue(exception.HttpStatusCode),
                 Extensions = {
-                    ["traceId"] = Guid.NewGuid()
-                }
+                    ["traceId"] = traceId}
             };
 
             context.Response.StatusCode = (int)exception.HttpStatusCode;
