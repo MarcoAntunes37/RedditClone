@@ -38,11 +38,11 @@ public class CommentRepository : ICommentRepository
         return comments;
     }
 
-    public void Add(Comment comment)
+    public async void Add(Comment comment)
     {
         _dbContext.Comments.Add(comment);
 
-        _dbContext.SaveChangesAsync();
+       await _dbContext.SaveChangesAsync();
     }
 
     public Comment UpdateCommentById(CommentId id, UserId userId, string content)

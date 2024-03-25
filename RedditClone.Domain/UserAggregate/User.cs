@@ -60,7 +60,7 @@ public sealed class User : Entity
             createdAt,
             updatedAt
         );
-        user.Raise(new UserCreateDomainEvent(Guid.NewGuid(), user.Id));
+        user.Raise(new UserCreatedDomainEvent(Guid.NewGuid(), user.Id));
         return user;
     }
 

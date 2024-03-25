@@ -42,11 +42,11 @@ public class PostRepository : IPostRepository
         return posts;
     }
 
-    public void Add(Post post)
+    public async void Add(Post post)
     {
         _dbContext.Posts.Add(post);
 
-        _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
     }
 
     public Post UpdatePostById(PostId id, UserId userId, string title, string content)

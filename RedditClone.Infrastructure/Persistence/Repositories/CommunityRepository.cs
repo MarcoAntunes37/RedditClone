@@ -44,11 +44,11 @@ public class CommunityRepository : ICommunityRepository
         return communities;
     }
 
-    public void Add(Community community)
+    public async void Add(Community community)
     {
         _dbContext.Communities.Add(community);
 
-        _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
     }
 
     public void UpdateCommunityById(CommunityId id, UserId userId, string name, string description, string topic)
