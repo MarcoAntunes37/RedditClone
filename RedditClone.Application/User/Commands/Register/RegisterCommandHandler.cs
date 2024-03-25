@@ -7,11 +7,11 @@ using RedditClone.Application.Common.Interfaces.Authentication;
 using RedditClone.Domain.UserAggregate;
 using BCrypt.Net;
 using FluentValidation;
-using RedditClone.Application.Errors;
+using RedditClone.Application.Common.Errors;
 using System.Net;
 using Serilog;
 using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Helpers;
+using RedditClone.Application.Common.Helpers;
 
 public partial class RegisterCommandHandler :
 IRequestHandler<RegisterCommand, RegisterResult>
@@ -77,7 +77,8 @@ IRequestHandler<RegisterCommand, RegisterResult>
         RegisterResult result = new(user, token);
 
         Log.Information(
-            "{@RegisterResult}",
+            "{@Message}, {@RegisterResult}",
+            "User created successfully",
             result);
 
         return result;

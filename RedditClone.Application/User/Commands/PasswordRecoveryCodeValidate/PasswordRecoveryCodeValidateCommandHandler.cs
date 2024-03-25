@@ -4,7 +4,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using RedditClone.Application.Common.Interfaces.Services;
-using RedditClone.Application.Helpers;
+using RedditClone.Application.Common.Helpers;
 using RedditClone.Application.User.Results.PasswordRecoveryCodeValidate;
 using Serilog;
 

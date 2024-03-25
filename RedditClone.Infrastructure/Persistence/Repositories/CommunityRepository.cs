@@ -3,7 +3,7 @@ namespace RedditClone.Infrastructure.Persistence;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using RedditClone.Application.Errors;
+using RedditClone.Application.Common.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommunityAggregate;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;

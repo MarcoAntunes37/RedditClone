@@ -115,7 +115,8 @@ public static class UserMappers
     {
         return new PasswordRecoveryNewPasswordCommand(
             request.Email,
-            request.NewPassword
+            request.NewPassword,
+            request.RepeatPassword
            );
     }
 }

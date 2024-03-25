@@ -9,12 +9,13 @@ using RedditClone.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using RedditClone.Infrastructure.Services;
 using RedditClone.Application.Common.Interfaces.Persistence;
 using RedditClone.Infrastructure.Persistence.Repositories;
 using RedditClone.Infrastructure.Settings;
+using RedditClone.Application.Settings;
+using Rebus.Config;
 
 namespace RedditClone.Infrastructure;
 public static class DependencyInjection
@@ -29,6 +30,7 @@ public static class DependencyInjection
         services.AddSingleton<IEmailRecovery, EmailRecovery>();
         services.AddEmailRecovery(configuration);
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+        services.AddRebusConfig(configuration);
 
         return services;
     }
@@ -41,7 +43,7 @@ public static class DependencyInjection
 
         configuration.Bind(SmtpSettings.SectionName, smtpSettings);
 
-        services.AddSingleton(Options.Create(smtpSettings));
+        services.AddSingleton(Microsoft.Extensions.Options.Options.Create(smtpSettings));
 
         services.Configure<SmtpSettings>(
             configuration.GetSection(SmtpSettings.SectionName));
@@ -68,7 +70,7 @@ public static class DependencyInjection
 
         configuration.Bind(DbSettings.SectionName, dbSettings);
 
-        services.AddSingleton(Options.Create(dbSettings));
+        services.AddSingleton(Microsoft.Extensions.Options.Options.Create(dbSettings));
 
         services.AddDbContext<RedditCloneDbContext>(options =>
             options.UseNpgsql(
@@ -88,7 +90,7 @@ public static class DependencyInjection
         var jwtSettings = new JwtSettings();
         configuration.Bind(JwtSettings.SectionName, jwtSettings);
 
-        services.AddSingleton(Options.Create(jwtSettings));
+        services.AddSingleton(Microsoft.Extensions.Options.Options.Create(jwtSettings));
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
         services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
@@ -106,6 +108,25 @@ public static class DependencyInjection
                         Encoding.UTF8.GetBytes(jwtSettings.Secret))
             };
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddRebusConfig(this IServiceCollection services,
+            ConfigurationManager configuration)
+    {
+        var rebusSettings = new RebusSettings();
+
+        configuration.Bind(RebusSettings.SectionName, rebusSettings);
+
+        services.AddSingleton(Microsoft.Extensions.Options.Options.Create(rebusSettings));
+
+        services.Configure<RebusSettings>(
+            configuration.GetSection(RebusSettings.SectionName));
+
+        services.AddRebus(configure => configure
+            .Logging(l => l.Serilog())
+            .Transport(t => t.UseRabbitMqAsOneWayClient(rebusSettings.ServerUrl)));
 
         return services;
     }

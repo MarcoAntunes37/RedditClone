@@ -2,7 +2,7 @@ namespace RedditClone.Infrastructure.Persistence;
 
 using System.Net;
 using Microsoft.EntityFrameworkCore;
-using RedditClone.Application.Errors;
+using RedditClone.Application.Common.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
@@ -49,7 +49,7 @@ public class PostRepository : IPostRepository
         _dbContext.SaveChangesAsync();
     }
 
-    public void UpdatePostById(PostId id, UserId userId, string title, string content)
+    public Post UpdatePostById(PostId id, UserId userId, string title, string content)
     {
         Post post = _dbContext.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId)
             ?? throw new HttpCustomException(
@@ -62,6 +62,8 @@ public class PostRepository : IPostRepository
         _dbContext.Entry(post).State = EntityState.Modified;
 
         _dbContext.SaveChanges();
+
+        return post;
     }
 
     public void DeletePostById(PostId id, UserId userId)

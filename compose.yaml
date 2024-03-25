@@ -36,6 +36,13 @@ services:
     volumes:
       - seq-data:/data
 
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: rabbitmq-container
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
 volumes:
   postgres-data:
   seq-data:

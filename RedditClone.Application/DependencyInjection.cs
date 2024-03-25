@@ -3,7 +3,6 @@ namespace RedditClone.Application;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using RedditClone.Application.Comment.Commands.CreateComment;
 using RedditClone.Application.Comment.Commands.ReplyOnComment;
 using RedditClone.Application.Comment.Commands.UpdateComment;
@@ -13,6 +12,7 @@ using RedditClone.Application.Comment.Commands.UpdateVoteOnReply;
 using RedditClone.Application.Comment.Commands.VoteOnComment;
 using RedditClone.Application.Comment.Commands.VoteOnReply;
 using RedditClone.Application.Comment.Queries.GetCommentById;
+using RedditClone.Application.Comment.Queries.GetCommentsByPostId;
 using RedditClone.Application.Community.Commands.CreateCommunity;
 using RedditClone.Application.Community.Commands.DeleteComment;
 using RedditClone.Application.Community.Commands.DeleteCommunity;
@@ -32,7 +32,6 @@ using RedditClone.Application.Post.Commands.UpdateVoteOnPost;
 using RedditClone.Application.Post.Commands.VoteOnPost;
 using RedditClone.Application.Post.Queries.GetPostById;
 using RedditClone.Application.Post.Queries.GetPostListByCommunityId;
-using RedditClone.Application.Settings;
 using RedditClone.Application.User.Commands.Delete;
 using RedditClone.Application.User.Commands.PasswordRecoveryCodeValidate;
 using RedditClone.Application.User.Commands.PasswordRecoveryNewPassword;
@@ -49,7 +48,8 @@ using RedditClone.Application.UserCommunities.Commands.RemoveUserCommunities;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IServiceCollection AddApplication(this IServiceCollection services,
+    ConfigurationManager configuration)
     {
         services.AddMediatR(x =>
             x.RegisterServicesFromAssemblies(typeof(DependencyInjection).Assembly));
@@ -73,6 +73,9 @@ public static class DependencyInjection
     public static IServiceCollection AddCommentValidations(this IServiceCollection services)
     {
         services.AddScoped<IValidator<GetCommentByIdQuery>, GetCommentByIdQueryValidator>();
+        services.AddScoped<IValidator<GetCommentsByPostIdQuery>, GetCommentsByPostIdQueryValidator>();
+
+
         services.AddScoped<IValidator<CreateCommentCommand>, CreateCommentCommandValidator>();
         services.AddScoped<IValidator<UpdateCommentCommand>, UpdateCommentCommandValidator>();
         services.AddScoped<IValidator<DeleteCommentCommand>, DeleteCommentCommandValidator>();
@@ -134,20 +137,6 @@ public static class DependencyInjection
         services.AddScoped<IValidator<SendPasswordRecoveryEmailCommand>, SendPasswordRecoveryEmailCommandValidator>();
         services.AddScoped<IValidator<PasswordRecoveryNewPasswordCommand>, PasswordRecoveryNewPasswordCommandValidator>();
         services.AddScoped<IValidator<PasswordRecoveryCodeValidateCommand>, PasswordRecoveryCodeValidateCommandValidator>();
-
-        return services;
-    }
-    public static IServiceCollection AddSerilog(this IServiceCollection services,
-            ConfigurationManager configuration)
-    {
-        var serilogSettings = new SerilogSettings();
-
-        configuration.Bind(SerilogSettings.SectionName, serilogSettings);
-
-        services.AddSingleton(Options.Create(serilogSettings));
-
-        services.Configure<SerilogSettings>(
-            configuration.GetSection(SerilogSettings.SectionName));
 
         return services;
     }

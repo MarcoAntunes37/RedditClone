@@ -4,7 +4,7 @@ using MediatR;
 using RedditClone.Application.Persistence;
 using FluentValidation;
 using RedditClone.Application.User.Results.UpdatePassword;
-using RedditClone.Application.Helpers;
+using RedditClone.Application.Common.Helpers;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 

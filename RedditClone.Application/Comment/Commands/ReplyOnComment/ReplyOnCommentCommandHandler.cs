@@ -5,7 +5,7 @@ using FluentValidation;
 using MediatR;
 using RedditClone.Application.Comment.Results.ReplyOnCommentResult;
 using RedditClone.Application.Common.Interfaces.Persistence;
-using RedditClone.Application.Errors;
+using RedditClone.Application.Common.Errors;
 using RedditClone.Application.Persistence;
 
 public class ReplyOnCommentCommandHandler :

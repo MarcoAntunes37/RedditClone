@@ -1,7 +1,7 @@
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using RedditClone.Application.Common.Interfaces.Persistence;
-using RedditClone.Application.Errors;
+using RedditClone.Application.Common.Errors;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.UserCommunitiesAggregate;

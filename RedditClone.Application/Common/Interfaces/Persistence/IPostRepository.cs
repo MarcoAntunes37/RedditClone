@@ -12,7 +12,7 @@ public interface IPostRepository
     List<Post> GetPostListByUser(UserId userId);
     List<Post> GetPostListByCommunity(CommunityId communityId);
     void Add(Post post);
-    void UpdatePostById(PostId id, UserId userId, string title, string content);
+    Post UpdatePostById(PostId id, UserId userId, string title, string content);
     void DeletePostById(PostId id, UserId userId);
     void AddPostVote(PostId postId, UserId userId, bool IsVoted);
     void UpdatePostVoteById(PostId id, VoteId voteId, UserId userId, bool isVoted);

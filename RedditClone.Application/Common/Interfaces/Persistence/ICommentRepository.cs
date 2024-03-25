@@ -12,7 +12,7 @@ public interface ICommentRepository
     Comment GetCommentById(CommentId commentId);
     List<Comment> GetCommentsListByPostId(PostId postId);
     void Add(Comment comment);
-    void UpdateCommentById(CommentId id, UserId userId, string content);
+    Comment UpdateCommentById(CommentId id, UserId userId, string content);
     void DeleteCommentById(CommentId id, UserId userId);
 
     void AddCommentVote(CommentId id, UserId userId, bool isVoted);

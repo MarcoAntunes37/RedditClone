@@ -5,7 +5,7 @@ using RedditClone.Domain.UserAggregate;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
-using RedditClone.Application.Errors;
+using RedditClone.Application.Common.Errors;
 using System.Net;
 
 public class UserRepository : IUserRepository
@@ -35,7 +35,7 @@ public class UserRepository : IUserRepository
         _dbContext.SaveChanges();
     }
 
-    public void UpdateProfileById(UserId id, string firstname, string lastname, string email)
+    public User UpdateProfileById(UserId id, string firstname, string lastname, string email)
     {
         User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)
             ?? throw new HttpCustomException(
@@ -48,17 +48,17 @@ public class UserRepository : IUserRepository
         _dbContext.Entry(user).State = EntityState.Modified;
 
         _dbContext.SaveChanges();
+
+        return user;
     }
 
     public void UpdatePasswordById(UserId id, string oldPassword, string newPassword, string matchPassword)
     {
         User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "An error occurred invalid user");
+            ?? throw new HttpCustomException(HttpStatusCode.NotFound, "An error occurred invalid user");
 
         if (!BCrypt.Verify(oldPassword, user.Password))
-            throw new HttpCustomException(
-            HttpStatusCode.Unauthorized, "Invalid password");
+            throw new HttpCustomException(HttpStatusCode.Unauthorized, "Invalid password");
 
         user.UpdatePassword(BCrypt.HashPassword(
                 newPassword, BCrypt.GenerateSalt(), false, HashType.SHA256));
@@ -73,15 +73,12 @@ public class UserRepository : IUserRepository
     public void UpdateRecoveredPassword(string email, string newPassword, string matchPassword)
     {
         User user = _dbContext.Users.SingleOrDefault(u => u.Email == email)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, $"Not found a user with email {email}.");
+            ?? throw new HttpCustomException(HttpStatusCode.NotFound, $"Not found a user with email {email}.");
 
         if(newPassword != matchPassword)
-            throw new HttpCustomException(
-               HttpStatusCode.Conflict, "New password must match with confirm password");
+            throw new HttpCustomException(HttpStatusCode.Conflict, "New password must match with confirm password");
 
-        user.UpdatePassword(BCrypt.HashPassword(
-                newPassword, BCrypt.GenerateSalt(), false, HashType.SHA256));
+        user.UpdatePassword(BCrypt.HashPassword(newPassword, BCrypt.GenerateSalt(), false, HashType.SHA256));
 
         _dbContext.Users.Update(user);
 

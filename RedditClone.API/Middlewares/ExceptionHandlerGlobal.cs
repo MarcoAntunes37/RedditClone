@@ -2,7 +2,7 @@ namespace RedditClone.API.Middlewares;
 
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using RedditClone.Application.Errors;
+using RedditClone.Application.Common.Errors;
 using Serilog;
 
 public class ExceptionHandlerMiddleware

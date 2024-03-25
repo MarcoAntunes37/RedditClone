@@ -1,8 +1,9 @@
 namespace RedditClone.Domain.UserAggregate;
 
+using RedditClone.Domain.Primitives;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
-public sealed class User
+public sealed class User : Entity
 {
     public UserId Id { get; private set; }
     public string Firstname { get; private set; }
@@ -49,7 +50,7 @@ public sealed class User
         DateTime updatedAt
     )
     {
-        return new(
+        User user = new(
             new UserId(Guid.NewGuid()),
             firstname,
             lastname,
@@ -59,6 +60,8 @@ public sealed class User
             createdAt,
             updatedAt
         );
+        user.Raise(new UserCreateDomainEvent(Guid.NewGuid(), user.Id));
+        return user;
     }
 
     public void UpdateProfile(

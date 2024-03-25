@@ -5,7 +5,7 @@ using RedditClone.Application.Persistence;
 using FluentValidation;
 using RedditClone.Application.User.Results.UpdateProfile;
 using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Helpers;
+using RedditClone.Application.Common.Helpers;
 using Serilog;
 
 public partial class UpdateProfileCommandHandler
@@ -40,18 +40,19 @@ public partial class UpdateProfileCommandHandler
 
         _validator.ValidateAndThrow(command);
 
-        _userRepository.UpdateProfileById(
+        var user = _userRepository.UpdateProfileById(
             command.UserId,
             command.Firstname,
             command.Lastname,
             command.Email);
 
-        UpdateProfileResult result = new("User profile updated");
+        UpdateProfileResult result = new(
+            "User profile updated",
+            user);
 
         Log.Information(
-            "{@UpdateProfileResult}, {@UserId}",
-            result,
-            command.UserId);
+            "{@UpdateProfileResult}",
+            result);
 
         return result;
     }

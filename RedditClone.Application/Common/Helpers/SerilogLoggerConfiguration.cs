@@ -1,8 +1,7 @@
-namespace RedditClone.Application.Helpers;
+namespace RedditClone.Application.Common.Helpers;
 
 using Microsoft.Extensions.Configuration;
 using Serilog;
-using Serilog.Extensions.Logging;
 
 public class SerilogLoggerConfiguration
 {

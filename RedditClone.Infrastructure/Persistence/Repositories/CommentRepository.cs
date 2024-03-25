@@ -2,7 +2,7 @@ namespace RedditClone.Infrastructure.Persistence;
 
 using System.Net;
 using Microsoft.EntityFrameworkCore;
-using RedditClone.Application.Errors;
+using RedditClone.Application.Common.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.Entities;
@@ -45,7 +45,7 @@ public class CommentRepository : ICommentRepository
         _dbContext.SaveChangesAsync();
     }
 
-    public void UpdateCommentById(CommentId id, UserId userId, string content)
+    public Comment UpdateCommentById(CommentId id, UserId userId, string content)
     {
         Comment comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id && c.UserId == userId)
             ?? throw new HttpCustomException(
@@ -58,6 +58,8 @@ public class CommentRepository : ICommentRepository
         _dbContext.Entry(comment).State = EntityState.Modified;
 
         _dbContext.SaveChanges();
+
+        return comment;
     }
 
     public void DeleteCommentById(CommentId id, UserId userId)

@@ -2,7 +2,7 @@ namespace RedditClone.Infrastructure.Service;
 
 using Microsoft.Extensions.Options;
 using RedditClone.Application.Common.Interfaces.Services;
-using RedditClone.Application.Errors;
+using RedditClone.Application.Common.Errors;
 using RedditClone.Infrastructure.Settings;
 using System.Net;
 using System.Net.Mail;

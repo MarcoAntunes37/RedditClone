@@ -3,7 +3,7 @@ namespace RedditClone.Application.User.Commands.PasswordRecoveryNewPassword;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Helpers;
+using RedditClone.Application.Common.Helpers;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results.PasswordRecoveryNewPassword;
 using Serilog;

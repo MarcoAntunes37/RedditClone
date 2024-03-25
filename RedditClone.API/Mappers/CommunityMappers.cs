@@ -53,7 +53,6 @@ public class CommunityMappers
     {
         var community = result.Community;
         return new CreateCommunityResponse(
-            result.Message,
             community.Name,
             community.Description,
             community.Topic,
