@@ -1,7 +1,6 @@
 namespace RedditClone.Application.User.Commands.PasswordRecoveryCodeValidate;
 
 using FluentValidation;
-using System.Text.RegularExpressions;
 
 public partial class PasswordRecoveryCodeValidateCommandValidator : AbstractValidator<PasswordRecoveryCodeValidateCommand>
 {

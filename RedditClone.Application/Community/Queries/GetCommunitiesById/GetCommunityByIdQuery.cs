@@ -1,8 +1,8 @@
 namespace RedditClone.Application.Community.Queries.GetCommunitiesById;
 
 using MediatR;
-using RedditClone.Application.Community.Results.GetCommunityByIdResult;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Application.Community.Results.GetCommunityByIdResult;
 
 public record GetCommunityByIdQuery(
     CommunityId CommunityId

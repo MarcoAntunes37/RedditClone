@@ -1,33 +1,21 @@
 namespace RedditClone.Application.Comment.Queries.GetPostListByCommunityId;
 
 using MediatR;
-using RedditClone.Application.Persistence;
+using Serilog;
 using RedditClone.Domain.PostAggregate;
+using RedditClone.Application.Common.Interfaces.Persistence;
 using RedditClone.Application.Community.Queries.GetPostListByCommunityId;
 using RedditClone.Application.Post.Results.GetPostListByCommunityIdResult;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Helpers;
-using Serilog;
 
-public class GetPostListByCommunityIdQueryHandler
+public class GetPostListByCommunityIdQueryHandler(
+    IPostRepository postRepository)
 : IRequestHandler<GetPostListByCommunityIdQuery, GetPostListByCommunityIdResult>
 {
-    private readonly IPostRepository _postRepository;
-    private readonly IConfiguration _configuration;
-
-    public GetPostListByCommunityIdQueryHandler(
-        IPostRepository postRepository,
-        IConfiguration configuration)
-    {
-        _postRepository = postRepository;
-        _configuration = configuration;
-    }
+    private readonly IPostRepository _postRepository = postRepository;
 
     public async Task<GetPostListByCommunityIdResult> Handle(GetPostListByCommunityIdQuery query, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@GetPostListByCommunityIdQuery}",

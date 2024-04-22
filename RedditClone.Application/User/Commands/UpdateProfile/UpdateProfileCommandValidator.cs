@@ -1,7 +1,7 @@
+namespace RedditClone.Application.User.Commands.Update;
+
 using FluentValidation;
 using RedditClone.Application.User.Commands.UpdateProfile;
-
-namespace RedditClone.Application.User.Commands.Update;
 
 public partial class UpdateProfileCommandValidator : AbstractValidator<UpdateProfileCommand>
 {

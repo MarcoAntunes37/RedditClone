@@ -1,99 +1,121 @@
-namespace RedditClone.Infrastructure.Persistence;
+namespace RedditClone.Infrastructure.Persistence.Repositories;
 
-using System.Net;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using RedditClone.Application.Common.Errors;
+using Serilog;
+using ErrorOr;
+using RedditClone.Domain.Common.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommunityAggregate;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
-public class CommunityRepository : ICommunityRepository
+public class CommunityRepository(RedditCloneDbContext dbContext) : ICommunityRepository
 {
-    private readonly RedditCloneDbContext _dbContext;
+    private readonly RedditCloneDbContext _dbContext = dbContext;
 
-    public CommunityRepository(RedditCloneDbContext dbContext)
+    public ErrorOr<Community> GetCommunityById(CommunityId communityId)
     {
-        _dbContext = dbContext;
-    }
+        Community? community = _dbContext.Communities.FirstOrDefault(c => c.Id == communityId);
 
-    public Community GetCommunityById(CommunityId communityId)
-    {
-        Community community = _dbContext.Communities.FirstOrDefault(c => c.Id == communityId)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Community not found");
+        if(community is null)
+        {
+            Error error = Errors.Community.CommunityNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         return community;
     }
 
-    public Community GetCommunityByName(string name)
+    public ErrorOr<Community> GetCommunityByName(string name)
     {
-        Community community = _dbContext.Communities.FirstOrDefault(c => c.Name == name)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Community not found");
+        Community? community = _dbContext.Communities.FirstOrDefault(c => c.Name == name);
 
-        return community;
+        if(community is null)
+        {
+            Error error = Errors.Community.CommunityNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+        }
+
+        return community!;
     }
 
     public List<Community> GetCommunitiesList()
     {
-
         List<Community> communities = _dbContext.Communities.ToList();
 
         return communities;
     }
 
-    public async void Add(Community community)
+    public void Add(Community community)
     {
         _dbContext.Communities.Add(community);
-
-        await _dbContext.SaveChangesAsync();
     }
 
-    public void UpdateCommunityById(CommunityId id, UserId userId, string name, string description, string topic)
+    public ErrorOr<bool> UpdateCommunityById(CommunityId id, UserId userId, string name, string description, string topic)
     {
-        Community community =
-            _dbContext.Communities.SingleOrDefault(c => c.Id == id && c.UserId == userId)
-                ?? throw new HttpCustomException(
-                HttpStatusCode.NotFound, "Community not found on you communities");
+        Community? community =
+            _dbContext.Communities.SingleOrDefault(c => c.Id == id);
+
+        if(community is null)
+        {
+            Error error = Errors.Community.CommunityNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         if (_dbContext.Communities.SingleOrDefault(c => c.Name == name) is not null)
-            throw new HttpCustomException(
-            HttpStatusCode.Conflict, $"Community with name {name} already exists");
+        {
+            Error error = Errors.Community.CommunityNameAlreadyExists;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         community.UpdateCommunity(name, description, topic);
 
         _dbContext.Communities.Update(community);
 
-        _dbContext.Entry(community).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void DeleteCommunityById(CommunityId id, UserId userId)
+    public ErrorOr<bool> DeleteCommunityById(CommunityId id, UserId userId)
     {
-        Community community = _dbContext.Communities.SingleOrDefault(c => c.Id == id && c.UserId == userId)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Community not found on you communities");
+        Community? community = _dbContext.Communities.SingleOrDefault(c => c.Id == id);
+
+        if (community is null)
+        {
+            Error error = Errors.Community.CommunityNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         _dbContext.Communities.Remove(community);
 
-        _dbContext.SaveChanges();
-    }
+        community.DeleteCommunity();
 
-    public void TransferCommunityOwnership(UserId userId, UserId newUserId, CommunityId communityId)
-    {
-        Community community = _dbContext.Communities.SingleOrDefault(c => c.Id == communityId && c.UserId == userId)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Community not found on you communities");
-
-        community.TransferOwnership(newUserId);
-
-        _dbContext.Communities.Update(community);
-
-        _dbContext.Entry(community).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 }

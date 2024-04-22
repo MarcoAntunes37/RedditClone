@@ -1,18 +1,21 @@
 namespace RedditClone.Infrastructure.Persistence.Configuration;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RedditClone.Domain.CommunityAggregate;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate;
-using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.CommunityAggregate;
 using RedditClone.Domain.UserCommunitiesAggregate;
+using RedditClone.Domain.UserAggregate.ValueObjects;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using RedditClone.Domain.UserCommunitiesAggregate.Enum;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 public class UserCommunitiesConfiguration : IEntityTypeConfiguration<UserCommunities>
 {
     public void Configure(EntityTypeBuilder<UserCommunities> builder)
     {
         builder.ToTable("UserCommunities");
+
+        builder.Ignore(uc => uc.Id);
 
         builder.HasKey(uc => new { uc.UserId, uc.CommunityId });
 
@@ -24,6 +27,7 @@ public class UserCommunitiesConfiguration : IEntityTypeConfiguration<UserCommuni
 
         builder.HasOne<User>()
             .WithMany()
+            .HasForeignKey("UserId")
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -35,7 +39,13 @@ public class UserCommunitiesConfiguration : IEntityTypeConfiguration<UserCommuni
 
         builder.HasOne<Community>()
             .WithMany()
+            .HasForeignKey("CommunityId")
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(uc => uc.Role)
+            .HasConversion(
+                v => v.ToString(),
+                v => (Role)Enum.Parse(typeof(Role), v));
     }
 }

@@ -1,8 +1,8 @@
+namespace RedditClone.Application.User.Commands.Update;
+
 using System.Text.RegularExpressions;
 using FluentValidation;
 using RedditClone.Application.User.Commands.UpdatePassword;
-
-namespace RedditClone.Application.User.Commands.Update;
 
 public partial class UpdatePasswordCommandValidator : AbstractValidator<UpdatePasswordCommand>
 {

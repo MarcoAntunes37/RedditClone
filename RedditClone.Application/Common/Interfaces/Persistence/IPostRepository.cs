@@ -1,20 +1,23 @@
-namespace RedditClone.Application.Persistence;
+namespace RedditClone.Application.Common.Interfaces.Persistence;
 
-using RedditClone.Domain.Common.ValueObjects;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using ErrorOr;
 using RedditClone.Domain.PostAggregate;
+using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 public interface IPostRepository
 {
-    Post GetPostById(PostId postId);
+    ErrorOr<Post> GetPostById(PostId postId);
     List<Post> GetPostListByUser(UserId userId);
+    List<Votes> GetVotesListsByPostId(PostId postId);
     List<Post> GetPostListByCommunity(CommunityId communityId);
     void Add(Post post);
-    Post UpdatePostById(PostId id, UserId userId, string title, string content);
-    void DeletePostById(PostId id, UserId userId);
-    void AddPostVote(PostId postId, UserId userId, bool IsVoted);
-    void UpdatePostVoteById(PostId id, VoteId voteId, UserId userId, bool isVoted);
-    void DeletePostVoteById(PostId id, VoteId voteId, UserId userId);
+    ErrorOr<Post> UpdatePostById(PostId id, UserId userId, string title, string content);
+    ErrorOr<bool> DeletePostById(PostId id, UserId userId);
+    ErrorOr<bool> AddPostVote(PostId id, UserId userId, bool isVoted);
+    ErrorOr<bool> UpdatePostVoteById(PostId id, VoteId voteId, UserId userId, bool isVoted);
+    ErrorOr<bool> DeletePostVoteById(PostId id, VoteId voteId, UserId userId);
 }

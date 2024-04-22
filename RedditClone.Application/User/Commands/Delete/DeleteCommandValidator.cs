@@ -1,6 +1,6 @@
-using FluentValidation;
-
 namespace RedditClone.Application.User.Commands.Delete;
+
+using FluentValidation;
 
 public partial class DeleteUserCommandValidator : AbstractValidator<DeleteUserCommand>
 {

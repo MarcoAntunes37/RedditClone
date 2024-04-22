@@ -1,4 +1,4 @@
-namespace RedditClone.Application.Community.Commands.DeleteComment;
+namespace RedditClone.Application.Comment.Commands.DeleteComment;
 
 using FluentValidation;
 

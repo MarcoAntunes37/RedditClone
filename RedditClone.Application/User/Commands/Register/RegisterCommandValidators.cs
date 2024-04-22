@@ -53,7 +53,7 @@ public partial class RegisterCommandValidator : AbstractValidator<RegisterComman
             .Matches(StrongPassword())
                 .WithMessage("Password must have at a number, a upper case letter, a one lower case letter and a special character");
 
-        RuleFor(u => u.MatchPassword)
+        RuleFor(u => u.RepeatPassword)
             .Equal(u => u.Password)
                 .WithMessage("Confirm password must match with new password");
     }

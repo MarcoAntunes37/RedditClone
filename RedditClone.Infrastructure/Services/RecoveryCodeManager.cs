@@ -1,6 +1,6 @@
-using RedditClone.Application.Common.Interfaces.Services;
-
 namespace RedditClone.Infrastructure.Services;
+
+using RedditClone.Application.Common.Interfaces.Services;
 
 public class RecoveryCodeManager : IRecoveryCodeManager
 {

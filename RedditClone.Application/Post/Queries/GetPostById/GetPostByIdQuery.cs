@@ -1,9 +1,10 @@
 namespace RedditClone.Application.Post.Queries.GetPostById;
 
+using ErrorOr;
 using MediatR;
-using RedditClone.Application.Post.Results.GetPostByIdResult;
 using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Application.Post.Results.GetPostByIdResult;
 
 public record GetPostByIdQuery(
     PostId PostId
-): IRequest<GetPostByIdResult>;
+): IRequest<ErrorOr<GetPostByIdResult>>;

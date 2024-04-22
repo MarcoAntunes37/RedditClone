@@ -1,9 +1,11 @@
 namespace RedditClone.Application.Comment.Queries.GetCommentsByPostId;
 
 using MediatR;
-using RedditClone.Application.Comment.Results.GetCommentsByPostIdResult;
 using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Application.Comment.Results.GetCommentsByPostIdResult;
 
 public record GetCommentsByPostIdQuery(
-    PostId PostId
+    PostId PostId,
+    int Page,
+    int PageSize
 ): IRequest<GetCommentsByPostIdResult>;

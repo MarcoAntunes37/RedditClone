@@ -1,25 +1,27 @@
 namespace RedditClone.Domain.CommentAggregate;
 
+using RedditClone.Domain.Primitives;
+using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
-using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.CommentAggregate.DomainEvents;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
-public sealed class Comment
+public sealed class Comment : AggregateRoot
 {
     private readonly List<Votes> _votes = new();
     private readonly List<Replies> _replies = new();
-    public CommentId Id { get; private set; }
+    public new CommentId Id { get; private set; }
     public UserId UserId { get; private set; }
     public CommunityId CommunityId { get; private set; }
     public PostId PostId { get; private set; }
     public string Content { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
-    public IReadOnlyList<Votes> Votes => _votes.ToList();
-    public IReadOnlyList<Replies> Replies => _replies.ToList();
+    public IReadOnlyList<Votes> Votes => _votes.AsReadOnly();
+    public IReadOnlyList<Replies> Replies => _replies.AsReadOnly();
 
 #pragma warning disable CS8618
     private Comment() { }
@@ -53,28 +55,58 @@ public sealed class Comment
         CommunityId communityId,
         PostId postId,
         string content,
-        DateTime createdAt,
-        DateTime updatedAt,
         List<Votes> votes,
         List<Replies> replies
     )
     {
-        return new(
+        var comment = new Comment(
             new CommentId(Guid.NewGuid()),
             userId,
             communityId,
             postId,
             content,
-            createdAt,
-            updatedAt,
+            DateTime.UtcNow,
+            DateTime.UtcNow,
             votes ?? new(),
             replies ?? new());
+
+        comment.RaiseDomainEvent(
+            new CommentCreatedDomainEvent(
+                Guid.NewGuid(),
+                comment.Id,
+                comment.PostId,
+                comment.CommunityId,
+                comment.UserId,
+                comment.Content));
+
+        return comment;
     }
 
     public void UpdateComment(string content)
     {
         Content = content;
         UpdatedAt = DateTime.UtcNow;
+
+        this.RaiseDomainEvent(
+            new CommentUpdatedDomainEvent(
+                Guid.NewGuid(),
+                Id,
+                PostId,
+                CommunityId,
+                UserId,
+                Content,
+                UpdatedAt));
+    }
+
+    public void DeleteComment()
+    {
+        this.RaiseDomainEvent(
+            new CommentDeletedDomainEvent(
+                Guid.NewGuid(),
+                Id,
+                PostId,
+                CommunityId,
+                UserId));
     }
 
     public void AddVote(Votes newVote)
@@ -94,6 +126,8 @@ public sealed class Comment
     public void RemoveVote(VoteId voteId)
     {
         var vote = _votes.Find(v => v.Id == voteId)!;
+
+        vote.DeleteVote();
 
         _votes.Remove(vote);
     }
@@ -115,6 +149,8 @@ public sealed class Comment
     public void RemoveReply(ReplyId replyId)
     {
         var reply = _replies.Find(v => v.Id == replyId)!;
+
+        reply.DeleteReply();
 
         _replies.Remove(reply);
     }

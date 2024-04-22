@@ -4,5 +4,4 @@ using RedditClone.Domain.UserAggregate;
 
 public record RegisterResult(
     User User,
-    string Token
-);
+    string Token);

@@ -1,45 +1,46 @@
 namespace RedditClone.Application.Community.Commands.UpdateCommunity;
 
-using FluentValidation;
+using ErrorOr;
 using MediatR;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Helpers;
-using RedditClone.Application.Community.Results.UpdateCommunityResult;
-using RedditClone.Application.Persistence;
 using Serilog;
+using RedditClone.Domain.Common.Errors;
+using RedditClone.Application.Persistence;
+using RedditClone.Application.Common.Interfaces.Persistence;
+using RedditClone.Application.Community.Results.UpdateCommunityResult;
 
-public class UpdateCommunityCommandHandler :
-    IRequestHandler<UpdateCommunityCommand, UpdateCommunityResult>
+public class UpdateCommunityCommandHandler(
+    ICommunityRepository communityRepository,
+    IUserCommunitiesRepository userCommunitiesRepository) :
+    IRequestHandler<UpdateCommunityCommand, ErrorOr<UpdateCommunityResult>>
 {
-    private readonly ICommunityRepository _communityRepository;
-    private readonly IValidator<UpdateCommunityCommand> _validator;
-    private readonly IConfiguration _configuration;
+    private readonly ICommunityRepository _communityRepository = communityRepository;
+    private readonly IUserCommunitiesRepository _userCommunitiesRepository = userCommunitiesRepository;
 
-    public UpdateCommunityCommandHandler(
-        ICommunityRepository communityRepository,
-        IValidator<UpdateCommunityCommand> validator,
-        IConfiguration configuration)
-    {
-        _communityRepository = communityRepository;
-        _validator = validator;
-        _configuration = configuration;
-    }
-
-    public async Task<UpdateCommunityResult> Handle(UpdateCommunityCommand command,
+    public async Task<ErrorOr<UpdateCommunityResult>> Handle(
+        UpdateCommunityCommand command,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
 
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
-
         Log.Information(
-            "");
+            "Trying to update Community: {@CommunityId} with Owner: {@UserId}");
 
-        _validator.ValidateAndThrow(command);
+        var admin = _userCommunitiesRepository.GetUserCommunitiesAdmin(command.CommunityId);
+
+        if(admin.UserId != command.UserId)
+        {
+            Error error = Errors.UserCommunities.UserIsNotCommunityAdmin;
+
+            Log.Error("{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         _communityRepository.UpdateCommunityById(command.CommunityId, command.UserId, command.Name, command.Description, command.Topic);
 
-        var community = _communityRepository.GetCommunityById(command.CommunityId);
+        var community = _communityRepository.GetCommunityById(command.CommunityId).Value;
 
         UpdateCommunityResult result = new("Community successfully updated.", community);
 

@@ -1,8 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Query;
-
 namespace RedditClone.Infrastructure.Interceptors;
+
+using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
+using RedditClone.Domain.Primitives;
+using RedditClone.Infrastructure.Outbox;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 public sealed class ConvertDomainEventsToOutboxMessagesInterceptor
     : SaveChangesInterceptor
@@ -19,8 +21,32 @@ public sealed class ConvertDomainEventsToOutboxMessagesInterceptor
             return base.SavingChangesAsync(eventData, result, cancellationToken);
         }
 
-        dbContext.ChangeTracker
-            .Entries();
+        var outboxMessages = dbContext.ChangeTracker
+            .Entries<AggregateRoot>()
+            .Select(x => x.Entity)
+            .SelectMany(aggregateRoot =>
+            {
+                var domainEvents = aggregateRoot.GetDomainEvents();
+
+                aggregateRoot.ClearDomainEvents();
+
+                return domainEvents;
+            })
+            .Select(domainEvent => new OutboxMessage
+            {
+                Id = Guid.NewGuid(),
+                OccurredOnUtc = DateTime.UtcNow,
+                Type = domainEvent.GetType().Name,
+                Content = JsonConvert.SerializeObject(
+                    domainEvent,
+                    new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.All
+                    })
+            })
+            .ToList();
+
+        dbContext.Set<OutboxMessage>().AddRange(outboxMessages);
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }

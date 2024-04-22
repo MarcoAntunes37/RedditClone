@@ -1,12 +1,13 @@
 namespace RedditClone.Domain.CommunityAggregate;
 
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Domain.Primitives;
 using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.DomainEvents;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
-public sealed class Community
+public sealed class Community : AggregateRoot
 {
-    public CommunityId Id { get; private set; }
-    public UserId UserId { get; private set; }
+    public new CommunityId Id { get; private set; }
     public string Name { get; private set; }
     public string Description { get; private set; }
     public string Topic { get; private set; }
@@ -19,7 +20,6 @@ public sealed class Community
 
     private Community(
         CommunityId id,
-        UserId userId,
         string name,
         string description,
         string topic,
@@ -28,7 +28,6 @@ public sealed class Community
     )
     {
         Id = id;
-        UserId = userId;
         Name = name;
         Description = description;
         Topic = topic;
@@ -37,23 +36,29 @@ public sealed class Community
     }
 
     public static Community Create(
-        UserId userId,
         string name,
         string description,
         string topic,
-        DateTime createdAt,
-        DateTime updatedAt
-    )
+        UserId userId)
     {
-        return new(
+
+        var community = new Community(
             new CommunityId(Guid.NewGuid()),
-            userId,
             name,
             description,
             topic,
-            createdAt,
-            updatedAt
+            DateTime.UtcNow,
+            DateTime.UtcNow
         );
+
+        community.RaiseDomainEvent(
+            new CommunityCreatedDomainEvent(
+                Guid.NewGuid(),
+                community.Id,
+                userId,
+                name));
+
+        return community;
     }
 
     public void UpdateCommunity(
@@ -65,11 +70,12 @@ public sealed class Community
         Description = description;
         Topic = topic;
         UpdatedAt = DateTime.UtcNow;
+
+        this.RaiseDomainEvent(new CommunityUpdatedDomainEvent(Guid.NewGuid(), Id, Name, Description, Topic, UpdatedAt));
     }
 
-    public void TransferOwnership(UserId userId)
+    public void DeleteCommunity()
     {
-        UserId = userId;
-        UpdatedAt = DateTime.UtcNow;
+        this.RaiseDomainEvent(new CommunityDeletedDomainEvent(Guid.NewGuid(), Id, Name));
     }
 }

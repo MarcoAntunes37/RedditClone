@@ -4,9 +4,7 @@
 ```csharp
     void Register(User user);
     void Login(string username, string password);
-    void Update(User user);
-    void SubscribeCommunity(Guid communityid);
-    void Delete(Guid userId);
+    void
 ```
 
 

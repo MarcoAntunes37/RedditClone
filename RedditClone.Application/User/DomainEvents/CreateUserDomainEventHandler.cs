@@ -1,21 +1,31 @@
-using MediatR;
-using Rebus.Bus;
-using RedditClone.Domain.UserAggregate;
-
 namespace RedditClone.Application.User.DomainEvents;
 
-internal sealed class CreateUserDomainEventHandler
-    : INotificationHandler<UserCreatedDomainEvent>
+using Rebus.Bus;
+using RedditClone.Domain.UserAggregate.DomainEvents;
+using RedditClone.Application.Common.Interfaces.Services;
+
+internal sealed class CreateUserDomainEventHandler(IBus bus, IEmailService emailService)
 {
-    private IBus _bus;
+    private readonly IBus _bus = bus;
+    private readonly IEmailService _emailService = emailService;
 
-    public CreateUserDomainEventHandler(IBus bus)
+    public async Task Handle(
+        UserCreatedDomainEvent notification,
+        CancellationToken cancellationToken)
     {
-        _bus = bus;
-    }
+        if (notification.UserId == null)
+        {
+            return;
+        }
 
-    public async Task Handle(UserCreatedDomainEvent notification, CancellationToken cancellationToken)
-    {
-        await _bus.Send(new UserCreatedDomainEvent(notification.Id, notification.UserId));
+        await _emailService.SendWelcomeEmailAsync(
+            notification.Email, notification.Username, cancellationToken);
+
+        await _bus.Send(
+            new UserCreatedDomainEvent(
+                notification.Id,
+                notification.UserId,
+                notification.Email,
+                notification.Username));
     }
 }

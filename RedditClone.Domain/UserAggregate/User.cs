@@ -1,11 +1,12 @@
 namespace RedditClone.Domain.UserAggregate;
 
 using RedditClone.Domain.Primitives;
+using RedditClone.Domain.UserAggregate.DomainEvents;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
-public sealed class User : Entity
+public sealed class User : AggregateRoot
 {
-    public UserId Id { get; private set; }
+    public new UserId Id { get; private set; }
     public string Firstname { get; private set; }
     public string Lastname { get; private set; }
     public string Username { get; private set; }
@@ -45,9 +46,7 @@ public sealed class User : Entity
         string lastname,
         string username,
         string password,
-        string email,
-        DateTime createdAt,
-        DateTime updatedAt
+        string email
     )
     {
         User user = new(
@@ -57,10 +56,17 @@ public sealed class User : Entity
             username,
             password,
             email,
-            createdAt,
-            updatedAt
+            DateTime.UtcNow,
+            DateTime.UtcNow
         );
-        user.Raise(new UserCreatedDomainEvent(Guid.NewGuid(), user.Id));
+
+        user.RaiseDomainEvent(
+            new UserCreatedDomainEvent(
+                Guid.NewGuid(),
+                user.Id,
+                user.Email,
+                user.Username));
+
         return user;
     }
 
@@ -73,11 +79,20 @@ public sealed class User : Entity
         Lastname = lastname;
         Email = email;
         UpdatedAt = DateTime.UtcNow;
+
+        RaiseDomainEvent(new UserProfileUpdatedDomainEvent(Guid.NewGuid(), this.Id, Firstname, Lastname, Email, UpdatedAt));
     }
 
     public void UpdatePassword(string password)
     {
         Password = password;
         UpdatedAt = DateTime.UtcNow;
+
+        RaiseDomainEvent(new UserPasswordUpdatedDomainEvent(Guid.NewGuid(), this.Id, Password, UpdatedAt));
+    }
+
+    public void DeleteUser()
+    {
+        RaiseDomainEvent(new UserDeletedDomainEvent(Guid.NewGuid(), this.Id));
     }
 }

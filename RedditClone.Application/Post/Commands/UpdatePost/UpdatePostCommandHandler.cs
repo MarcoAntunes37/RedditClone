@@ -1,36 +1,22 @@
 namespace RedditClone.Application.Post.Commands.UpdatePost;
 
-using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Helpers;
-using RedditClone.Application.Persistence;
-using RedditClone.Application.Post.Results.UpdatePostResult;
 using Serilog;
+using ErrorOr;
 using RedditClone.Domain.PostAggregate;
+using RedditClone.Application.Post.Results.UpdatePostResult;
+using RedditClone.Application.Common.Interfaces.Persistence;
 
-public class UpdatePostCommandHandler
-    : IRequestHandler<UpdatePostCommand, UpdatePostResult>
+public class UpdatePostCommandHandler(
+    IPostRepository postRepository)
+: IRequestHandler<UpdatePostCommand, ErrorOr<UpdatePostResult>>
 {
-    private readonly IPostRepository _postRepository;
-    private readonly IValidator<UpdatePostCommand> _validator;
-    private readonly IConfiguration _configuration;
-
-    public UpdatePostCommandHandler(
-        IPostRepository postRepository,
-        IValidator<UpdatePostCommand> validator, IConfiguration configuration)
-    {
-        _postRepository = postRepository;
-        _validator = validator;
-        _configuration = configuration;
-    }
-
-    public async Task<UpdatePostResult> Handle(UpdatePostCommand command,
+    private readonly IPostRepository _postRepository = postRepository;
+    public async Task<ErrorOr<UpdatePostResult>> Handle(
+        UpdatePostCommand command,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@Command}",
@@ -38,9 +24,7 @@ public class UpdatePostCommandHandler
             command,
             command.PostId);
 
-        _validator.ValidateAndThrow(command);
-
-        Post post = _postRepository.UpdatePostById(command.PostId, command.UserId, command.Title, command.Content);
+        Post? post = _postRepository.UpdatePostById(command.PostId, command.UserId, command.Title, command.Content).Value;
 
         UpdatePostResult result = new("Post updated successfully",post);
 

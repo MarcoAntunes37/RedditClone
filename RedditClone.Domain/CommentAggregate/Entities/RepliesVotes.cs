@@ -1,12 +1,14 @@
 namespace RedditClone.Domain.CommentAggregate.Entities;
 
-using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.Primitives;
 using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.CommentAggregate.DomainEvents;
+using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
-public sealed class RepliesVotes
+public sealed class RepliesVotes : AggregateRoot
 {
-    public VoteId Id { get; private set; }
+    public new VoteId Id { get; private set; }
     public UserId UserId { get; private set; }
     public ReplyId ReplyId { get; private set; }
     public bool IsVoted { get; private set; }
@@ -32,15 +34,43 @@ public sealed class RepliesVotes
         UserId userId,
         bool isVoted)
     {
-        return new(
+        var replyVote = new RepliesVotes(
             new VoteId(Guid.NewGuid()),
             replyId,
             userId,
             isVoted);
+
+        replyVote.RaiseDomainEvent(
+            new VoteOnReplyCreatedDomainEvent(
+                Guid.NewGuid(),
+                replyVote.Id,
+                replyVote.ReplyId,
+                replyVote.UserId,
+                replyVote.IsVoted));
+
+        return replyVote;
     }
 
     public void UpdateReplyVote(bool isVoted)
     {
-       IsVoted = isVoted;
+        IsVoted = isVoted;
+
+        this.RaiseDomainEvent(
+            new VoteOnReplyUpdatedDomainEvent(
+                Guid.NewGuid(),
+                Id,
+                ReplyId,
+                UserId,
+                IsVoted));
+    }
+
+    public void DeleteReplyVote()
+    {
+        this.RaiseDomainEvent(
+            new VoteOnReplyDeletedDomainEvent(
+                Guid.NewGuid(),
+                Id,
+                ReplyId,
+                UserId));
     }
 }

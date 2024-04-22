@@ -85,16 +85,10 @@ namespace RedditClone.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("UserId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Communities", (string)null);
                 });
@@ -191,11 +185,43 @@ namespace RedditClone.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("CommunityId");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("UserId", "CommunityId");
 
                     b.HasIndex("CommunityId");
 
                     b.ToTable("UserCommunities", (string)null);
+                });
+
+            modelBuilder.Entity("RedditClone.Infrastructure.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("OccurredOnUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ProcessedOnUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutboxMessages", (string)null);
                 });
 
             modelBuilder.Entity("RedditClone.Domain.CommentAggregate.Comment", b =>
@@ -338,15 +364,6 @@ namespace RedditClone.Infrastructure.Migrations
                     b.Navigation("Replies");
 
                     b.Navigation("Votes");
-                });
-
-            modelBuilder.Entity("RedditClone.Domain.CommunityAggregate.Community", b =>
-                {
-                    b.HasOne("RedditClone.Domain.UserAggregate.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("RedditClone.Domain.PostAggregate.Post", b =>

@@ -1,43 +1,25 @@
 namespace RedditClone.Application.Post.Commands.CreatePost;
 
-using System.Net;
-using FluentValidation;
 using MediatR;
-using RedditClone.Application.Common.Interfaces.Persistence;
-using RedditClone.Application.Common.Errors;
-using RedditClone.Application.Persistence;
-using RedditClone.Application.Post.Results.CreatePostResult;
-using RedditClone.Domain.PostAggregate;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Helpers;
 using Serilog;
+using ErrorOr;
+using RedditClone.Domain.PostAggregate;
+using RedditClone.Domain.Common.Errors;
+using RedditClone.Application.Common.Interfaces.Persistence;
+using RedditClone.Application.Post.Results.CreatePostResult;
 
-public class CreatePostCommandHandler
-    : IRequestHandler<CreatePostCommand, CreatePostResult>
+public class CreatePostCommandHandler(
+    IPostRepository postRepository,
+    IUserCommunitiesRepository userCommunitiesRepository)
+        : IRequestHandler<CreatePostCommand, ErrorOr<CreatePostResult>>
 {
-    private readonly IPostRepository _postRepository;
-    private readonly IUserCommunitiesRepository _userCommunitiesRepository;
-    private readonly IValidator<CreatePostCommand> _validator;
-    private readonly IConfiguration _configuration;
+    private readonly IPostRepository _postRepository = postRepository;
+    private readonly IUserCommunitiesRepository _userCommunitiesRepository = userCommunitiesRepository;
 
-    public CreatePostCommandHandler(
-        IPostRepository postRepository,
-        IUserCommunitiesRepository userCommunitiesRepository,
-        IValidator<CreatePostCommand> validator,
-        IConfiguration configuration)
-    {
-        _postRepository = postRepository;
-        _userCommunitiesRepository = userCommunitiesRepository;
-        _validator = validator;
-        _configuration = configuration;
-    }
-
-    public async Task<CreatePostResult> Handle(CreatePostCommand command,
+    public async Task<ErrorOr<CreatePostResult>> Handle(CreatePostCommand command,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@CreatePostCommand}",
@@ -45,35 +27,29 @@ public class CreatePostCommandHandler
             command,
             command.CommunityId);
 
-        Log.Information(
-            "{@Message}",
-            "Checking if User: {@UserId} is part of Community: {@CommunityId}",
-            command.UserId,
-            command.CommunityId);
+        if(_userCommunitiesRepository.GetUserCommunities(command.UserId, command.CommunityId) == null)
+        {
+            Error error = Errors.UserCommunities.UserNotInCommunity;
 
-        bool isValid = _userCommunitiesRepository.ValidateRelationship(command.UserId, command.CommunityId);
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
 
-        if(!isValid)
-            throw new HttpCustomException(HttpStatusCode.NotFound, "User is not part of this community");
-
-        Log.Information("User is part of community");
-
-        _validator.ValidateAndThrow(command);
+            return error;
+        };
 
         var post = Post.Create(
             command.CommunityId,
             command.UserId,
             command.Title,
             command.Content,
-            command.CreatedAt,
-            command.UpdatedAt,
             command.Votes
         );
 
         _postRepository.Add(post);
 
-        CreatePostResult result = new(
-            post);
+        CreatePostResult result = new(post);
 
         Log.Information(
             "{@Message}, {@CreatePostResult}",

@@ -1,85 +1,114 @@
-namespace RedditClone.Infrastructure.Persistence;
+namespace RedditClone.Infrastructure.Persistence.Repositories;
 
-using System.Net;
+using ErrorOr;
+using Serilog;
 using Microsoft.EntityFrameworkCore;
-using RedditClone.Application.Common.Errors;
+using RedditClone.Domain.Common.Errors;
 using RedditClone.Application.Persistence;
 using RedditClone.Domain.CommentAggregate;
-using RedditClone.Domain.CommentAggregate.Entities;
-using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Domain.Common.ValueObjects;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Domain.CommentAggregate.Entities;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
-public class CommentRepository : ICommentRepository
+public class CommentRepository(RedditCloneDbContext dbContext) : ICommentRepository
 {
-    private readonly RedditCloneDbContext _dbContext;
+    private readonly RedditCloneDbContext _dbContext = dbContext;
 
-    public CommentRepository(RedditCloneDbContext dbContext)
+    public ErrorOr<Comment> GetCommentById(CommentId commentId)
     {
-        _dbContext = dbContext;
-    }
+        Comment? comment = _dbContext.Comments.FirstOrDefault(c => c.Id == commentId);
 
-    public Comment GetCommentById(CommentId commentId)
-    {
-        Comment comment = _dbContext.Comments.FirstOrDefault(c => c.Id == commentId)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Comment not found");
+        if(comment is null)
+        {
+            Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         return comment;
     }
 
     public List<Comment> GetCommentsListByPostId(PostId postId)
     {
-        List<Comment> comments =
-            _dbContext.Comments.Where(c => c.PostId == postId).ToList();
+        List<Comment> comments = _dbContext.Comments.Where(c => c.PostId == postId).ToList();
 
         return comments;
     }
 
-    public async void Add(Comment comment)
+    public void Add(Comment comment)
     {
         _dbContext.Comments.Add(comment);
-
-       await _dbContext.SaveChangesAsync();
     }
 
-    public Comment UpdateCommentById(CommentId id, UserId userId, string content)
+    public ErrorOr<Comment> UpdateCommentById(CommentId id, UserId userId, string content)
     {
-        Comment comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id && c.UserId == userId)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Comment not found on you comments");
+        Comment? comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id && c.UserId == userId);
+
+        if(comment is null)
+        {
+            Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         comment.UpdateComment(content);
 
         _dbContext.Comments.Update(comment);
 
-        _dbContext.Entry(comment).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
-
         return comment;
     }
 
-    public void DeleteCommentById(CommentId id, UserId userId)
+    public ErrorOr<bool> DeleteCommentById(CommentId id, UserId userId)
     {
-        Comment comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id && c.UserId == userId)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Comment not found on you comments");
+        Comment? comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id && c.UserId == userId);
+
+        if(comment is null)
+        {
+            Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        comment.DeleteComment();
 
         _dbContext.Comments.Remove(comment);
 
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void AddCommentVote(CommentId id, UserId userId, bool isVoted)
+    public ErrorOr<bool> AddCommentVote(CommentId id, UserId userId, bool isVoted)
     {
-        Comment commentVote = _dbContext.Comments
-            .Include(p => p.Votes)
-            .SingleOrDefault(p => p.Id == id)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Comment not found");
+        Comment? commentVote = _dbContext.Comments.Include(p => p.Votes).SingleOrDefault(p => p.Id == id);
+
+        if(commentVote is null)
+        {
+            Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         var vote = Votes.Create(
             id,
@@ -90,113 +119,154 @@ public class CommentRepository : ICommentRepository
 
         _dbContext.Comments.Update(commentVote);
 
-        _dbContext.Entry(commentVote).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void UpdateCommentVoteById(CommentId id, VoteId voteId, UserId userId, bool isVoted)
+    public ErrorOr<bool> UpdateCommentVoteById(CommentId id, VoteId voteId, UserId userId, bool isVoted)
     {
-        Comment commentVote = _dbContext.Comments
-            .Include(p => p.Votes)
-            .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
-            .SingleOrDefault(p => p.Id == id)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Your vote not found on comment");
+        Comment? commentVote = _dbContext.Comments.Include(p => p.Votes).Where(
+            p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId)).SingleOrDefault(p => p.Id == id);
+
+        if(commentVote is null)
+        {
+           Error error = Errors.Comments.VoteNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         commentVote.UpdateVote(voteId, isVoted);
 
-        _dbContext.Entry(commentVote).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void DeleteCommentVoteById(CommentId id, VoteId voteId, UserId userId)
+    public ErrorOr<bool> DeleteCommentVoteById(CommentId id, VoteId voteId, UserId userId)
     {
-        Comment commentVote = _dbContext.Comments
+        Comment? commentVote = _dbContext.Comments
             .Include(p => p.Votes)
             .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
-            .SingleOrDefault(p => p.Id == id)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Your vote not found on comment");
+            .SingleOrDefault(p => p.Id == id);
+
+        if(commentVote is null)
+        {
+            Error error = Errors.Comments.VoteNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         commentVote.RemoveVote(voteId);
 
-        _dbContext.Entry(commentVote).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void AddCommentReply(CommentId id, UserId userId, CommunityId communityId, string content)
+    public ErrorOr<bool> AddCommentReply(CommentId id, UserId userId, CommunityId communityId, string content)
     {
-        Comment commentReply = _dbContext.Comments
+        Comment? commentReply = _dbContext.Comments
             .Include(p => p.Replies)
-            .SingleOrDefault(p => p.Id == id)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Reply not found on comment");
+            .SingleOrDefault(p => p.Id == id);
 
-        List<RepliesVotes> repliesVotes = new();
+        if(commentReply is null)
+        {
+            Error error = Errors.Comments.ReplyNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        List<RepliesVotes> repliesVotes = [];
 
         var reply = Replies.Create(
             userId,
             communityId,
             id,
             content,
-            DateTime.UtcNow,
-            DateTime.UtcNow,
             repliesVotes);
 
         commentReply.AddReply(reply);
 
         _dbContext.Comments.Update(commentReply);
 
-        _dbContext.Entry(commentReply).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void UpdateCommentReplyById(CommentId id, ReplyId replyId, UserId userId, string content)
+    public ErrorOr<bool> UpdateCommentReplyById(CommentId id, ReplyId replyId, UserId userId, string content)
     {
-        Comment commentReply = _dbContext.Comments
+        Comment? commentReply = _dbContext.Comments
             .Include(p => p.Replies)
             .Where(p => p.Replies.Any(pv => pv.Id == replyId && pv.UserId == userId))
-            .SingleOrDefault(p => p.Id == id)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Reply not found on comment");
+            .SingleOrDefault(p => p.Id == id);
+
+        if(commentReply is null)
+        {
+            Error error = Errors.Comments.ReplyNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         commentReply.UpdateReply(replyId, content);
 
-        _dbContext.Entry(commentReply).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void DeleteCommentReplyById(CommentId id, ReplyId replyId, UserId userId)
+    public ErrorOr<bool> DeleteCommentReplyById(CommentId id, ReplyId replyId, UserId userId)
     {
-        Comment commentReply = _dbContext.Comments
-            .Include(p => p.Replies)
-            .Where(p => p.Replies.Any(pv => pv.Id == replyId && pv.UserId == userId))
-            .SingleOrDefault(p => p.Id == id)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "Reply not found on comment");
+        Comment? commentReply = _dbContext.Comments
+            .Include(p => p.Replies).Where(
+                p => p.Replies.Any(pv => pv.Id == replyId && pv.UserId == userId))
+            .SingleOrDefault(p => p.Id == id);
+
+        if(commentReply is null)
+        {
+            Error error = Errors.Comments.ReplyNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         commentReply.RemoveReply(replyId);
 
-        _dbContext.Entry(commentReply).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void AddReplyVote(CommentId id, ReplyId replyId, UserId userId, bool isVoted)
+    public ErrorOr<bool> AddReplyVote(CommentId id, ReplyId replyId, UserId userId, bool isVoted)
     {
-        Comment commentReplyVotes =
-            _dbContext.Comments
-                .Include(cr => cr.Replies)
-                .Where(cr => cr.Replies.Any(
-                    r => r.Id == replyId && r.UserId == userId))
-                .SingleOrDefault(c => c.Id == id)
-                ?? throw new HttpCustomException(
-                HttpStatusCode.NotFound, "Vote not found on reply");
+        Comment? commentReplyVotes = _dbContext.Comments.Include(cr => cr.Replies).Where(
+            cr => cr.Replies.Any(r => r.Id == replyId && r.UserId == userId))
+            .SingleOrDefault(c => c.Id == id);
+
+        if(commentReplyVotes is null)
+        {
+            Error error = Errors.Comments.ReplyNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         var replyVotes = RepliesVotes.Create(
                 replyId,
@@ -208,46 +278,54 @@ public class CommentRepository : ICommentRepository
 
         _dbContext.Comments.Update(commentReplyVotes);
 
-        _dbContext.Entry(commentReplyVotes).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void UpdateReplyVoteById(CommentId id, ReplyId replyId, VoteId voteId, UserId userId, bool isVoted)
+    public ErrorOr<bool> UpdateReplyVoteById(CommentId id, ReplyId replyId, VoteId voteId, UserId userId, bool isVoted)
     {
-        Comment commentReplyVotes =
-            _dbContext.Comments
-                .Include(cr => cr.Replies)
-                .Where(cr => cr.Replies.Any(
-                    r => r.Id == replyId && r.UserId == userId))
-                .SingleOrDefault(c => c.Id == id)
-                ?? throw new HttpCustomException(
-                HttpStatusCode.NotFound, "Vote not found on reply");
+        Comment? commentReplyVotes = _dbContext.Comments.Include(cr => cr.Replies).Where(
+                cr => cr.Replies.Any(r => r.Id == replyId && r.UserId == userId))
+            .SingleOrDefault(c => c.Id == id);
+
+        if(commentReplyVotes is null)
+        {
+            Error error = Errors.Comments.ReplyNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         commentReplyVotes.UpdateReplyVote(replyId, voteId, isVoted);
 
         _dbContext.Comments.Update(commentReplyVotes);
 
-        _dbContext.Entry(commentReplyVotes).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void DeleteReplyVoteById(CommentId id, ReplyId replyId, VoteId voteId, UserId userId)
+    public ErrorOr<bool> DeleteReplyVoteById(CommentId id, ReplyId replyId, VoteId voteId, UserId userId)
     {
-        Comment commentReplyVotes =
-            _dbContext.Comments
-                .Include(cr => cr.Replies)
-                .Where(cr => cr.Replies.Any(
-                    r => r.Id == replyId && r.UserId == userId))
-                .SingleOrDefault(c => c.Id == id)
-                ?? throw new HttpCustomException(
-                HttpStatusCode.NotFound, "Vote not found on reply");
+        Comment? commentReplyVotes = _dbContext.Comments.Include(cr => cr.Replies).Where(
+                cr => cr.Replies.Any(r => r.Id == replyId && r.UserId == userId))
+            .SingleOrDefault(c => c.Id == id);
+
+        if(commentReplyVotes is null)
+        {
+            Error error = Errors.Comments.ReplyNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         commentReplyVotes.RemoveReplyVote(replyId, voteId);
 
-        _dbContext.Entry(commentReplyVotes).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 }

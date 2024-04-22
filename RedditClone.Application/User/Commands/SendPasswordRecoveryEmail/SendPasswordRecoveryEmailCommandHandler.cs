@@ -1,44 +1,28 @@
 namespace RedditClone.Application.User.Commands.SendPasswordRecoveryEmail;
 
-using System.Net;
-using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Interfaces.Services;
-using RedditClone.Application.Common.Errors;
-using RedditClone.Application.Common.Helpers;
-using RedditClone.Application.Persistence;
-using RedditClone.Application.User.Results.SendPasswordRecoveryEmail;
 using Serilog;
+using ErrorOr;
+using RedditClone.Domain.Common.Errors;
+using RedditClone.Application.Persistence;
+using RedditClone.Application.Common.Interfaces.Services;
+using RedditClone.Application.User.Results.SendPasswordRecoveryEmail;
 
-public partial class SendPasswordRecoveryEmailCommandHandler
-    : IRequestHandler<SendPasswordRecoveryEmailCommand, SendPasswordRecoveryEmailResult>
+public partial class SendPasswordRecoveryEmailCommandHandler(
+    IEmailService emailService,
+    IRecoveryCodeManager recoveryCodeManager,
+    IUserRepository userRepository)
+        : IRequestHandler<SendPasswordRecoveryEmailCommand, ErrorOr<SendPasswordRecoveryEmailResult>>
 {
-    private readonly IEmailRecovery _emailRecovery;
-    private readonly IRecoveryCodeManager _recoveryCodeManager;
-    private readonly IUserRepository _userRepository;
-    private readonly IValidator<SendPasswordRecoveryEmailCommand> _validator;
-    private readonly IConfiguration _configuration;
-    public SendPasswordRecoveryEmailCommandHandler(
-        IEmailRecovery emailRecovery,
-        IRecoveryCodeManager recoveryCodeManager,
-        IValidator<SendPasswordRecoveryEmailCommand> validator,
-        IUserRepository userRepository,
-        IConfiguration configuration)
-    {
-        _emailRecovery = emailRecovery;
-        _recoveryCodeManager = recoveryCodeManager;
-        _validator = validator;
-        _userRepository = userRepository;
-        _configuration = configuration;
-    }
+    private readonly IEmailService _emailService = emailService;
+    private readonly IRecoveryCodeManager _recoveryCodeManager = recoveryCodeManager;
+    private readonly IUserRepository _userRepository = userRepository;
 
-    public async Task<SendPasswordRecoveryEmailResult> Handle(SendPasswordRecoveryEmailCommand command,
-    CancellationToken cancellationToken)
+    public async Task<ErrorOr<SendPasswordRecoveryEmailResult>> Handle(
+        SendPasswordRecoveryEmailCommand command,
+        CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@SendPasswordEmailRecoveryCommand}",
@@ -46,11 +30,9 @@ public partial class SendPasswordRecoveryEmailCommandHandler
             command,
             command.Email);
 
-        _validator.ValidateAndThrow(command);
-
-        if(_userRepository.GetUserByEmail(command.Email) is null){
-            throw new HttpCustomException(
-            HttpStatusCode.NotFound, $"Cannot found a user with this email {command.Email}");
+        if (_userRepository.GetUserByEmail(command.Email) is null)
+        {
+            return Errors.User.UserNotFound;
         }
 
         Random random = new();
@@ -66,10 +48,8 @@ public partial class SendPasswordRecoveryEmailCommandHandler
             You recovery code is: {code}.
             If you did not request the recovery email, please disregard it.";
 
-        _emailRecovery.SendEmail(
-            command.Email,
-            "RedditClone Email recovery",
-            body);
+        await _emailService.SendRecoveryEmailAsync(
+            command.Email, "RedditClone Email recovery", body, cancellationToken);
 
         SendPasswordRecoveryEmailResult result = new(
             $"Recovery email sent to {command.Email}, check spam and deleted emails");

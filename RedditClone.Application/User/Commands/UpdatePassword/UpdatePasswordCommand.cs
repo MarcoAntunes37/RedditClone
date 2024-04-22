@@ -1,6 +1,7 @@
 namespace RedditClone.Application.User.Commands.UpdatePassword;
 
 using MediatR;
+using ErrorOr;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Application.User.Results.UpdatePassword;
 
@@ -9,5 +10,4 @@ public record UpdatePasswordCommand(
     string OldPassword,
     string NewPassword,
     string MatchPassword
-
-) : IRequest<UpdatePasswordResult>;
+) : IRequest<ErrorOr<UpdatePasswordResult>>;

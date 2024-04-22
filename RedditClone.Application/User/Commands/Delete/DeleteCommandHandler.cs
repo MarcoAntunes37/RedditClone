@@ -1,37 +1,22 @@
 namespace RedditClone.Application.User.Commands.Delete;
 
+using ErrorOr;
 using MediatR;
-using RedditClone.Application.Persistence;
-using FluentValidation;
-using RedditClone.Application.User.Results;
-using RedditClone.Application.Common.Helpers;
-using Microsoft.Extensions.Configuration;
 using Serilog;
+using RedditClone.Application.Persistence;
+using RedditClone.Application.User.Results;
 
-public partial class DeleteUserCommandHandler
-    : IRequestHandler<DeleteUserCommand, DeleteResult>
+public partial class DeleteUserCommandHandler(
+    IUserRepository userRepository)
+        : IRequestHandler<DeleteUserCommand, ErrorOr<DeleteResult>>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IValidator<DeleteUserCommand> _validator;
-    private readonly IConfiguration _configuration;
+    private readonly IUserRepository _userRepository = userRepository;
 
-    public DeleteUserCommandHandler(
-        IUserRepository userRepository,
-        IConfiguration configuration,
-        IValidator<DeleteUserCommand> validator)
-    {
-        _userRepository = userRepository;
-        _configuration = configuration;
-        _validator = validator;
-    }
-
-    public async Task<DeleteResult> Handle(DeleteUserCommand command,
-    CancellationToken cancellationToken)
+    public async Task<ErrorOr<DeleteResult>> Handle(
+        DeleteUserCommand command,
+        CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(
-            _configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@DeleteUserCommand}",
@@ -39,14 +24,12 @@ public partial class DeleteUserCommandHandler
                 command,
                 command.UserId);
 
-        _validator.ValidateAndThrow(command);
+        _userRepository.DeleteUserById(command.UserId, command.CurrentUserId);
 
-        _userRepository.DeleteUserById(command.UserId);
-
-        var result = new DeleteResult("User deleted successfully");
+        DeleteResult result = new("User deleted successfully");
 
         Log.Information(
-            "{@DeleteResult}, {@UserId}",
+            "{@ErrorOr<DeleteResult>}, {@UserId}",
             result,
             command.UserId);
 

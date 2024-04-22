@@ -1,36 +1,27 @@
 namespace RedditClone.Application.Community.Commands.DeleteCommunity;
 
-using FluentValidation;
+using ErrorOr;
 using MediatR;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Helpers;
-using RedditClone.Application.Community.Results.DeleteCommunityResult;
-using RedditClone.Application.Persistence;
 using Serilog;
+using RedditClone.Domain.Common.Errors;
+using RedditClone.Application.Persistence;
+using Domain.UserCommunitiesAggregate.Enum;
+using RedditClone.Application.Common.Interfaces.Persistence;
+using RedditClone.Application.Community.Results.DeleteCommunityResult;
 
-public class DeleteCommunityCommandHandler :
-    IRequestHandler<DeleteCommunityCommand, DeleteCommunityResult>
+public class DeleteCommunityCommandHandler(
+    ICommunityRepository communityRepository,
+    IUserCommunitiesRepository userCommunitiesRepository)
+    : IRequestHandler<DeleteCommunityCommand, ErrorOr<DeleteCommunityResult>>
 {
-    private readonly ICommunityRepository _communityRepository;
-    private readonly IValidator<DeleteCommunityCommand> _validator;
-    private readonly IConfiguration _configuration;
+    private readonly ICommunityRepository _communityRepository = communityRepository;
+    private readonly IUserCommunitiesRepository _userCommunitiesRepository = userCommunitiesRepository;
 
-    public DeleteCommunityCommandHandler(
-        ICommunityRepository communityRepository,
-        IValidator<DeleteCommunityCommand> validator,
-        IConfiguration configuration)
-    {
-        _communityRepository = communityRepository;
-        _validator = validator;
-        _configuration = configuration;
-    }
-
-    public async Task<DeleteCommunityResult> Handle(DeleteCommunityCommand command,
+    public async Task<ErrorOr<DeleteCommunityResult>> Handle(
+        DeleteCommunityCommand command,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@DeleteCommunityCommand}",
@@ -39,7 +30,29 @@ public class DeleteCommunityCommandHandler :
             command.CommunityId,
             command.UserId);
 
-        _validator.ValidateAndThrow(command);
+        var userCommunities = _userCommunitiesRepository.GetUserCommunities(command.UserId, command.CommunityId);
+
+        if (userCommunities is null)
+        {
+            Error error = Errors.UserCommunities.UserNotInCommunity;
+
+            Log.Error("{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (userCommunities.Role != Role.Admin)
+        {
+            Error error = Errors.UserCommunities.UserIsNotCommunityAdmin;
+
+            Log.Error("{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         _communityRepository.DeleteCommunityById(command.CommunityId, command.UserId);
 

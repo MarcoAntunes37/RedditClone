@@ -1,6 +1,6 @@
-using FluentValidation;
-
 namespace RedditClone.Application.User.Queries.Login;
+
+using FluentValidation;
 
 public partial class LoginQueryValidator : AbstractValidator<LoginQuery>
 {

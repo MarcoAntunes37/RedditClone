@@ -1,90 +1,159 @@
-namespace RedditClone.Infrastructure.Persistence;
+namespace RedditClone.Infrastructure.Persistence.Repositories;
 
-using RedditClone.Application.Persistence;
-using RedditClone.Domain.UserAggregate;
-using RedditClone.Domain.UserAggregate.ValueObjects;
-using Microsoft.EntityFrameworkCore;
+using ErrorOr;
+using Serilog;
 using BCrypt.Net;
-using RedditClone.Application.Common.Errors;
-using System.Net;
+using RedditClone.Domain.UserAggregate;
+using RedditClone.Domain.Common.Errors;
+using RedditClone.Application.Persistence;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 
-public class UserRepository : IUserRepository
+public class UserRepository(
+    RedditCloneDbContext dbContext) : IUserRepository
 {
-    private readonly RedditCloneDbContext _dbContext;
-
-    public UserRepository(RedditCloneDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly RedditCloneDbContext _dbContext = dbContext;
 
     public void Add(User user)
     {
         _dbContext.Users.Add(user);
-
-        _dbContext.SaveChanges();
     }
 
-    public void DeleteUserById(UserId id)
+    public ErrorOr<bool> DeleteUserById(UserId id, UserId requesterId)
     {
-        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "An error occurred invalid user");
+        User? user = _dbContext.Users.SingleOrDefault(u => u.Id == id);
+
+        if (user is null)
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (user.Id != requesterId)
+        {
+            Error error = Errors.User.OnlyDeleteSelf;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         _dbContext.Users.Remove(user);
 
-        _dbContext.SaveChanges();
+        user.DeleteUser();
+
+        return true;
     }
 
-    public User UpdateProfileById(UserId id, string firstname, string lastname, string email)
+    public ErrorOr<User> UpdateProfileById(UserId id, string firstname, string lastname, string email)
     {
-        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)
-            ?? throw new HttpCustomException(
-            HttpStatusCode.NotFound, "An error occurred invalid user");
+        User? user = _dbContext.Users.SingleOrDefault(u => u.Id == id);
+
+        if (user is null)
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         user.UpdateProfile(firstname, lastname, email);
-
-        _dbContext.Users.Update(user);
-
-        _dbContext.Entry(user).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
 
         return user;
     }
 
-    public void UpdatePasswordById(UserId id, string oldPassword, string newPassword, string matchPassword)
+    public ErrorOr<bool> UpdatePasswordById(UserId id, string oldPassword, string newPassword, string matchPassword)
     {
-        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)
-            ?? throw new HttpCustomException(HttpStatusCode.NotFound, "An error occurred invalid user");
+        User? user = _dbContext.Users.SingleOrDefault(u => u.Id == id);
+
+        if (user is null)
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         if (!BCrypt.Verify(oldPassword, user.Password))
-            throw new HttpCustomException(HttpStatusCode.Unauthorized, "Invalid password");
+        {
+            Error error = Errors.User.InvalidCredentials;
 
-        user.UpdatePassword(BCrypt.HashPassword(
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (newPassword != matchPassword)
+        {
+            Error error = Errors.User.PasswordsDoNotMatch;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        user.UpdatePassword(
+            BCrypt.HashPassword(
                 newPassword, BCrypt.GenerateSalt(), false, HashType.SHA256));
 
-        _dbContext.Users.Update(user);
-
-        _dbContext.Entry(user).State = EntityState.Modified;
-
-        _dbContext.SaveChanges();
+        return true;
     }
 
-    public void UpdateRecoveredPassword(string email, string newPassword, string matchPassword)
+    public ErrorOr<bool> UpdateRecoveredPassword(string email, string newPassword, string matchPassword)
     {
-        User user = _dbContext.Users.SingleOrDefault(u => u.Email == email)
-            ?? throw new HttpCustomException(HttpStatusCode.NotFound, $"Not found a user with email {email}.");
+        User? user = _dbContext.Users.SingleOrDefault(u => u.Email == email);
 
-        if(newPassword != matchPassword)
-            throw new HttpCustomException(HttpStatusCode.Conflict, "New password must match with confirm password");
+        if (user is null)
+        {
+            Error error = Errors.User.UserNotFound;
 
-        user.UpdatePassword(BCrypt.HashPassword(newPassword, BCrypt.GenerateSalt(), false, HashType.SHA256));
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
 
-        _dbContext.Users.Update(user);
+            return error;
+        }
 
-        _dbContext.Entry(user).State = EntityState.Modified;
+        if (newPassword != matchPassword)
+        {
+            Error error = Errors.User.PasswordsDoNotMatch;
 
-        _dbContext.SaveChanges();
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        user.UpdatePassword(
+            BCrypt.HashPassword(
+                newPassword, BCrypt.GenerateSalt(), false, HashType.SHA256));
+
+        return true;
     }
 
     public User? GetUserByEmail(string email)
@@ -96,7 +165,6 @@ public class UserRepository : IUserRepository
     {
         return _dbContext.Users.SingleOrDefault(x => x.Username == username);
     }
-
     public User? GetUserById(UserId userId)
     {
         return _dbContext.Users.SingleOrDefault(x => x.Id == userId);

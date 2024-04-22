@@ -1,12 +1,14 @@
 namespace RedditClone.Domain.PostAggregate.Entities;
 
+using RedditClone.Domain.Primitives;
 using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.PostAggregate.DomainEvents;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
-public sealed class Votes
+public sealed class Votes : AggregateRoot
 {
-    public VoteId Id { get; private set; }
+    public new VoteId Id { get; private set; }
     public UserId UserId { get; private set; }
     public PostId PostId { get; private set; }
     public bool IsVoted { get; private set; }
@@ -31,15 +33,43 @@ public sealed class Votes
         UserId userId,
         bool isVoted)
     {
-        return new(
+        var vote = new Votes(
             new VoteId(Guid.NewGuid()),
             postId,
             userId,
             isVoted);
+
+        vote.RaiseDomainEvent(
+            new VoteCreatedDomainEvent(
+                Guid.NewGuid(),
+                vote.Id,
+                vote.PostId,
+                vote.UserId,
+                vote.IsVoted));
+
+        return vote;
     }
 
     public void UpdateVote(bool isVoted)
     {
         IsVoted = isVoted;
+
+        this.RaiseDomainEvent(
+            new VoteUpdatedDomainEvent(
+                Guid.NewGuid(),
+                this.Id,
+                PostId,
+                UserId,
+                IsVoted));
+    }
+
+    public void DeleteVote()
+    {
+        this.RaiseDomainEvent(
+            new VoteDeletedDomainEvent(
+                Guid.NewGuid(),
+                this.Id,
+                PostId,
+                UserId));
     }
 }

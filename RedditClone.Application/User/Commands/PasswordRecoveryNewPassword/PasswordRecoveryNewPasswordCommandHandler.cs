@@ -1,44 +1,29 @@
 namespace RedditClone.Application.User.Commands.PasswordRecoveryNewPassword;
 
-using FluentValidation;
+using ErrorOr;
 using MediatR;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Helpers;
+using Serilog;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results.PasswordRecoveryNewPassword;
-using Serilog;
 
-public partial class PasswordRecoveryNewPasswordCommandHandler
-    : IRequestHandler<PasswordRecoveryNewPasswordCommand,
-        PasswordRecoveryNewPasswordResult>
+public partial class PasswordRecoveryNewPasswordCommandHandler(
+    IUserRepository userRepository)
+        : IRequestHandler<PasswordRecoveryNewPasswordCommand,
+        ErrorOr<PasswordRecoveryNewPasswordResult>>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IValidator<PasswordRecoveryNewPasswordCommand> _validator;
-    private readonly IConfiguration _configuration;
-    public PasswordRecoveryNewPasswordCommandHandler(
-        IUserRepository userRepository,
-        IValidator<PasswordRecoveryNewPasswordCommand> validator,
-        IConfiguration configuration)
-    {
-        _userRepository = userRepository;
-        _validator = validator;
-        _configuration = configuration;
-    }
+    private readonly IUserRepository _userRepository = userRepository;
 
-    public async Task<PasswordRecoveryNewPasswordResult> Handle(PasswordRecoveryNewPasswordCommand command,
-    CancellationToken cancellationToken)
+    public async Task<ErrorOr<PasswordRecoveryNewPasswordResult>> Handle(
+        PasswordRecoveryNewPasswordCommand command,
+        CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@PasswordRecoveryNewPasswordCommand}",
             "Trying to update password of user with {@Email}",
             command,
             command.Email);
-
-        _validator.ValidateAndThrow(command);
 
         _userRepository.UpdateRecoveredPassword(command.Email, command.NewPassword, command.ConfirmPassword);
 

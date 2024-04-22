@@ -1,30 +1,20 @@
-namespace RedditClone.Application.Community.Commands.DeleteComment;
+namespace RedditClone.Application.Comment.Commands.DeleteComment;
 
-using FluentValidation;
+using ErrorOr;
 using MediatR;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Community.Results.DeleteCommentResult;
-using RedditClone.Application.Persistence;
 using Serilog;
+using RedditClone.Domain.Common.Errors;
+using RedditClone.Application.Persistence;
+using RedditClone.Application.Comment.Results.DeleteCommentResult;
 
-public class DeleteCommentCommandHandler :
-    IRequestHandler<DeleteCommentCommand, DeleteCommentResult>
+public class DeleteCommentCommandHandler(
+    ICommentRepository commentRepository)
+    : IRequestHandler<DeleteCommentCommand, ErrorOr<DeleteCommentResult>>
 {
-    private readonly ICommentRepository _commentRepository;
-    private readonly IValidator<DeleteCommentCommand> _validator;
-    private readonly IConfiguration _configuration;
+    private readonly ICommentRepository _commentRepository = commentRepository;
 
-    public DeleteCommentCommandHandler(
-        ICommentRepository commentRepository,
-        IValidator<DeleteCommentCommand> validator,
-        IConfiguration configuration)
-    {
-        _commentRepository = commentRepository;
-        _validator = validator;
-        _configuration = configuration;
-    }
-
-    public async Task<DeleteCommentResult> Handle(DeleteCommentCommand command,
+    public async Task<ErrorOr<DeleteCommentResult>> Handle(
+        DeleteCommentCommand command,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
@@ -35,7 +25,19 @@ public class DeleteCommentCommandHandler :
             command,
             command.CommentId);
 
-        _validator.ValidateAndThrow(command);
+        var comment = _commentRepository.GetCommentById(command.CommentId).Value;
+
+        if(comment is null)
+        {
+            Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         _commentRepository.DeleteCommentById(command.CommentId, command.UserId);
 

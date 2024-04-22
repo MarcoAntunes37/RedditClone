@@ -1,25 +1,22 @@
-using System.Configuration.Assemblies;
+namespace RedditClone.Tests.DomainTests;
+
+using RedditClone.Domain.Primitives;
 using RedditClone.Domain.CommentAggregate;
 using RedditClone.Domain.CommentAggregate.Entities;
-using RedditClone.Domain.CommentAggregate.ValueObjects;
-using RedditClone.Domain.CommunityAggregate;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
-
-namespace RedditClone.Tests;
+using RedditClone.Domain.CommentAggregate.DomainEvents;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 public class DomainCommentsTests
 {
     [Fact]
-    public void ShouldReturnCommentObjectOnCreate()
+    public void Create_Comment_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
         var content = "This is a comment content example";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         List<Votes> votes = new();
         List<Replies> replies = new();
@@ -29,31 +26,28 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)comment.GetDomainEvents();
+
         Assert.NotNull(comment);
+        Assert.IsType<CommentCreatedDomainEvent>(domainEvents.LastOrDefault());
         Assert.Equal(new UserId(userId), comment.UserId);
         Assert.Equal(new PostId(postId), comment.PostId);
         Assert.Equal(content, comment.Content);
-        Assert.Equal(createdAt, comment.CreatedAt);
-        Assert.Equal(updatedAt, comment.UpdatedAt);
         Assert.Empty(votes);
         Assert.Empty(replies);
     }
 
 
     [Fact]
-    public void ShouldReturnCommentObjectWithNewDataOnUpdate()
+    public void Update_Comment_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
         var content = "This is a comment content example";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         var newContent = "This is a comment content updated";
 
@@ -65,29 +59,51 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
-        var oldUpdatedAt = comment.UpdatedAt;
         comment.UpdateComment(newContent);
+
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)comment.GetDomainEvents();
 
         Assert.NotNull(comment);
         Assert.Equal(newContent, comment.Content);
-        Assert.True(oldUpdatedAt < comment.UpdatedAt);
+        Assert.IsType<CommentUpdatedDomainEvent>(domainEvents.LastOrDefault());
     }
 
     [Fact]
-    public void ShouldReturnCommentObjectWithAnEntryInVotesList()
+    public void Delete_Comment_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid voteUserId = new("e041fd03-f6f1-4d79-8d25-b81f6d9cfbec");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        List<Votes> votes = new();
+        List<Replies> replies = new();
+
+        var comment = Comment.Create(
+            new UserId(userId),
+            new CommunityId(communityId),
+            new PostId(postId),
+            "This is a comment content example",
+            votes,
+            replies);
+
+        comment.DeleteComment();
+
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)comment.GetDomainEvents();
+
+        Assert.NotNull(comment);
+        Assert.IsType<CommentDeletedDomainEvent>(domainEvents.LastOrDefault());
+    }
+
+    [Fact]
+    public void Create_Vote_ValidInput_Success()
+    {
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        Guid voteUserId = Guid.NewGuid();
         var content = "This is a comment content example";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         List<Votes> votes = new();
         List<Replies> replies = new();
@@ -97,8 +113,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
@@ -109,21 +123,22 @@ public class DomainCommentsTests
 
         comment.AddVote(vote);
 
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)vote.GetDomainEvents();
+
         Assert.NotNull(comment.Votes);
         Assert.NotEmpty(comment.Votes);
         Assert.True(vote.IsVoted);
+        Assert.IsType<VoteCreatedDomainEvent>(domainEvents.LastOrDefault());
     }
 
     [Fact]
-    public void ShouldReturnCommentObjectWithVotesListEntryDataUpdated()
+    public void Update_Vote_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid voteUserId = new("e041fd03-f6f1-4d79-8d25-b81f6d9cfbec");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        Guid voteUserId = Guid.NewGuid();
         var content = "This is a comment content example";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         List<Votes> votes = new();
         List<Replies> replies = new();
@@ -133,8 +148,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
@@ -147,21 +160,22 @@ public class DomainCommentsTests
 
         comment.UpdateVote(vote.Id, false);
 
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)vote.GetDomainEvents();
+
         Assert.NotNull(comment.Votes);
         Assert.NotEmpty(comment.Votes);
         Assert.False(vote.IsVoted);
+        Assert.IsType<VoteUpdatedDomainEvent>(domainEvents.LastOrDefault());
     }
-    //Remove vote
+
     [Fact]
-    public void ShouldReturnCommentObjectWithVotesListEntryDataRemoved()
+    public void Delete_Vote_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid voteUserId = new("e041fd03-f6f1-4d79-8d25-b81f6d9cfbec");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        Guid voteUserId = Guid.NewGuid();
         var content = "This is a comment content example";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         List<Votes> votes = new();
         List<Replies> replies = new();
@@ -171,8 +185,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
@@ -185,21 +197,22 @@ public class DomainCommentsTests
 
         comment.RemoveVote(vote.Id);
 
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)vote.GetDomainEvents();
+
         Assert.NotNull(comment.Votes);
         Assert.Empty(comment.Votes);
+        Assert.IsType<VoteDeletedDomainEvent>(domainEvents.LastOrDefault());
     }
 
     [Fact]
-    public void ShouldReturnCommentObjectWithAnEntryInRepliesList()
+    public void Create_Reply_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        Guid replyUserId = Guid.NewGuid();
         var replyContent = "This is a reply content example";
         var content = "This is a comment content example";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         List<Votes> votes = new();
         List<Replies> replies = new();
@@ -210,8 +223,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
@@ -220,29 +231,28 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             comment.Id,
             replyContent,
-            DateTime.UtcNow,
-            DateTime.UtcNow,
             repliesVotes);
 
         comment.AddReply(reply);
 
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)reply.GetDomainEvents();
+
         Assert.NotNull(comment.Replies);
         Assert.NotEmpty(comment.Replies);
-        Assert.Equal(comment.Replies[0], reply);
+        Assert.IsType<ReplyCreatedDomainEvent>(domainEvents.LastOrDefault());
+        Assert.Equal(comment.Replies.FirstOrDefault(), reply);
     }
 
     [Fact]
-    public void ShouldReturnCommentObjectWithAnEntryInRepliesListDataUpdated()
+    public void Update_Reply_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        Guid replyUserId = Guid.NewGuid();
         var replyContent = "This is a reply content example";
         var content = "This is a comment content example";
         var newContent = "This is a comment content example updated";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         List<Votes> votes = new();
         List<Replies> replies = new();
@@ -253,8 +263,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
@@ -263,30 +271,29 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             comment.Id,
             replyContent,
-            DateTime.UtcNow,
-            DateTime.UtcNow,
             repliesVotes);
 
         comment.AddReply(reply);
 
         comment.UpdateReply(reply.Id, newContent);
 
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)reply.GetDomainEvents();
+
         Assert.NotNull(comment.Replies);
         Assert.NotEmpty(comment.Replies);
-        Assert.Equal(comment.Replies[0].Content, newContent);
+        Assert.Equal(comment.Replies.FirstOrDefault()?.Content, newContent);
+        Assert.IsType<ReplyUpdatedDomainEvent>(domainEvents.LastOrDefault());
     }
 
     [Fact]
-    public void ShouldReturnCommentObjectWithAnEntryInRepliesListDataRemoved()
+    public void Delete_Reply_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        Guid replyUserId = Guid.NewGuid();
         var replyContent = "This is a reply content example";
         var content = "This is a comment content example";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         List<Votes> votes = new();
         List<Replies> replies = new();
@@ -297,8 +304,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
@@ -307,30 +312,29 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             comment.Id,
             replyContent,
-            DateTime.UtcNow,
-            DateTime.UtcNow,
             repliesVotes);
 
         comment.AddReply(reply);
 
         comment.RemoveReply(reply.Id);
 
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)reply.GetDomainEvents();
+
         Assert.NotNull(comment.Replies);
         Assert.Empty(comment.Replies);
+        Assert.IsType<ReplyDeletedDomainEvent>(domainEvents.LastOrDefault());
     }
 
     [Fact]
-    public void ShouldReturnCommentObjectWithAnEntryInRepliesVotesList()
+    public void Create_Vote_Reply_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
-        Guid voteUserId = new("cef60ad4-6361-4271-a5d7-b0166b5c8f3b");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        Guid replyUserId = Guid.NewGuid();
+        Guid voteUserId = Guid.NewGuid();
         var replyContent = "This is a reply content example";
         var content = "This is a comment content example";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         List<Votes> votes = new();
         List<Replies> replies = new();
@@ -341,8 +345,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
@@ -351,8 +353,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             comment.Id,
             replyContent,
-            DateTime.UtcNow,
-            DateTime.UtcNow,
             repliesVotes);
 
         comment.AddReply(reply);
@@ -364,23 +364,24 @@ public class DomainCommentsTests
 
         reply.AddReplyVote(replyVote);
 
-        Assert.NotNull(comment.Replies[0].Votes);
-        Assert.NotEmpty(comment.Replies[0].Votes);
-        Assert.Equal(comment.Replies[0].Votes[0], replyVote);
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)replyVote.GetDomainEvents();
+
+        Assert.NotNull(comment.Replies.FirstOrDefault()?.Votes);
+        Assert.NotEmpty(comment.Replies.FirstOrDefault()?.Votes!);
+        Assert.Equal(comment.Replies.FirstOrDefault()?.Votes.FirstOrDefault(), replyVote);
+        Assert.IsType<VoteOnReplyCreatedDomainEvent>(domainEvents.LastOrDefault());
     }
 
     [Fact]
-    public void ShouldReturnCommentObjectWithAnEntryInRepliesVotesListDataUpdated()
+    public void Update_Vote_Reply_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
-        Guid voteUserId = new("cef60ad4-6361-4271-a5d7-b0166b5c8f3b");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        Guid replyUserId = Guid.NewGuid();
+        Guid voteUserId = Guid.NewGuid();
         var replyContent = "This is a reply content example";
         var content = "This is a comment content example";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         List<Votes> votes = new();
         List<Replies> replies = new();
@@ -391,8 +392,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
@@ -401,8 +400,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             comment.Id,
             replyContent,
-            DateTime.UtcNow,
-            DateTime.UtcNow,
             repliesVotes);
 
         comment.AddReply(reply);
@@ -416,24 +413,25 @@ public class DomainCommentsTests
 
         reply.UpdateReplyVote(replyVote.Id, false);
 
-        Assert.NotNull(comment.Replies[0].Votes);
-        Assert.NotEmpty(comment.Replies[0].Votes);
-        Assert.Equal(comment.Replies[0].Votes[0], replyVote);
-        Assert.False(comment.Replies[0].Votes[0].IsVoted);
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)replyVote.GetDomainEvents();
+
+        Assert.NotNull(comment.Replies.FirstOrDefault()?.Votes);
+        Assert.NotEmpty(comment.Replies.FirstOrDefault()?.Votes!);
+        Assert.Equal(comment.Replies.FirstOrDefault()?.Votes.FirstOrDefault(), replyVote);
+        Assert.False(comment.Replies.FirstOrDefault()?.Votes.FirstOrDefault()?.IsVoted);
+        Assert.IsType<VoteOnReplyUpdatedDomainEvent>(domainEvents.LastOrDefault());
     }
 
     [Fact]
-    public void ShouldReturnCommentObjectWithAnEntryInRepliesVotesListDataRemoved()
+    public void Delete_Vote_Reply_ValidInput_Success()
     {
-        Guid postId = new("e24abca2-f98e-4c8c-9825-9402282c6014");
-        Guid communityId = new("89d55af3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid userId = new("89d5caf3-e1f3-402d-a84b-fc3f442d3ca3");
-        Guid replyUserId = new("3fff8262-ee3c-465b-8526-e678bcf50804");
-        Guid voteUserId = new("cef60ad4-6361-4271-a5d7-b0166b5c8f3b");
+        Guid postId = Guid.NewGuid();
+        Guid communityId = Guid.NewGuid();
+        Guid userId = Guid.NewGuid();
+        Guid replyUserId = Guid.NewGuid();
+        Guid voteUserId = Guid.NewGuid();
         var replyContent = "This is a reply content example";
         var content = "This is a comment content example";
-        var createdAt = DateTime.UtcNow;
-        var updatedAt = DateTime.UtcNow;
 
         List<Votes> votes = new();
         List<Replies> replies = new();
@@ -444,8 +442,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             new PostId(postId),
             content,
-            createdAt,
-            updatedAt,
             votes,
             replies);
 
@@ -454,8 +450,6 @@ public class DomainCommentsTests
             new CommunityId(communityId),
             comment.Id,
             replyContent,
-            DateTime.UtcNow,
-            DateTime.UtcNow,
             repliesVotes);
 
         comment.AddReply(reply);
@@ -466,5 +460,12 @@ public class DomainCommentsTests
             true);
 
         reply.AddReplyVote(replyVote);
+
+        reply.RemoveReplyVote(replyVote.Id);
+
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)replyVote.GetDomainEvents();
+
+        Assert.NotNull(comment.Replies.FirstOrDefault()?.Votes);
+        Assert.IsType<VoteOnReplyDeletedDomainEvent>(domainEvents.LastOrDefault());
     }
 }

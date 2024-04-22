@@ -1,20 +1,22 @@
 namespace RedditClone.Domain.PostAggregate;
 
+using RedditClone.Domain.Primitives;
 using RedditClone.Domain.Common.ValueObjects;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate.Entities;
+using RedditClone.Domain.PostAggregate.DomainEvents;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
-public sealed class Post
+public sealed class Post : AggregateRoot
 {
     private readonly List<Votes> _votes = new();
-    public PostId Id { get; private set; }
+    public new PostId Id { get; private set; }
     public CommunityId CommunityId { get; private set; }
     public UserId UserId { get; private set; }
     public string Title { get; private set; }
     public string Content { get; private set; }
-    public IReadOnlyList<Votes> Votes => _votes.ToList();
+    public IReadOnlyList<Votes> Votes => _votes.AsReadOnly();
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
@@ -48,20 +50,27 @@ public sealed class Post
         UserId userId,
         string title,
         string content,
-        DateTime createdAt,
-        DateTime updatedAt,
         List<Votes> votes
     )
     {
-        return new(
+        var post = new Post(
             new PostId(Guid.NewGuid()),
             communityId,
             userId,
             title,
             content,
-            createdAt,
-            updatedAt,
+            DateTime.UtcNow,
+            DateTime.UtcNow,
             votes ?? new());
+
+        post.RaiseDomainEvent(
+            new PostCreatedDomainEvent(
+                Guid.NewGuid(),
+                post.Id,
+                post.CommunityId,
+                post.UserId));
+
+        return post;
     }
 
     public void UpdatePost(string title, string content)
@@ -69,6 +78,26 @@ public sealed class Post
         Title = title;
         Content = content;
         UpdatedAt = DateTime.UtcNow;
+
+        this.RaiseDomainEvent(
+            new PostUpdatedDomainEvent(
+                Guid.NewGuid(),
+                Id,
+                CommunityId,
+                UserId,
+                Title,
+                Content,
+                UpdatedAt));
+    }
+
+    public void DeletePost()
+    {
+        RaiseDomainEvent(
+            new PostDeletedDomainEvent(
+                Guid.NewGuid(),
+                Id,
+                CommunityId,
+                UserId));
     }
 
     public void AddVote(Votes newVote)
@@ -88,6 +117,8 @@ public sealed class Post
     public void RemoveVote(VoteId voteId)
     {
         var vote = _votes.Find(v => v.Id == voteId)!;
+
+        vote.DeleteVote();
 
         _votes.Remove(vote);
     }

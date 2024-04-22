@@ -1,37 +1,25 @@
 namespace RedditClone.Application.Comment.Queries.GetPostById;
 
 using MediatR;
-using RedditClone.Application.Persistence;
-using RedditClone.Domain.PostAggregate;
-using FluentValidation;
-using RedditClone.Application.Post.Queries.GetPostById;
-using RedditClone.Application.Post.Results.GetPostByIdResult;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Helpers;
 using Serilog;
+using ErrorOr;
+using RedditClone.Domain.Common.Errors;
+using RedditClone.Domain.PostAggregate;
+using RedditClone.Application.Post.Queries.GetPostById;
+using RedditClone.Application.Common.Interfaces.Persistence;
+using RedditClone.Application.Post.Results.GetPostByIdResult;
 
-public class GetPostByIdQueryHandler
-: IRequestHandler<GetPostByIdQuery, GetPostByIdResult>
+public class GetPostByIdQueryHandler(
+    IPostRepository postRepository)
+: IRequestHandler<GetPostByIdQuery, ErrorOr<GetPostByIdResult>>
 {
-    private readonly IPostRepository _postRepository;
-    private readonly IValidator<GetPostByIdQuery> _validator;
-    private readonly IConfiguration _configuration;
+    private readonly IPostRepository _postRepository = postRepository;
 
-    public GetPostByIdQueryHandler(
-        IPostRepository postRepository,
-        IValidator<GetPostByIdQuery> validator,
-        IConfiguration configuration)
-    {
-        _validator = validator;
-        _postRepository = postRepository;
-        _configuration = configuration;
-    }
-
-    public async Task<GetPostByIdResult> Handle(GetPostByIdQuery query, CancellationToken cancellationToken)
+    public async Task<ErrorOr<GetPostByIdResult>> Handle(
+        GetPostByIdQuery query,
+        CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@GetPostByIdQuery}",
@@ -39,9 +27,19 @@ public class GetPostByIdQueryHandler
             query,
             query.PostId);
 
-        _validator.ValidateAndThrow(query);
+        Post post = _postRepository.GetPostById(query.PostId).Value;
 
-        Post post = _postRepository.GetPostById(query.PostId);
+        if(post is null)
+        {
+            Error error = Errors.Posts.PostNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         GetPostByIdResult result = new(post);
 

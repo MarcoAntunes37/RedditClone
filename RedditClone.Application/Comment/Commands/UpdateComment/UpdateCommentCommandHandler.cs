@@ -1,38 +1,24 @@
-namespace RedditClone.Application.Community.Commands.UpdateComment;
+namespace RedditClone.Application.Comment.Commands.UpdateComment;
 
-using FluentValidation;
+using ErrorOr;
 using MediatR;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Comment.Commands.UpdateComment;
-using RedditClone.Application.Common.Helpers;
-using RedditClone.Application.Community.Results.UpdateCommentResult;
-using RedditClone.Application.Persistence;
-using RedditClone.Domain.CommentAggregate;
 using Serilog;
+using RedditClone.Domain.Common.Errors;
+using RedditClone.Domain.CommentAggregate;
+using RedditClone.Application.Persistence;
+using RedditClone.Application.Comment.Results.UpdateCommentResult;
 
-public class UpdateCommentCommandHandler :
-    IRequestHandler<UpdateCommentCommand, UpdateCommentResult>
+public class UpdateCommentCommandHandler(
+    ICommentRepository commentRepository)
+    : IRequestHandler<UpdateCommentCommand, ErrorOr<UpdateCommentResult>>
 {
-    private readonly ICommentRepository _commentRepository;
-    private readonly IValidator<UpdateCommentCommand> _validator;
-    private readonly IConfiguration _configuration;
+    private readonly ICommentRepository _commentRepository = commentRepository;
 
-    public UpdateCommentCommandHandler(
-        ICommentRepository commentRepository,
-        IValidator<UpdateCommentCommand> validator,
-        IConfiguration configuration)
-    {
-        _commentRepository = commentRepository;
-        _validator = validator;
-        _configuration = configuration;
-    }
-
-    public async Task<UpdateCommentResult> Handle(UpdateCommentCommand command,
+    public async Task<ErrorOr<UpdateCommentResult>> Handle(
+        UpdateCommentCommand command,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@UpdateCommentCommand}",
@@ -40,9 +26,19 @@ public class UpdateCommentCommandHandler :
             command,
             command.CommentId);
 
-        _validator.ValidateAndThrow(command);
+        if(_commentRepository.GetCommentById(command.CommentId).Value is null)
+        {
+            Error error = Errors.Comments.CommentNotFound;
 
-        Comment comment = _commentRepository.UpdateCommentById(command.CommentId, command.UserId, command.Content);
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        Comment comment = _commentRepository.UpdateCommentById(command.CommentId, command.UserId, command.Content).Value;
 
         UpdateCommentResult result = new("Comment successfully updated.", comment);
 

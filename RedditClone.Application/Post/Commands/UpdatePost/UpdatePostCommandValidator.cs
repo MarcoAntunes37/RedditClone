@@ -1,6 +1,6 @@
-using FluentValidation;
-
 namespace RedditClone.Application.Post.Commands.UpdatePost;
+
+using FluentValidation;
 
 public partial class UpdatePostCommandValidator : AbstractValidator<UpdatePostCommand>
 {

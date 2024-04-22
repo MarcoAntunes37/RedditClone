@@ -1,100 +1,84 @@
-namespace RedditClone.Tests;
+namespace RedditClone.Tests.DomainTests;
 
+using RedditClone.Domain.Primitives;
 using RedditClone.Domain.CommunityAggregate;
 using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.DomainEvents;
 
 public class DomainCommunityTests
 {
     [Fact]
-    public void ShouldReturnCommunityObjectOnCreate()
+    public void Create_Community_ValidInput_Success()
     {
-        Guid userId = new("2e053f8e-c75b-48ae-8853-ba0736e61a74");
+        Guid userId = Guid.NewGuid();
         string name = "C#";
         string description = "For C# Enjoyers";
         string topic = "Programming";
-        DateTime createdAt = DateTime.UtcNow;
-        DateTime updatedAt = DateTime.UtcNow;
 
         var community = Community.Create(
-            new UserId(userId),
             name,
             description,
             topic,
-            createdAt,
-            updatedAt
-        );
+            new UserId(userId));
+
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)community.GetDomainEvents();
 
         Assert.NotNull(community);
+        Assert.IsType<CommunityCreatedDomainEvent>(domainEvents.LastOrDefault());
         Assert.Equal(name, community.Name);
         Assert.Equal(description, community.Description);
         Assert.Equal(topic, community.Topic);
-        Assert.Equal(createdAt, community.CreatedAt);
-        Assert.Equal(updatedAt, community.UpdatedAt);
     }
 
     [Fact]
-    public void ShouldReturnCommunityObjectWithNewDataOnUpdate()
+    public void Update_Community_ValidInput_Success()
     {
-        Guid userId = new("2e053f8e-c75b-48ae-8853-ba0736e61a74");
+        Guid userId = Guid.NewGuid();
         string name = "C#";
         string description = "For C# Enjoyers";
         string topic = "Programming";
-        DateTime createdAt = DateTime.UtcNow;
-        DateTime updatedAt = DateTime.UtcNow;
 
         string newName = "Name updated";
         string newDescription = "Description updated";
         string newTopic = "Topic updated";
 
-
         var community = Community.Create(
-            new UserId(userId),
             name,
             description,
             topic,
-            createdAt,
-            updatedAt
+            new UserId(userId)
         );
-
-        var oldUpdatedAt = community.UpdatedAt;
 
         community.UpdateCommunity(newName, newDescription, newTopic);
 
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)community.GetDomainEvents();
 
         Assert.NotNull(community);
+        Assert.IsType<CommunityUpdatedDomainEvent>(domainEvents.LastOrDefault());
         Assert.Equal(community.Name, newName);
         Assert.Equal(community.Description, newDescription);
         Assert.Equal(community.Topic, newTopic);
-        Assert.True(community.UpdatedAt > oldUpdatedAt);
     }
 
     [Fact]
-    public void ShouldReturnCommunityObjectWithNewPasswordUpdate()
+    public void Delete_Community_ValidInput_Success()
     {
-        Guid userId = new("2e053f8e-c75b-48ae-8853-ba0736e61a74");
+        Guid userId = Guid.NewGuid();
         string name = "C#";
         string description = "For C# Enjoyers";
         string topic = "Programming";
-        DateTime createdAt = DateTime.UtcNow;
-        DateTime updatedAt = DateTime.UtcNow;
-
-        Guid newUserId = new("18f82728-92dc-46a1-86cf-3b2b642b8ee1");
 
         var community = Community.Create(
-            new UserId(userId),
             name,
             description,
             topic,
-            createdAt,
-            updatedAt
-        );
+            new UserId(userId));
 
-        var oldUpdatedAt = community.UpdatedAt;
+        community.DeleteCommunity();
 
-        community.TransferOwnership(new UserId(newUserId));
+        List<IDomainEvent> domainEvents = (List<IDomainEvent>)community.GetDomainEvents();
 
         Assert.NotNull(community);
-        Assert.Equal(community.UserId, new UserId(newUserId));
-        Assert.True(community.UpdatedAt > oldUpdatedAt);
+        Assert.IsType<CommunityDeletedDomainEvent>(domainEvents.LastOrDefault());
     }
 }

@@ -1,4 +1,4 @@
-namespace RedditClone.Application.Settings;
+namespace RedditClone.Infrastructure.Settings;
 
 public class RebusSettings
 {

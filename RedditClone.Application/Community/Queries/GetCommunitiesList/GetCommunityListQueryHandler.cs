@@ -5,30 +5,19 @@ using MediatR;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.Community.Queries.GetCommunitiesList;
 using RedditClone.Domain.CommunityAggregate;
-using FluentValidation;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Helpers;
 using Serilog;
 
-public class GetCommunitiesListQueryHandler
+public class GetCommunitiesListQueryHandler(
+    ICommunityRepository communityRepository)
 : IRequestHandler<GetCommunitiesListQuery, GetCommunitiesListResult>
 {
-    private readonly ICommunityRepository _communityRepository;
-    private readonly IConfiguration _configuration;
+    private readonly ICommunityRepository _communityRepository = communityRepository;
 
-    public GetCommunitiesListQueryHandler(
-        ICommunityRepository communityRepository,
-        IConfiguration configuration)
-    {
-        _communityRepository = communityRepository;
-        _configuration = configuration;
-    }
-
-    public async Task<GetCommunitiesListResult> Handle(GetCommunitiesListQuery query, CancellationToken cancellationToken)
+    public async Task<GetCommunitiesListResult> Handle(
+        GetCommunitiesListQuery query,
+        CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@GetCommunitiesListQuery}",
@@ -49,7 +38,9 @@ public class GetCommunitiesListQueryHandler
         }
 
         int totalItems = communities.Count;
+
         int startIndex = (query.Page -1) * query.PageSize;
+
         int endIndex = Math.Min(startIndex + query.PageSize -1, totalItems -1);
 
         List<Community> pageCommunities = communities.GetRange(startIndex, endIndex - startIndex + 1);

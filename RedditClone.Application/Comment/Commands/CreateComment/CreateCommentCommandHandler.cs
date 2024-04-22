@@ -1,43 +1,27 @@
 namespace RedditClone.Application.Comment.Commands.CreateComment;
 
-using System.Net;
-using FluentValidation;
+using ErrorOr;
 using MediatR;
-using RedditClone.Application.Comment.Results.CreateCommentResult;
-using RedditClone.Application.Common.Interfaces.Persistence;
-using RedditClone.Application.Common.Errors;
-using RedditClone.Application.Persistence;
-using RedditClone.Domain.CommentAggregate;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Helpers;
 using Serilog;
+using RedditClone.Domain.Common.Errors;
+using RedditClone.Domain.CommentAggregate;
+using RedditClone.Application.Persistence;
+using RedditClone.Application.Common.Interfaces.Persistence;
+using RedditClone.Application.Comment.Results.CreateCommentResult;
 
-public class CreateCommentCommandHandler :
-    IRequestHandler<CreateCommentCommand, CreateCommentResult>
+public class CreateCommentCommandHandler(
+    ICommentRepository commentRepository,
+    IUserCommunitiesRepository userCommunitiesRepository)
+: IRequestHandler<CreateCommentCommand, ErrorOr<CreateCommentResult>>
 {
-    private readonly ICommentRepository _commentRepository;
-    private readonly IUserCommunitiesRepository _userCommunitiesRepository;
-    private readonly IValidator<CreateCommentCommand> _validator;
-    private readonly IConfiguration _configuration;
+    private readonly ICommentRepository _commentRepository = commentRepository;
+    private readonly IUserCommunitiesRepository _userCommunitiesRepository = userCommunitiesRepository;
 
-    public CreateCommentCommandHandler(
-        ICommentRepository commentRepository,
-        IUserCommunitiesRepository userCommunitiesRepository,
-        IValidator<CreateCommentCommand> validator,
-        IConfiguration configuration)
-    {
-        _commentRepository = commentRepository;
-        _userCommunitiesRepository = userCommunitiesRepository;
-        _validator = validator;
-        _configuration = configuration;
-    }
-
-    public async Task<CreateCommentResult> Handle(CreateCommentCommand command,
+    public async Task<ErrorOr<CreateCommentResult>> Handle(
+        CreateCommentCommand command,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@CreateCommentCommand}",
@@ -45,20 +29,25 @@ public class CreateCommentCommandHandler :
             command,
             command.PostId);
 
-        bool isValid = _userCommunitiesRepository.ValidateRelationship(command.UserId, command.CommunityId);
+        var userCommunity = _userCommunitiesRepository.GetUserCommunities(command.UserId, command.CommunityId);
 
-        if(!isValid)
-            throw new HttpCustomException(HttpStatusCode.NotFound, "User is not part of community");
+        if (userCommunity == null)
+        {
+            Error error = Errors.UserCommunities.UserNotInCommunity;
 
-        _validator.ValidateAndThrow(command);
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         var comment = Comment.Create(
             command.UserId,
             command.CommunityId,
             command.PostId,
             command.Content,
-            command.CreatedAt,
-            command.UpdatedAt,
             command.Votes,
             command.Replies
         );

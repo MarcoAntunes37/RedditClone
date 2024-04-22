@@ -1,25 +1,21 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using RedditClone.Application.Common.Interfaces.Authentication;
-using RedditClone.Application.Common.Interfaces.Services;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using RedditClone.Infrastructure.Settings;
-
 namespace RedditClone.Infrastructure.Authentication;
 
-public class JwtTokenGenerator : IJwtTokenGenerator
-{
-    private readonly IDateTimeProvider _dateTimeProvider;
-    private readonly JwtSettings _jwtSettings;
+using System.Text;
+using System.Security.Claims;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using RedditClone.Infrastructure.Settings;
+using RedditClone.Application.Common.Interfaces.Services;
+using RedditClone.Application.Common.Interfaces.Authentication;
 
-    public JwtTokenGenerator(IDateTimeProvider dateTimeProvider,
+public class JwtTokenGenerator(
+    IDateTimeProvider dateTimeProvider,
     IOptions<JwtSettings> jwtSettings)
-    {
-        _dateTimeProvider = dateTimeProvider;
-        _jwtSettings = jwtSettings.Value;
-    }
+: IJwtTokenGenerator
+{
+    private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
+    private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
     public string GenerateToken(Guid userId, string firstname, string lastname)
     {

@@ -1,14 +1,14 @@
 namespace RedditClone.Infrastructure.Persistence.Configuration;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RedditClone.Domain.Common.ValueObjects;
-using RedditClone.Domain.CommunityAggregate;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Domain.PostAggregate;
-using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate;
+using RedditClone.Domain.CommunityAggregate;
+using RedditClone.Domain.Common.ValueObjects;
+using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 
 public class PostConfiguration
  : IEntityTypeConfiguration<Post>

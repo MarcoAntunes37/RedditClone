@@ -1,6 +1,6 @@
-using RedditClone.Application.Common.Interfaces.Services;
-
 namespace RedditClone.Infrastructure.Service;
+
+using RedditClone.Application.Common.Interfaces.Services;
 
 public class DateTimeProvider : IDateTimeProvider
 {

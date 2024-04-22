@@ -1,42 +1,27 @@
 namespace RedditClone.Application.User.Commands.PasswordRecoveryCodeValidate;
 
-using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.Configuration;
-using RedditClone.Application.Common.Interfaces.Services;
-using RedditClone.Application.Common.Helpers;
-using RedditClone.Application.User.Results.PasswordRecoveryCodeValidate;
 using Serilog;
+using ErrorOr;
+using RedditClone.Application.Common.Interfaces.Services;
+using RedditClone.Application.User.Results.PasswordRecoveryCodeValidate;
 
-public partial class PasswordRecoveryCodeValidateCommandHandler
-    : IRequestHandler<PasswordRecoveryCodeValidateCommand, PasswordRecoveryCodeValidateResult>
+public partial class PasswordRecoveryCodeValidateCommandHandler(
+    IRecoveryCodeManager recoveryCodeManager)
+: IRequestHandler<PasswordRecoveryCodeValidateCommand, ErrorOr<PasswordRecoveryCodeValidateResult>>
 {
-    private readonly IRecoveryCodeManager _recoveryCodeManager;
-    private readonly IValidator<PasswordRecoveryCodeValidateCommand> _validator;
-    private readonly IConfiguration _configuration;
-    public PasswordRecoveryCodeValidateCommandHandler(
-        IRecoveryCodeManager recoveryCodeManager,
-        IValidator<PasswordRecoveryCodeValidateCommand> validator,
-        IConfiguration configuration)
-    {
-        _recoveryCodeManager = recoveryCodeManager;
-        _validator = validator;
-        _configuration = configuration;
-    }
+    private readonly IRecoveryCodeManager _recoveryCodeManager = recoveryCodeManager;
 
-    public async Task<PasswordRecoveryCodeValidateResult> Handle(PasswordRecoveryCodeValidateCommand command,
-    CancellationToken cancellationToken)
+    public async Task<ErrorOr<PasswordRecoveryCodeValidateResult>> Handle(
+        PasswordRecoveryCodeValidateCommand command,
+        CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
-
-        new SerilogLoggerConfiguration(_configuration).CreateLogger();
 
         Log.Information(
             "{@Message}, {@PasswordRecoveryCodeValidateCommand}",
             "Trying to validate code {@Code}",
             command.Code);
-
-        _validator.ValidateAndThrow(command);
 
         PasswordRecoveryCodeValidateResult result = new (
             _recoveryCodeManager.ValidateCode(command.Email, command.Code),

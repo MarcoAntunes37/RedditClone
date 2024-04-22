@@ -1,8 +1,8 @@
 namespace RedditClone.Application.User.Commands.PasswordRecoveryNewPasswordCommandValidator;
 
 using FluentValidation;
-using RedditClone.Application.User.Commands.PasswordRecoveryNewPassword;
 using System.Text.RegularExpressions;
+using RedditClone.Application.User.Commands.PasswordRecoveryNewPassword;
 
 public partial class PasswordRecoveryNewPasswordCommandValidator : AbstractValidator<PasswordRecoveryNewPasswordCommand>
 {

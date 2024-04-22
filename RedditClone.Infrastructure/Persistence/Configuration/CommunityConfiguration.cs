@@ -1,11 +1,9 @@
 namespace RedditClone.Infrastructure.Persistence.Configuration;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RedditClone.Domain.CommunityAggregate;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
-using RedditClone.Domain.UserAggregate;
-using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class CommunityConfiguration
  : IEntityTypeConfiguration<Community>
@@ -15,7 +13,7 @@ public class CommunityConfiguration
         ConfigureCommunityTable(builder);
     }
 
-    private void ConfigureCommunityTable(EntityTypeBuilder<Community> builder)
+    private static void ConfigureCommunityTable(EntityTypeBuilder<Community> builder)
     {
         builder.ToTable("Communities");
 
@@ -26,17 +24,6 @@ public class CommunityConfiguration
              .HasColumnName("Id")
              .HasConversion(id => id.Value,
                  value => new CommunityId(value));
-
-        builder.Property(c => c.UserId)
-            .ValueGeneratedNever()
-            .HasColumnName("UserId")
-            .HasConversion(id => id.Value,
-            value => new UserId(value));
-
-        builder.HasOne<User>()
-            .WithMany()
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(c => c.Name)
             .HasMaxLength(100);

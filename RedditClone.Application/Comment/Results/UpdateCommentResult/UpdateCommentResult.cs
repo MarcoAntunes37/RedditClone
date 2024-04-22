@@ -1,4 +1,4 @@
-namespace RedditClone.Application.Community.Results.UpdateCommentResult;
+namespace RedditClone.Application.Comment.Results.UpdateCommentResult;
 
 using RedditClone.Domain.CommentAggregate;
 
