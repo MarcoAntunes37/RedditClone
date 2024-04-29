@@ -41,6 +41,17 @@ public class CreateCommunityCommandHandler(
             return error;
         }
 
+        if (!_communityRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error("{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
         var community = Community.Create(
             command.Name,
             command.Description,

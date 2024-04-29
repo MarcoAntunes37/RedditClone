@@ -37,6 +37,30 @@ public class CreateCommentVoteCommandHandler(
             return error;
         }
 
+        if(!_commentRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if(_commentRepository.UserAlreadyVoted(command.CommentId, command.UserId))
+        {
+            Error error = Errors.CommentVotes.UserAlreadyVoted;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
         _commentRepository.AddCommentVote(command.CommentId, command.UserId, command.IsVoted);
 
         CreateCommentVoteResult result = new("Vote successfully on comment");

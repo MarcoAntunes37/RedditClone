@@ -23,6 +23,8 @@ public class UserCommunityRoleUpdateCommandHandlerTests
 
         var userId = new UserId(Guid.NewGuid());
 
+        var requesterId = new UserId(Guid.NewGuid());
+
         var communityId = new CommunityId(Guid.NewGuid());
 
         var userCommunities = UserCommunities.Create(
@@ -41,6 +43,7 @@ public class UserCommunityRoleUpdateCommandHandlerTests
             var handler = new UserCommunityRoleUpdateCommandHandler(userCommunitiesRepository);
 
             var command = new UserCommunityRoleUpdateCommand(
+                requesterId,
                 communityId,
                 userId,
                 Role.Member);

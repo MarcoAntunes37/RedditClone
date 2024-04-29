@@ -8,6 +8,7 @@ using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Application.ReplyVotes.Commands.UpdateReplyVote;
 using RedditClone.API.Endpoints.ReplyVotes.UpdateUpdateReplyVoteVote;
 using RedditClone.Application.ReplyVotes.Results.UpdateReplyVoteResult;
+using RedditClone.API.Extension;
 
 public class UpdateReplyVoteEndpoint : IEndpoint
 {
@@ -32,12 +33,10 @@ public class UpdateReplyVoteEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description
-                ));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.ReplyVotes);
+        .WithTags(Tags.ReplyVotes)
+        .RequireAuthorization();
     }
 }

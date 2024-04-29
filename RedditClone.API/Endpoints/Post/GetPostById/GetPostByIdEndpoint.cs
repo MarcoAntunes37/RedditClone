@@ -2,9 +2,10 @@ namespace RedditClone.API.Endpoints.Post.GetPostById;
 
 using ErrorOr;
 using MediatR;
+using RedditClone.API.Extension;
+using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Application.Post.Queries.GetPostById;
 using RedditClone.Application.Post.Results.GetPostByIdResult;
-using RedditClone.Domain.PostAggregate.ValueObjects;
 
 public class GetPostByIdEndpoint : IEndpoint
 {
@@ -20,11 +21,10 @@ public class GetPostByIdEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Posts);
+        .WithTags(Tags.Posts)
+        .RequireAuthorization();
     }
 }

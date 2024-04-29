@@ -40,6 +40,32 @@ public class DeleteCommentVoteCommandHandler(
             return error;
         }
 
+        var vote = comment.Votes.FirstOrDefault(v => v.Id == command.VoteId);
+
+        if (vote is null)
+        {
+            Error error = Errors.CommentVotes.VoteNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (vote.UserId != command.UserId)
+        {
+            Error error = Errors.CommentVotes.UserNotVoteOwner;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
         _commentRepository.DeleteCommentVoteById(command.CommentId, command.VoteId, command.UserId);
 
         DeleteCommentVoteResult result = new("Comment successfully deleted.");

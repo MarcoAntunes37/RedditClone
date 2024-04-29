@@ -27,7 +27,9 @@ public class CreatePostCommandHandler(
             command,
             command.CommunityId);
 
-        if(_userCommunitiesRepository.GetUserCommunities(command.UserId, command.CommunityId) == null)
+        var userCommunity = _userCommunitiesRepository.GetUserCommunities(command.UserId, command.CommunityId);
+
+        if (userCommunity is null)
         {
             Error error = Errors.UserCommunities.UserNotInCommunity;
 
@@ -38,6 +40,29 @@ public class CreatePostCommandHandler(
 
             return error;
         };
+
+        if (!_postRepository.CommunityExists(command.CommunityId))
+        {
+            Error error = Errors.Community.CommunityNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+        if (!_postRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         var post = Post.Create(
             command.CommunityId,

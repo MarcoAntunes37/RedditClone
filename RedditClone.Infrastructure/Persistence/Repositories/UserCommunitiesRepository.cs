@@ -2,13 +2,14 @@ namespace RedditClone.Infrastructure.Persistence.Repositories;
 
 using ErrorOr;
 using Serilog;
-using RedditClone.Application.Common.Interfaces.Persistence;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
-using RedditClone.Domain.UserAggregate.ValueObjects;
-using RedditClone.Domain.UserCommunitiesAggregate;
 using RedditClone.Domain.Common.Errors;
+using RedditClone.Domain.UserAggregate;
+using RedditClone.Domain.CommunityAggregate;
+using RedditClone.Domain.UserCommunitiesAggregate;
+using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.UserCommunitiesAggregate.Enum;
-
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Application.Common.Interfaces.Persistence;
 
 public class UserCommunitiesRepository(RedditCloneDbContext dbContext)
     : IUserCommunitiesRepository
@@ -16,10 +17,10 @@ public class UserCommunitiesRepository(RedditCloneDbContext dbContext)
     private readonly RedditCloneDbContext _dbContext = dbContext;
 
 #pragma warning disable CS8603
-    public UserCommunities GetUserCommunities(UserId userId, CommunityId communityId)
+    public UserCommunities? GetUserCommunities(UserId userId, CommunityId communityId)
     {
-        UserCommunities? userCommunities = _dbContext.UserCommunities
-            .SingleOrDefault(uc => uc.UserId == userId && uc.CommunityId == communityId);
+        UserCommunities userCommunities = _dbContext.UserCommunities
+            .SingleOrDefault(uc => uc.UserId == userId && uc.CommunityId == communityId)!;
 
         return userCommunities;
     }
@@ -45,7 +46,7 @@ public class UserCommunitiesRepository(RedditCloneDbContext dbContext)
             uc => uc.UserId == userId &&
             uc.CommunityId == communityId);
 
-        if(userCommunitiesData is null)
+        if (userCommunitiesData is null)
         {
             Error error = Errors.UserCommunities.UserNotInCommunity;
 
@@ -69,7 +70,7 @@ public class UserCommunitiesRepository(RedditCloneDbContext dbContext)
         UserCommunities? userCommunities = _dbContext.UserCommunities
             .SingleOrDefault(uc => uc.UserId == userId && uc.CommunityId == communityId);
 
-        if(userCommunities is null)
+        if (userCommunities is null)
         {
             Error error = Errors.UserCommunities.UserNotInCommunity;
 
@@ -84,5 +85,41 @@ public class UserCommunitiesRepository(RedditCloneDbContext dbContext)
         _dbContext.UserCommunities.Remove(userCommunities);
 
         return true;
+    }
+
+    public List<User> GetUsersListByCommunityId(CommunityId communityId)
+    {
+        List<User> users = _dbContext.UserCommunities
+            .Where(uc => uc.CommunityId == communityId)
+            .Join(_dbContext.Users,
+                userCommunities => userCommunities.UserId,
+                user => user.Id,
+                (userCommunities, user) => user)
+            .ToList();
+
+        return users;
+    }
+
+    public List<Community> GetCommunitiesListByUserId(UserId userId)
+    {
+        List<Community> communities = _dbContext.UserCommunities
+            .Where(uc => uc.UserId == userId)
+            .Join(_dbContext.Communities,
+                userCommunities => userCommunities.CommunityId,
+                community => community.Id,
+                (userCommunities, community) => community)
+            .ToList();
+
+        return communities;
+    }
+
+    public bool UserExists(UserId userId)
+    {
+        return _dbContext.Users.Any(u => u.Id == userId);
+    }
+
+    public bool CommunityExists(CommunityId communityId)
+    {
+        return _dbContext.Communities.Any(c => c.Id == communityId);
     }
 }

@@ -190,7 +190,7 @@ public class CommentRepositoryTests
 
             context.SaveChanges();
 
-            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, comment.CommunityId, arrange["content"].ToString()!);
+            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, arrange["content"].ToString()!);
 
             context.SaveChanges();
 
@@ -216,7 +216,7 @@ public class CommentRepositoryTests
 
             context.SaveChanges();
 
-            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, comment.CommunityId, arrange["content"].ToString()!);
+            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, arrange["content"].ToString()!);
 
             context.SaveChanges();
 
@@ -247,7 +247,7 @@ public class CommentRepositoryTests
 
             context.SaveChanges();
 
-            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, comment.CommunityId, arrange["content"].ToString()!);
+            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, arrange["content"].ToString()!);
 
             context.SaveChanges();
 
@@ -278,7 +278,7 @@ public class CommentRepositoryTests
 
             context.SaveChanges();
 
-            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, comment.CommunityId, arrange["content"].ToString()!);
+            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, arrange["content"].ToString()!);
 
             context.SaveChanges();
 
@@ -311,7 +311,7 @@ public class CommentRepositoryTests
 
             context.SaveChanges();
 
-            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, comment.CommunityId, arrange["content"].ToString()!);
+            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, arrange["content"].ToString()!);
 
             context.SaveChanges();
 
@@ -348,7 +348,7 @@ public class CommentRepositoryTests
 
             context.SaveChanges();
 
-            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, comment.CommunityId, arrange["content"].ToString()!);
+            commentRepository.AddCommentReply(comment!.Id, comment!.UserId, arrange["content"].ToString()!);
 
             context.SaveChanges();
 

@@ -30,7 +30,7 @@ public class CreatePostVoteCommandHandler
             command,
             command.PostId);
 
-        if(_postRepository.GetPostById(command.PostId).Value == null)
+        if (_postRepository.GetPostById(command.PostId).Value is null)
         {
             Error error = Errors.Posts.PostNotFound;
 
@@ -42,7 +42,31 @@ public class CreatePostVoteCommandHandler
             return error;
         }
 
-        _postRepository.AddPostVote(command.PostId, command.UserId, command.IsVoted);
+        if(!_postRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        var success = _postRepository.AddPostVote(command.PostId, command.UserId, command.IsVoted);
+
+        if (!success.Value)
+        {
+            Error error = Errors.PostVotes.UserAlreadyVoted;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         CreatePostVoteResult result = new("Vote on post successfully");
 

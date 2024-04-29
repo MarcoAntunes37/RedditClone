@@ -26,9 +26,61 @@ public class UpdateCommentReplyCommandHandler(
             command.ReplyId,
             command.CommentId);
 
-        if(_commentRepository.GetCommentById(command.CommentId).Value is null)
+        var comment = _commentRepository.GetCommentById(command.CommentId).Value;
+
+        if (comment is null)
         {
             Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (!_commentRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (!_commentRepository.CommentReplyExists(command.CommentId, command.ReplyId))
+        {
+            Error error = Errors.CommentReplies.ReplyNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        var reply = comment.Replies.FirstOrDefault(r => r.Id == command.ReplyId);
+
+        if (reply is null)
+        {
+            Error error = Errors.CommentReplies.ReplyNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (reply.UserId != command.UserId)
+        {
+            Error error = Errors.CommentReplies.ReplyNotOwnerByUser;
 
             Log.Error(
                 "{@Code}, {@Descriptor}",

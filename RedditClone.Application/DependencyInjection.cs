@@ -35,7 +35,6 @@ using RedditClone.Application.User.Commands.SendPasswordRecoveryEmail;
 using RedditClone.Application.CommentVotes.Commands.CreateCommentVote;
 using RedditClone.Application.CommentVotes.Commands.DeleteCommentVote;
 using RedditClone.Application.CommentVotes.Commands.UpdateCommentVote;
-using RedditClone.Application.UserCommunities.Queries.GetUserCommunity;
 using RedditClone.Application.User.Commands.PasswordRecoveryNewPassword;
 using RedditClone.Application.Community.Queries.GetPostListByCommunityId;
 using RedditClone.Application.User.Commands.PasswordRecoveryCodeValidate;
@@ -44,7 +43,10 @@ using RedditClone.Application.UserCommunities.Commands.UserLeftACommunity;
 using RedditClone.Application.CommentReplies.Commands.CreateCommentReply;
 using RedditClone.Application.CommentReplies.Commands.UpdateCommentReply;
 using RedditClone.Application.CommentReplies.Commands.DeleteCommentReply;
+using RedditClone.Application.UserCommunities.Queries.GetUserListByCommunityId;
 using RedditClone.Application.User.Commands.PasswordRecoveryNewPasswordCommandValidator;
+using RedditClone.Application.UserCommunities.Queries.GetCommunitiesListByUserId;
+using RedditClone.Application.Comment.Queries.GetCommentsListByPostId;
 
 public static class DependencyInjection
 {
@@ -78,7 +80,7 @@ public static class DependencyInjection
     public static IServiceCollection AddCommentValidations(this IServiceCollection services)
     {
         services.AddScoped<IValidator<GetCommentByIdQuery>, GetCommentByIdQueryValidator>();
-        services.AddScoped<IValidator<GetCommentsByPostIdQuery>, GetCommentsByPostIdQueryValidator>();
+        services.AddScoped<IValidator<GetCommentsListByPostIdQuery>, GetCommentsListByPostIdQueryValidator>();
 
         services.AddScoped<IValidator<CreateCommentCommand>, CreateCommentCommandValidator>();
         services.AddScoped<IValidator<UpdateCommentCommand>, UpdateCommentCommandValidator>();
@@ -139,7 +141,8 @@ public static class DependencyInjection
     {
         services.AddScoped<IValidator<UserJoinACommunityCommand>, UserJoinACommunityCommandValidator>();
         services.AddScoped<IValidator<UserLeftACommunityCommand>, UserLeftACommunityCommandValidator>();
-        services.AddScoped<IValidator<GetUserCommunityQuery>, GetUserCommunityQueryValidator>();
+        services.AddScoped<IValidator<GetUserListByCommunityIdQuery>, GetUserListByCommunityIdQueryValidator>();
+        services.AddScoped<IValidator<GetCommunitiesListByUserIdQuery>, GetCommunitiesListByUserIdQueryValidator>();
 
         return services;
     }

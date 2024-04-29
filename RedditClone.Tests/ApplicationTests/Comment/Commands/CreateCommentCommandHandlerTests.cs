@@ -21,8 +21,11 @@ public class CreateCommentCommandHandlerTests
 
         var userCommunitiesRepositoryMock = new Mock<IUserCommunitiesRepository>();
 
+        var postRepositoryMock = new Mock<IPostRepository>();
+
         var handler = new CreateCommentCommandHandler(
             commentRepositoryMock.Object,
+            postRepositoryMock.Object,
             userCommunitiesRepositoryMock.Object);
 
         var command = new CreateCommentCommand(

@@ -1,9 +1,9 @@
 namespace RedditClone.API.Endpoints.Comment.GetCommentsByPostId;
 
 using MediatR;
-using RedditClone.Application.Comment.Queries.GetCommentsByPostId;
-using RedditClone.Application.Comment.Results.GetCommentsByPostIdResult;
 using RedditClone.Domain.PostAggregate.ValueObjects;
+using RedditClone.Application.Comment.Queries.GetCommentsListByPostId;
+using RedditClone.Application.Comment.Results.GetCommentsListByPostIdResults;
 
 public class GetCommentsByPostIdEndpoint : IEndpoint
 {
@@ -16,17 +16,17 @@ public class GetCommentsByPostIdEndpoint : IEndpoint
             ISender mediator
         ) =>
         {
-            var query = new GetCommentsByPostIdQuery(
+            var query = new GetCommentsListByPostIdQuery(
                 new PostId(postId),
                 page,
-                pageSize
-            );
+                pageSize);
 
-            GetCommentsByPostIdResult result = await mediator.Send(query);
+            GetCommentsListByPostIdResult result = await mediator.Send(query);
 
             return Results.Ok(result);
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Comments);
+        .WithTags(Tags.Comments)
+        .RequireAuthorization();
     }
 }

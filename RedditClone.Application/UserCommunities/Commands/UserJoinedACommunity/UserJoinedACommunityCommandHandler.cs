@@ -5,6 +5,7 @@ using MediatR;
 using Serilog;
 using RedditClone.Domain.Common.Errors;
 using RedditClone.Domain.UserCommunitiesAggregate;
+using RedditClone.Domain.UserCommunitiesAggregate.Enum;
 using RedditClone.Application.Common.Interfaces.Persistence;
 using RedditClone.Application.UserCommunities.Results.UserJoinACommunityResults;
 
@@ -27,9 +28,35 @@ public class UserJoinACommunityCommandHandler(
             command.UserId,
             command.CommunityId);
 
-        if(_userCommunityRepository.GetUserCommunities(command.UserId, command.CommunityId) == null)
+        if (!_userCommunityRepository.UserExists(command.UserId))
         {
-            Error error = Errors.UserCommunities.UserNotInCommunity;
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (!_userCommunityRepository.CommunityExists(command.CommunityId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        var userCommunity = _userCommunityRepository.GetUserCommunities(command.UserId, command.CommunityId);
+
+        if (userCommunity is not null)
+        {
+            Error error = Errors.UserCommunities.UserAlreadyInCommunity;
 
             Log.Error(
                 "{@Code}, {@Descriptor}",
@@ -42,8 +69,7 @@ public class UserJoinACommunityCommandHandler(
         var userCommunities = UserCommunities.Create(
             command.UserId,
             command.CommunityId,
-            command.Role
-        );
+            Role.Member);
 
         _userCommunityRepository.Add(userCommunities);
 
@@ -54,7 +80,7 @@ public class UserJoinACommunityCommandHandler(
             result,
             command.UserId,
             command.CommunityId,
-            command.Role);
+            Role.Member);
 
         return result;
     }

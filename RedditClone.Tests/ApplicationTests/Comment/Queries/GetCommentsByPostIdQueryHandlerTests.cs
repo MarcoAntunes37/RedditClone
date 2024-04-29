@@ -9,7 +9,8 @@ using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Infrastructure.Persistence.Repositories;
 using RedditClone.Application.Comment.Queries.GetCommentsByPostId;
-using RedditClone.Application.Comment.Results.GetCommentsByPostIdResult;
+using RedditClone.Application.Comment.Queries.GetCommentsListByPostId;
+using RedditClone.Application.Comment.Results.GetCommentsListByPostIdResults;
 
 public class GetCommentsByPostIdQueryHandlerTests
 {
@@ -49,11 +50,11 @@ public class GetCommentsByPostIdQueryHandlerTests
 
             int pageSize = 20;
 
-            var query = new GetCommentsByPostIdQuery(postId, page, pageSize);
+            var query = new GetCommentsListByPostIdQuery(postId, page, pageSize);
 
             var result = await handler.Handle(query, default);
 
-            Assert.IsType<GetCommentsByPostIdResult>(result);
+            Assert.IsType<GetCommentsListByPostIdResult>(result);
 
             Assert.Single(result.Comments);
         }

@@ -20,7 +20,7 @@ public class UserRepository(
 
     public ErrorOr<bool> DeleteUserById(UserId id, UserId requesterId)
     {
-        User? user = _dbContext.Users.SingleOrDefault(u => u.Id == id);
+        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)!;
 
         if (user is null)
         {
@@ -55,7 +55,7 @@ public class UserRepository(
 
     public ErrorOr<User> UpdateProfileById(UserId id, string firstname, string lastname, string email)
     {
-        User? user = _dbContext.Users.SingleOrDefault(u => u.Id == id);
+        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)!;
 
         if (user is null)
         {
@@ -76,7 +76,7 @@ public class UserRepository(
 
     public ErrorOr<bool> UpdatePasswordById(UserId id, string oldPassword, string newPassword, string matchPassword)
     {
-        User? user = _dbContext.Users.SingleOrDefault(u => u.Id == id);
+        User user = _dbContext.Users.SingleOrDefault(u => u.Id == id)!;
 
         if (user is null)
         {

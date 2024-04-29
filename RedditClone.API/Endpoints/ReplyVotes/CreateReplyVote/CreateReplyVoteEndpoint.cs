@@ -2,6 +2,7 @@ namespace RedditClone.API.Endpoints.ReplyVotes.CreateReplyVote;
 
 using ErrorOr;
 using MediatR;
+using RedditClone.API.Extension;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Application.ReplyVotes.Commands.CreateReplyVote;
@@ -27,11 +28,10 @@ public class CreateReplyVoteEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.ReplyVotes);
+        .WithTags(Tags.ReplyVotes)
+        .RequireAuthorization();
     }
 }

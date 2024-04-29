@@ -25,7 +25,7 @@ public class UpdatePostVoteCommandHandler(
             command.VoteId,
             command.PostId);
 
-        if(_postRepository.GetPostById(command.PostId).Value == null)
+        if (_postRepository.GetPostById(command.PostId).Value == null)
         {
             Error error = Errors.Posts.PostNotFound;
 
@@ -37,7 +37,19 @@ public class UpdatePostVoteCommandHandler(
             return error;
         }
 
-        _postRepository.UpdatePostVoteById(command.PostId, command.VoteId, command.UserId, command.IsVoted);
+        var success = _postRepository.UpdatePostVoteById(command.PostId, command.VoteId, command.UserId, command.IsVoted);
+
+        if (!success.Value)
+        {
+            Error error = Errors.PostVotes.UserNotVoteOwner;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         UpdatePostVoteResult result = new("Vote on post updated successfully");
 

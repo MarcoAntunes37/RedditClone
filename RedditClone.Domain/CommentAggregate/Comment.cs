@@ -15,7 +15,6 @@ public sealed class Comment : AggregateRoot
     private readonly List<Replies> _replies = new();
     public new CommentId Id { get; private set; }
     public UserId UserId { get; private set; }
-    public CommunityId CommunityId { get; private set; }
     public PostId PostId { get; private set; }
     public string Content { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -30,7 +29,6 @@ public sealed class Comment : AggregateRoot
     private Comment(
         CommentId id,
         UserId userId,
-        CommunityId communityId,
         PostId postId,
         string content,
         DateTime createdAt,
@@ -41,7 +39,6 @@ public sealed class Comment : AggregateRoot
     {
         Id = id;
         UserId = userId;
-        CommunityId = communityId;
         PostId = postId;
         Content = content;
         CreatedAt = createdAt;
@@ -62,7 +59,6 @@ public sealed class Comment : AggregateRoot
         var comment = new Comment(
             new CommentId(Guid.NewGuid()),
             userId,
-            communityId,
             postId,
             content,
             DateTime.UtcNow,
@@ -75,7 +71,6 @@ public sealed class Comment : AggregateRoot
                 Guid.NewGuid(),
                 comment.Id,
                 comment.PostId,
-                comment.CommunityId,
                 comment.UserId,
                 comment.Content));
 
@@ -92,7 +87,6 @@ public sealed class Comment : AggregateRoot
                 Guid.NewGuid(),
                 Id,
                 PostId,
-                CommunityId,
                 UserId,
                 Content,
                 UpdatedAt));
@@ -105,7 +99,6 @@ public sealed class Comment : AggregateRoot
                 Guid.NewGuid(),
                 Id,
                 PostId,
-                CommunityId,
                 UserId));
     }
 

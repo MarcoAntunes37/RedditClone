@@ -64,11 +64,22 @@ public class PostRepository(RedditCloneDbContext dbContext)
         _dbContext.Posts.Add(post);
     }
 
-    public ErrorOr<Post> UpdatePostById(PostId id, UserId userId, string title, string content)
+    public Post UpdatePostById(PostId id, string title, string content)
     {
-        Post? post = _dbContext.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId);
+        Post post = _dbContext.Posts.SingleOrDefault(p => p.Id == id)!;
 
-        if (post is null)
+        post.UpdatePost(title, content);
+
+        _dbContext.Posts.Update(post);
+
+        return post;
+    }
+
+    public ErrorOr<bool> DeletePostById(PostId id, UserId userId)
+    {
+        Post post = _dbContext.Posts.SingleOrDefault(p => p.Id == id)!;
+
+        if(post is null)
         {
             Error error = Errors.Posts.PostNotFound;
 
@@ -80,20 +91,9 @@ public class PostRepository(RedditCloneDbContext dbContext)
             return error;
         }
 
-        post.UpdatePost(title, content);
-
-        _dbContext.Posts.Update(post);
-
-        return post;
-    }
-
-    public ErrorOr<bool> DeletePostById(PostId id, UserId userId)
-    {
-        Post? post = _dbContext.Posts.SingleOrDefault(p => p.Id == id && p.UserId == userId);
-
-        if (post == null)
+        if (post.UserId != userId)
         {
-            Error error = Errors.Posts.PostNotFound;
+            Error error = Errors.Posts.PostNotOwnedByUser;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -110,13 +110,25 @@ public class PostRepository(RedditCloneDbContext dbContext)
 
     public ErrorOr<bool> AddPostVote(PostId id, UserId userId, bool isVoted)
     {
-        Post? postVote = _dbContext.Posts
+        Post postVote = _dbContext.Posts
             .Include(p => p.Votes)
-            .SingleOrDefault(p => p.Id == id);
+            .SingleOrDefault(p => p.Id == id)!;
 
-        if (postVote == null)
+        if (postVote is null)
         {
             Error error = Errors.Posts.PostNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (postVote.Votes.Any(v => v.UserId == userId))
+        {
+            Error error = Errors.PostVotes.UserAlreadyVoted;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -137,14 +149,26 @@ public class PostRepository(RedditCloneDbContext dbContext)
 
     public ErrorOr<bool> UpdatePostVoteById(PostId id, VoteId voteId, UserId userId, bool isVoted)
     {
-        Post? postVote = _dbContext.Posts
+        Post postVote = _dbContext.Posts
             .Include(p => p.Votes)
-            .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
-            .SingleOrDefault(p => p.Id == id);
+            .Where(p => p.Votes.Any(pv => pv.Id == voteId))
+            .SingleOrDefault(p => p.Id == id)!;
 
-        if (postVote == null)
+        if (postVote is null)
         {
-            Error error = Errors.Posts.VoteNotFound;
+            Error error = Errors.PostVotes.VoteNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if(postVote.Votes.First().UserId != userId)
+        {
+            Error error = Errors.PostVotes.UserNotVoteOwner;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -161,14 +185,14 @@ public class PostRepository(RedditCloneDbContext dbContext)
 
     public ErrorOr<bool> DeletePostVoteById(PostId id, VoteId voteId, UserId userId)
     {
-        Post? postVote = _dbContext.Posts
+        Post postVote = _dbContext.Posts
             .Include(p => p.Votes)
-            .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
-            .SingleOrDefault(p => p.Id == id);
+            .Where(p => p.Votes.Any(pv => pv.Id == voteId))
+            .SingleOrDefault(p => p.Id == id)!;
 
-        if(postVote == null)
+        if (postVote == null)
         {
-            Error error = Errors.Posts.VoteNotFound;
+            Error error = Errors.PostVotes.VoteNotFound;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -178,10 +202,32 @@ public class PostRepository(RedditCloneDbContext dbContext)
             return error;
         }
 
-        _dbContext.Posts.Remove(postVote);;
+        if (postVote.Votes.First().UserId != userId)
+        {
+            Error error = Errors.PostVotes.UserNotVoteOwner;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        _dbContext.Posts.Remove(postVote); ;
 
         postVote.RemoveVote(voteId);
 
         return true;
+    }
+
+    public bool UserExists(UserId userId)
+    {
+        return _dbContext.Users.Any(u => u.Id == userId);
+    }
+
+    public bool CommunityExists(CommunityId communityId)
+    {
+        return _dbContext.Communities.Any(c => c.Id == communityId);
     }
 }

@@ -2,12 +2,13 @@ namespace RedditClone.API.Endpoints.Community.DeleteCommunity;
 
 using ErrorOr;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.UserCommunitiesAggregate.Enum;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Application.Community.Commands.DeleteCommunity;
 using RedditClone.Application.Community.Results.DeleteCommunityResult;
-using RedditClone.Domain.UserCommunitiesAggregate.Enum;
-using Microsoft.AspNetCore.Mvc;
+using RedditClone.API.Extension;
 
 public class DeleteCommunityEndpoint : IEndpoint
 {
@@ -20,20 +21,16 @@ public class DeleteCommunityEndpoint : IEndpoint
         {
             var command = new DeleteCommunityCommand(
                 new CommunityId(communityId),
-                new UserId(req.UserId),
-                (Role)req.Role);
+                new UserId(req.UserId));
 
             ErrorOr<DeleteCommunityResult> result = await mediator.Send(command);
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description
-                )
-            );
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Communities);
+        .WithTags(Tags.Communities)
+        .RequireAuthorization();
     }
 }

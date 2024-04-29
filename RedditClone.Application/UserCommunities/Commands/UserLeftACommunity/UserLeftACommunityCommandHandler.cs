@@ -4,6 +4,7 @@ using ErrorOr;
 using MediatR;
 using Serilog;
 using RedditClone.Domain.Common.Errors;
+using RedditClone.Domain.UserCommunitiesAggregate.Enum;
 using RedditClone.Application.Common.Interfaces.Persistence;
 using RedditClone.Application.UserCommunities.Results.UserJoinACommunityResults;
 
@@ -31,9 +32,33 @@ public class UserLeftACommunityCommandHandler
             command.UserId,
             command.CommunityId);
 
+        if (!_userCommunityRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (!_userCommunityRepository.CommunityExists(command.CommunityId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
         var userCommunities = _userCommunityRepository.GetUserCommunities(command.UserId, command.CommunityId);
 
-        if (userCommunities == null)
+        if (userCommunities is null)
         {
             Error error = Errors.UserCommunities.UserNotInCommunity;
 
@@ -45,18 +70,32 @@ public class UserLeftACommunityCommandHandler
             return error;
         }
 
-        userCommunities.Delete();
+        if (userCommunities.Role is Role.Admin)
+        {
+            Error error = Errors.UserCommunities.AdminCantLeaveCommunity;
 
-        _userCommunityRepository.Remove(command.UserId, command.CommunityId);
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
 
-        UserLeftACommunityResult result = new("User left community successfully");
+            return error;
+        }
+        else
+        {
+            userCommunities.Delete();
 
-        Log.Information(
-            "{@UserLeftACommunityResult}, User: {@UserId}, Community: {@CommunityId}",
-            result,
-            command.UserId,
-            command.CommunityId);
+            _userCommunityRepository.Remove(command.UserId, command.CommunityId);
 
-        return result;
+            UserLeftACommunityResult result = new("User left community successfully");
+
+            Log.Information(
+                "{@UserLeftACommunityResult}, User: {@UserId}, Community: {@CommunityId}",
+                result,
+                command.UserId,
+                command.CommunityId);
+
+            return result;
+        }
     }
 }

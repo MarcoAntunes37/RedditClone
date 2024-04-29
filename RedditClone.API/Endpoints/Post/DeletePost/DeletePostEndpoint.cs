@@ -2,10 +2,11 @@ namespace RedditClone.API.Endpoints.Post.DeletePost;
 
 using ErrorOr;
 using MediatR;
-using RedditClone.Application.Post.Commands.DeletePost;
-using RedditClone.Application.Post.Results.DeletePostResult;
+using RedditClone.API.Extension;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Application.Post.Commands.DeletePost;
+using RedditClone.Application.Post.Results.DeletePostResult;
 
 public class DeletePostEndpoint : IEndpoint
 {
@@ -24,11 +25,10 @@ public class DeletePostEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Posts);
+        .WithTags(Tags.Posts)
+        .RequireAuthorization();
     }
 }

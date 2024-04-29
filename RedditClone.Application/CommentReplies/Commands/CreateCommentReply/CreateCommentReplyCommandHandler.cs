@@ -36,6 +36,30 @@ public class CreateCommentReplyCommandHandler(
             return error;
         }
 
+        if (!_commentRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (!_commentRepository.CommunityExists(command.CommunityId))
+        {
+            Error error = Errors.Community.CommunityNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
         var userCommunity = _userCommunitiesRepository.GetUserCommunities(command.UserId, command.CommunityId);
 
         if(userCommunity is null)
@@ -50,7 +74,7 @@ public class CreateCommentReplyCommandHandler(
             return error;
         }
 
-        _commentRepository.AddCommentReply(command.CommentId, command.UserId, command.CommunityId, command.Content);
+        _commentRepository.AddCommentReply(command.CommentId, command.UserId, command.Content);
 
         CreateCommentReplyResult result = new ("Comment replied successfully");
 

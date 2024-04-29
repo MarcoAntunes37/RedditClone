@@ -2,6 +2,7 @@ namespace RedditClone.API.Endpoints.Community.CreateCommunity;
 
 using ErrorOr;
 using MediatR;
+using RedditClone.API.Extension;
 using RedditClone.Application.Community.Commands.CreateCommunity;
 using RedditClone.Application.Community.Results.CreateCommunityResult;
 using RedditClone.Domain.UserAggregate.ValueObjects;
@@ -24,11 +25,10 @@ public class CreateCommunityEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Communities);
+        .WithTags(Tags.Communities)
+        .RequireAuthorization();
     }
 }

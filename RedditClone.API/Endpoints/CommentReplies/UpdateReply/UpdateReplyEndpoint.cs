@@ -1,10 +1,11 @@
 
 using ErrorOr;
 using MediatR;
+using RedditClone.API.Extension;
+using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Application.CommentReplies.Commands.UpdateCommentReply;
 using RedditClone.Application.CommentReplies.Results.UpdateCommentReplyResults;
-using RedditClone.Domain.CommentAggregate.ValueObjects;
-using RedditClone.Domain.UserAggregate.ValueObjects;
 
 namespace RedditClone.API.Endpoints.CommentReplies.UpdateReply;
 
@@ -28,11 +29,10 @@ public class UpdateReplyEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
 
         }).MapToApiVersion(1)
-        .WithTags(Tags.CommentReplies);
+        .WithTags(Tags.CommentReplies)
+        .RequireAuthorization();
     }
 }

@@ -15,9 +15,11 @@ public interface IPostRepository
     List<Votes> GetVotesListsByPostId(PostId postId);
     List<Post> GetPostListByCommunity(CommunityId communityId);
     void Add(Post post);
-    ErrorOr<Post> UpdatePostById(PostId id, UserId userId, string title, string content);
+    Post UpdatePostById(PostId id, string title, string content);
     ErrorOr<bool> DeletePostById(PostId id, UserId userId);
     ErrorOr<bool> AddPostVote(PostId id, UserId userId, bool isVoted);
     ErrorOr<bool> UpdatePostVoteById(PostId id, VoteId voteId, UserId userId, bool isVoted);
     ErrorOr<bool> DeletePostVoteById(PostId id, VoteId voteId, UserId userId);
+    bool UserExists(UserId userId);
+    bool CommunityExists(CommunityId communityId);
 }

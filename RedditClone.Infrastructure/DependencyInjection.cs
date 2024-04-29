@@ -27,6 +27,7 @@ public static class DependencyInjection
         ConfigurationManager configuration)
     {
         services.AddAuth(configuration);
+        services.AddAuthorization();
         services.AddDatabase(configuration);
         services.AddRebusConfig(configuration);
         services.AddPersistence();

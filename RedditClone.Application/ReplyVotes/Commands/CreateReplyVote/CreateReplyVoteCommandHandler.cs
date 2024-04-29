@@ -37,6 +37,29 @@ public class CreateReplyVoteCommandHandler(
             return error;
         }
 
+        if(!_commentRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if(!_commentRepository.CommentReplyExists(command.CommentId, command.ReplyId))
+        {
+            Error error = Errors.ReplyVotes.VoteNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
         _commentRepository.AddReplyVote(command.CommentId, command.ReplyId, command.UserId, command.IsVoted);
 
         CreateReplyVoteResult result = new("Comment reply voted successfully");

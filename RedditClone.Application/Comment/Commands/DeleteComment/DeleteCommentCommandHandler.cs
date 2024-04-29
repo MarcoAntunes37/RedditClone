@@ -39,6 +39,18 @@ public class DeleteCommentCommandHandler(
             return error;
         }
 
+        if(comment.UserId != command.UserId)
+        {
+            Error error = Errors.Comments.CommentNotOwnerByUser;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
         _commentRepository.DeleteCommentById(command.CommentId, command.UserId);
 
         DeleteCommentResult result = new("Comment successfully deleted.");

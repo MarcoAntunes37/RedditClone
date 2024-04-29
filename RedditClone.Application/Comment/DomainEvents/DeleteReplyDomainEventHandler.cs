@@ -11,8 +11,7 @@ internal sealed class DeleteReplyDomainEventHandler(IBus bus)
         ReplyDeletedDomainEvent notification,
         CancellationToken cancellationToken)
     {
-        if (notification.UserId == null
-        || notification.CommunityId == null)
+        if (notification.UserId == null)
         {
             return;
         }
@@ -22,7 +21,6 @@ internal sealed class DeleteReplyDomainEventHandler(IBus bus)
                 notification.Id,
                 notification.ReplyId,
                 notification.CommentId,
-                notification.CommunityId,
                 notification.UserId));
     }
 }

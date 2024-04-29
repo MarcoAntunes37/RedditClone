@@ -22,8 +22,7 @@ public class UserJoinACommunityCommandHandlerTests
 
         var command = new UserJoinACommunityCommand(
             new CommunityId(Guid.NewGuid()),
-            new UserId(Guid.NewGuid()),
-            Role.Admin);
+            new UserId(Guid.NewGuid()));
 
         var result = await handler.Handle(command, default);
 

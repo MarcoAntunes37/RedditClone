@@ -1,14 +1,14 @@
+namespace RedditClone.API.Endpoints.CommentVotes.DeleteVote;
 
 using ErrorOr;
 using MediatR;
+using RedditClone.API.Extension;
+using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.CommentAggregate.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.API.Endpoints.CommentReplies.CreateReply;
 using RedditClone.Application.CommentReplies.Commands.CreateCommentReply;
 using RedditClone.Application.CommentReplies.Results.CreateCommentReplyResults;
-using RedditClone.Domain.CommentAggregate.ValueObjects;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
-using RedditClone.Domain.UserAggregate.ValueObjects;
-
-namespace RedditClone.API.Endpoints.CommentVotes.DeleteVote;
 
 public class CreateReplyEndpoint : IEndpoint
 {
@@ -29,11 +29,10 @@ public class CreateReplyEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.CommentReplies);
+        .WithTags(Tags.CommentReplies)
+        .RequireAuthorization();
     }
 }

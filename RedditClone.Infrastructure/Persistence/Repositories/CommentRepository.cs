@@ -19,9 +19,9 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
 
     public ErrorOr<Comment> GetCommentById(CommentId commentId)
     {
-        Comment? comment = _dbContext.Comments.FirstOrDefault(c => c.Id == commentId);
+        Comment comment = _dbContext.Comments.FirstOrDefault(c => c.Id == commentId)!;
 
-        if(comment is null)
+        if (comment is null)
         {
             Error error = Errors.Comments.CommentNotFound;
 
@@ -50,11 +50,23 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
 
     public ErrorOr<Comment> UpdateCommentById(CommentId id, UserId userId, string content)
     {
-        Comment? comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id && c.UserId == userId);
+        Comment comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id)!;
 
-        if(comment is null)
+        if (comment is null)
         {
             Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if(comment.UserId != userId)
+        {
+            Error error = Errors.Comments.CommentNotOwnerByUser;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -73,11 +85,23 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
 
     public ErrorOr<bool> DeleteCommentById(CommentId id, UserId userId)
     {
-        Comment? comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id && c.UserId == userId);
+        Comment comment = _dbContext.Comments.SingleOrDefault(c => c.Id == id)!;
 
-        if(comment is null)
+        if (comment is null)
         {
             Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (comment.UserId != userId)
+        {
+            Error error = Errors.Comments.CommentNotOwnerByUser;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -98,7 +122,7 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
     {
         Comment? commentVote = _dbContext.Comments.Include(p => p.Votes).SingleOrDefault(p => p.Id == id);
 
-        if(commentVote is null)
+        if (commentVote is null)
         {
             Error error = Errors.Comments.CommentNotFound;
 
@@ -127,9 +151,9 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
         Comment? commentVote = _dbContext.Comments.Include(p => p.Votes).Where(
             p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId)).SingleOrDefault(p => p.Id == id);
 
-        if(commentVote is null)
+        if (commentVote is null)
         {
-           Error error = Errors.Comments.VoteNotFound;
+            Error error = Errors.CommentVotes.VoteNotFound;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -151,9 +175,9 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
             .Where(p => p.Votes.Any(pv => pv.Id == voteId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id);
 
-        if(commentVote is null)
+        if (commentVote is null)
         {
-            Error error = Errors.Comments.VoteNotFound;
+            Error error = Errors.CommentVotes.VoteNotFound;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -168,15 +192,15 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
         return true;
     }
 
-    public ErrorOr<bool> AddCommentReply(CommentId id, UserId userId, CommunityId communityId, string content)
+    public ErrorOr<bool> AddCommentReply(CommentId id, UserId userId, string content)
     {
         Comment? commentReply = _dbContext.Comments
             .Include(p => p.Replies)
             .SingleOrDefault(p => p.Id == id);
 
-        if(commentReply is null)
+        if (commentReply is null)
         {
-            Error error = Errors.Comments.ReplyNotFound;
+            Error error = Errors.CommentReplies.ReplyNotFound;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -190,7 +214,6 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
 
         var reply = Replies.Create(
             userId,
-            communityId,
             id,
             content,
             repliesVotes);
@@ -209,9 +232,9 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
             .Where(p => p.Replies.Any(pv => pv.Id == replyId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id);
 
-        if(commentReply is null)
+        if (commentReply is null)
         {
-            Error error = Errors.Comments.ReplyNotFound;
+            Error error = Errors.CommentReplies.ReplyNotFound;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -233,9 +256,9 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
                 p => p.Replies.Any(pv => pv.Id == replyId && pv.UserId == userId))
             .SingleOrDefault(p => p.Id == id);
 
-        if(commentReply is null)
+        if (commentReply is null)
         {
-            Error error = Errors.Comments.ReplyNotFound;
+            Error error = Errors.CommentReplies.ReplyNotFound;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -256,9 +279,9 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
             cr => cr.Replies.Any(r => r.Id == replyId && r.UserId == userId))
             .SingleOrDefault(c => c.Id == id);
 
-        if(commentReplyVotes is null)
+        if (commentReplyVotes is null)
         {
-            Error error = Errors.Comments.ReplyNotFound;
+            Error error = Errors.CommentReplies.ReplyNotFound;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -287,9 +310,9 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
                 cr => cr.Replies.Any(r => r.Id == replyId && r.UserId == userId))
             .SingleOrDefault(c => c.Id == id);
 
-        if(commentReplyVotes is null)
+        if (commentReplyVotes is null)
         {
-            Error error = Errors.Comments.ReplyNotFound;
+            Error error = Errors.CommentReplies.ReplyNotFound;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -312,9 +335,9 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
                 cr => cr.Replies.Any(r => r.Id == replyId && r.UserId == userId))
             .SingleOrDefault(c => c.Id == id);
 
-        if(commentReplyVotes is null)
+        if (commentReplyVotes is null)
         {
-            Error error = Errors.Comments.ReplyNotFound;
+            Error error = Errors.CommentReplies.ReplyNotFound;
 
             Log.Error(
                 "{@Code}, {@Description}",
@@ -327,5 +350,106 @@ public class CommentRepository(RedditCloneDbContext dbContext) : ICommentReposit
         commentReplyVotes.RemoveReplyVote(replyId, voteId);
 
         return true;
+    }
+
+    public ErrorOr<List<RepliesVotes>> GetVoteListByReplyId(CommentId commentId, ReplyId replyId)
+    {
+        Comment? comment = _dbContext.Comments
+            .Include(p => p.Replies)
+            .Where(p => p.Replies.Any(pv => pv.Id == replyId))
+            .Include(p => p.Votes)
+            .SingleOrDefault(p => p.Id == commentId);
+
+        if (comment is null)
+        {
+            Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        return comment.Replies.FirstOrDefault()!.Votes.ToList();
+    }
+
+    public ErrorOr<List<Votes>> GetVoteListByCommentId(CommentId commentId)
+    {
+        Comment? comment = _dbContext.Comments
+            .Include(p => p.Votes)
+            .SingleOrDefault(p => p.Id == commentId);
+
+        if (comment is null)
+        {
+            Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        return comment.Votes.ToList();
+    }
+
+    public ErrorOr<List<Replies>> GetReplyListByCommentId(CommentId commentId)
+    {
+        Comment? comment = _dbContext.Comments
+            .Include(p => p.Replies)
+            .SingleOrDefault(p => p.Id == commentId);
+
+        if (comment is null)
+        {
+            Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        return comment.Replies.ToList();
+    }
+
+    public bool UserExists(UserId userId)
+    {
+        return _dbContext.Users.Any(u => u.Id == userId);
+    }
+
+    public bool CommunityExists(CommunityId communityId)
+    {
+        return _dbContext.Communities.Any(c => c.Id == communityId);
+    }
+
+    public bool PostExists(PostId postId)
+    {
+        return _dbContext.Posts.Any(p => p.Id == postId);
+    }
+
+    public bool CommentExists(CommentId commentId)
+    {
+        return _dbContext.Comments.Any(c => c.Id == commentId);
+    }
+
+    public bool CommentVoteExists(CommentId commentId, VoteId voteId)
+    {
+        return _dbContext.Comments.Find(commentId)!.Votes.Any(v => v.Id == voteId);
+    }
+
+    public bool CommentReplyExists(CommentId commentId, ReplyId replyId)
+    {
+        return _dbContext.Comments.Find(commentId)!.Replies.Any(r => r.Id == replyId);
+    }
+
+    public bool UserAlreadyVoted(CommentId commentId, UserId userId)
+    {
+        return _dbContext.Comments.Find(commentId)
+            !.Votes.Any(v => v.UserId == userId && v.CommentId == commentId);
     }
 }

@@ -228,7 +228,6 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
-            new CommunityId(communityId),
             comment.Id,
             replyContent,
             repliesVotes);
@@ -268,7 +267,6 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
-            new CommunityId(communityId),
             comment.Id,
             replyContent,
             repliesVotes);
@@ -309,7 +307,6 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
-            new CommunityId(communityId),
             comment.Id,
             replyContent,
             repliesVotes);
@@ -350,7 +347,6 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
-            new CommunityId(communityId),
             comment.Id,
             replyContent,
             repliesVotes);
@@ -397,7 +393,6 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
-            new CommunityId(communityId),
             comment.Id,
             replyContent,
             repliesVotes);
@@ -447,7 +442,6 @@ public class DomainCommentsTests
 
         var reply = Replies.Create(
             new UserId(replyUserId),
-            new CommunityId(communityId),
             comment.Id,
             replyContent,
             repliesVotes);

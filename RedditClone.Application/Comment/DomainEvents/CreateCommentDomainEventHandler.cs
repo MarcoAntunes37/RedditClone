@@ -11,8 +11,7 @@ internal sealed class CreateCommentDomainEventHandler(IBus bus)
         CommentCreatedDomainEvent notification,
         CancellationToken cancellationToken)
     {
-        if (notification.UserId == null
-        || notification.CommunityId == null)
+        if (notification.UserId == null)
         {
             return;
         }
@@ -22,7 +21,6 @@ internal sealed class CreateCommentDomainEventHandler(IBus bus)
                 notification.Id,
                 notification.CommentId,
                 notification.PostId,
-                notification.CommunityId,
                 notification.UserId,
                 notification.Content));
     }

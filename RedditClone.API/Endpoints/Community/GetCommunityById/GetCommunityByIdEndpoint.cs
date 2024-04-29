@@ -20,6 +20,7 @@ public class GetCommunityByIdEndpoint : IEndpoint
             return Results.Ok(result);
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Communities);
+        .WithTags(Tags.Communities)
+        .RequireAuthorization();
     }
 }

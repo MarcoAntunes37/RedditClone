@@ -1,12 +1,13 @@
 namespace RedditClone.API.Endpoints.CommentVotes.UpdateVote;
 
 using MediatR;
+using ErrorOr;
+using RedditClone.API.Extension;
 using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Application.CommentVotes.Commands.UpdateCommentVote;
 using RedditClone.Application.CommentVotes.Results.UpdateCommentVoteResult;
-using ErrorOr;
 
 public class UpdateVoteEndpoint : IEndpoint
 {
@@ -29,11 +30,10 @@ public class UpdateVoteEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.CommentVotes);
+        .WithTags(Tags.CommentVotes)
+        .RequireAuthorization();
     }
 }

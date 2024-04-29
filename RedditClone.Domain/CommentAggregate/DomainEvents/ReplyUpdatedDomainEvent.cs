@@ -9,7 +9,6 @@ public record ReplyUpdatedDomainEvent(
     Guid Id,
     ReplyId ReplyId,
     CommentId CommentId,
-    CommunityId CommunityId,
     UserId UserId,
     string Content,
     DateTime UpdatedAt

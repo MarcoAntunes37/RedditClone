@@ -2,16 +2,19 @@
 
 ## C# interface
 ```csharp
-    void Create(Community community);
-    void Update(Community community);
-    void Delete(Guid communityId);
+    ErrorOr<Community> GetCommunityById(CommunityId communityId);
+    ErrorOr<Community> GetCommunityByName(string name);
+    List<Community> GetCommunitiesList();
+    void Add(Community community);
+    ErrorOr<bool> UpdateCommunityById(CommunityId id, UserId userId, string name, string description, string topic);
+    ErrorOr<bool> DeleteCommunityById(CommunityId id, UserId userId);
+    bool UserExists(UserId userId);
 ```
 
 ## Domain object representation
 ```json
 {
     "id": { "value": "000000000-0000-0000-000000"},
-    "userId": { "value": "000000000-0000-0000-000000"},
     "name": "C#",
     "description": "hello i am a description",
     "membersCount": 0,

@@ -29,6 +29,6 @@ public class UpdatePostCommandHandlerTests
 
         Assert.IsType<ErrorOr<UpdatePostResult>>(result);
 
-        mockPostRepository.Verify(r => r.UpdatePostById(It.IsAny<PostId>(), It.IsAny<UserId>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        mockPostRepository.Verify(r => r.UpdatePostById(It.IsAny<PostId>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 }

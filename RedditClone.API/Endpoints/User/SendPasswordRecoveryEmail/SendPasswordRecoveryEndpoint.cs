@@ -3,6 +3,7 @@ namespace RedditClone.API.Endpoints.User.SendPasswordRecoveryEmail;
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Routing;
+using RedditClone.API.Extension;
 using RedditClone.Application.User.Commands.SendPasswordRecoveryEmail;
 using RedditClone.Application.User.Results.SendPasswordRecoveryEmail;
 
@@ -22,9 +23,7 @@ public class SendPasswordRecoveryEmailEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
         .WithTags(Tags.Users);

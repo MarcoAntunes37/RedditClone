@@ -4,8 +4,8 @@ using ErrorOr;
 using MediatR;
 using Serilog;
 using RedditClone.Application.Persistence;
-using RedditClone.Application.CommentReplies.Commands.DeleteCommentReply;
 using RedditClone.Application.CommentReplies.Results.DeleteCommentReplyResults;
+using RedditClone.Domain.Common.Errors;
 
 public class DeleteCommentReplyCommandHandler(
     ICommentRepository commentRepository)
@@ -24,6 +24,46 @@ public class DeleteCommentReplyCommandHandler(
             command,
             command.ReplyId,
             command.CommentId);
+
+        var comment = _commentRepository.GetCommentById(command.CommentId).Value;
+
+        if (comment is null)
+        {
+            Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        var reply = comment.Replies.FirstOrDefault(v => v.Id == command.ReplyId);
+
+        if (reply is null)
+        {
+            Error error = Errors.CommentReplies.ReplyNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (reply.UserId != command.UserId)
+        {
+            Error error = Errors.CommentReplies.ReplyNotOwnerByUser;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         _commentRepository.DeleteCommentReplyById(command.CommentId, command.ReplyId, command.UserId);
 

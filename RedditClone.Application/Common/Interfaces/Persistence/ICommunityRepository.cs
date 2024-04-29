@@ -13,4 +13,5 @@ public interface ICommunityRepository
     void Add(Community community);
     ErrorOr<bool> UpdateCommunityById(CommunityId id, UserId userId, string name, string description, string topic);
     ErrorOr<bool> DeleteCommunityById(CommunityId id, UserId userId);
+    bool UserExists(UserId userId);
 }

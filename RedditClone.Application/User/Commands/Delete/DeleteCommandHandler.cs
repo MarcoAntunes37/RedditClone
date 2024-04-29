@@ -5,6 +5,7 @@ using MediatR;
 using Serilog;
 using RedditClone.Application.Persistence;
 using RedditClone.Application.User.Results;
+using RedditClone.Domain.Common.Errors;
 
 public partial class DeleteUserCommandHandler(
     IUserRepository userRepository)
@@ -24,12 +25,29 @@ public partial class DeleteUserCommandHandler(
                 command,
                 command.UserId);
 
-        _userRepository.DeleteUserById(command.UserId, command.CurrentUserId);
+        if(command.CurrentUserId != command.UserId)
+        {
+            Error error = Errors.User.OnlyDeleteSelf;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        var success = _userRepository.DeleteUserById(command.UserId, command.CurrentUserId);
+
+        if (success != true)
+        {
+            return success.FirstError;
+        }
 
         DeleteResult result = new("User deleted successfully");
 
         Log.Information(
-            "{@ErrorOr<DeleteResult>}, {@UserId}",
+            "{@DeleteResult}, {@UserId}",
             result,
             command.UserId);
 

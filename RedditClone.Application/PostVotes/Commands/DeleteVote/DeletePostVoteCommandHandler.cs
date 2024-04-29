@@ -38,8 +38,19 @@ public class DeletePostVoteCommandHandler(
             return error;
         }
 
-        _postRepository.DeletePostVoteById(command.PostId, command.VoteId, command.UserId);
+        var success = _postRepository.DeletePostVoteById(command.PostId, command.VoteId, command.UserId);
 
+        if(!success.Value)
+        {
+            Error error = Errors.PostVotes.UserNotVoteOwner;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
         DeletePostVoteResult result = new("Vote on post deleted successfully");
 
         Log.Information(

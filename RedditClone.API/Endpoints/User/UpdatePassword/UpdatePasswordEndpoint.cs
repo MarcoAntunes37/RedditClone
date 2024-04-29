@@ -2,9 +2,10 @@ namespace RedditClone.API.Endpoints.User.UpdatePassword;
 
 using ErrorOr;
 using MediatR;
+using RedditClone.API.Extension;
 using RedditClone.Domain.UserAggregate.ValueObjects;
-using RedditClone.Application.User.Commands.UpdatePassword;
 using RedditClone.Application.User.Results.UpdatePassword;
+using RedditClone.Application.User.Commands.UpdatePassword;
 
 public class UpdatePasswordEndpoint : IEndpoint
 {
@@ -25,12 +26,11 @@ public class UpdatePasswordEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    result.FirstError.Code,
-                    result.FirstError.Description)
+                errors => ProblemExtensions.CreateProblemDetails(errors)
             );
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Users);
+        .WithTags(Tags.Users)
+        .RequireAuthorization();
     }
 }

@@ -1,8 +1,8 @@
 namespace RedditClone.API.Endpoints.Post.GetPostsListByCommunityId;
 
 using MediatR;
-using RedditClone.Application.Community.Queries.GetPostListByCommunityId;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Application.Community.Queries.GetPostListByCommunityId;
 
 public class GetPostsListsByCommunityIdEndpoint : IEndpoint
 {
@@ -25,6 +25,7 @@ public class GetPostsListsByCommunityIdEndpoint : IEndpoint
             return Results.Ok(result);
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Posts);
+        .WithTags(Tags.Posts)
+        .RequireAuthorization();
     }
 }

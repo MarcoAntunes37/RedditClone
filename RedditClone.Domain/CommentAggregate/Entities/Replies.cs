@@ -12,7 +12,6 @@ public sealed class Replies : AggregateRoot
     private readonly List<RepliesVotes> _votes = new();
     public new ReplyId Id { get; private set; }
     public UserId UserId { get; private set; }
-    public CommunityId CommunityId { get; private set; }
     public CommentId CommentId { get; private set; }
     public string Content { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -26,7 +25,6 @@ public sealed class Replies : AggregateRoot
     private Replies(
         ReplyId id,
         UserId userId,
-        CommunityId communityId,
         CommentId commentId,
         string content,
         DateTime createdAt,
@@ -35,7 +33,6 @@ public sealed class Replies : AggregateRoot
     {
         Id = id;
         UserId = userId;
-        CommunityId = communityId;
         CommentId = commentId;
         Content = content;
         CreatedAt = createdAt;
@@ -45,7 +42,6 @@ public sealed class Replies : AggregateRoot
 
     public static Replies Create(
         UserId userId,
-        CommunityId communityId,
         CommentId commentId,
         string content,
         List<RepliesVotes> votes)
@@ -53,7 +49,6 @@ public sealed class Replies : AggregateRoot
         var reply = new Replies(
             new ReplyId(Guid.NewGuid()),
             userId,
-            communityId,
             commentId,
             content,
             DateTime.UtcNow,
@@ -65,7 +60,6 @@ public sealed class Replies : AggregateRoot
                 Guid.NewGuid(),
                 reply.Id,
                 reply.CommentId,
-                reply.CommunityId,
                 reply.UserId,
                 reply.Content));
 
@@ -82,7 +76,6 @@ public sealed class Replies : AggregateRoot
                 Guid.NewGuid(),
                 Id,
                 CommentId,
-                CommunityId,
                 UserId,
                 Content,
                 UpdatedAt));
@@ -94,7 +87,6 @@ public sealed class Replies : AggregateRoot
             new ReplyDeletedDomainEvent(Guid.NewGuid(),
                 Id,
                 CommentId,
-                CommunityId,
                 UserId));
     }
 

@@ -2,9 +2,8 @@ namespace RedditClone.API.Endpoints.User.Delete;
 
 using ErrorOr;
 using MediatR;
-using MapsterMapper;
-using RedditClone.Application.User.Commands.Delete;
 using RedditClone.Application.User.Results;
+using RedditClone.Application.User.Commands.Delete;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 
 public class DeleteEndpoint : IEndpoint
@@ -28,6 +27,7 @@ public class DeleteEndpoint : IEndpoint
             );
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Users);
+        .WithTags(Tags.Users)
+        .RequireAuthorization();
     }
 }

@@ -26,7 +26,9 @@ public class UpdateCommentCommandHandler(
             command,
             command.CommentId);
 
-        if(_commentRepository.GetCommentById(command.CommentId).Value is null)
+        var comment = _commentRepository.GetCommentById(command.CommentId).Value;
+
+        if (comment is null)
         {
             Error error = Errors.Comments.CommentNotFound;
 
@@ -38,13 +40,25 @@ public class UpdateCommentCommandHandler(
             return error;
         }
 
-        Comment comment = _commentRepository.UpdateCommentById(command.CommentId, command.UserId, command.Content).Value;
+        if (comment.UserId != command.UserId)
+        {
+            Error error = Errors.Comments.CommentNotOwnerByUser;
 
-        UpdateCommentResult result = new("Comment successfully updated.", comment);
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        Comment updatedComment = _commentRepository.UpdateCommentById(command.CommentId, command.UserId, command.Content).Value;
+
+        UpdateCommentResult result = new("Comment successfully updated.", updatedComment);
 
         Log.Information(
-            "{@UpdateCommentResult}",
-            result);
+                "{@UpdateCommentResult}",
+                result);
 
         return result;
     }

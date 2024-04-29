@@ -3,6 +3,7 @@ namespace RedditClone.API.Endpoints.ReplyVotes.DeleteReplyVote;
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using RedditClone.API.Extension;
 using RedditClone.Domain.Common.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
@@ -13,7 +14,7 @@ public class DeleteReplyVoteEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("/comments/{commentId}/replies/{replyId}/delete-vote/{voteId}", async (
+        app.MapDelete("/replies/{commentId}/{replyId}/delete-vote/{voteId}", async (
             Guid commentId,
             Guid replyId,
             Guid voteId,
@@ -30,11 +31,10 @@ public class DeleteReplyVoteEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.ReplyVotes);
+        .WithTags(Tags.ReplyVotes)
+        .RequireAuthorization();
     }
 }

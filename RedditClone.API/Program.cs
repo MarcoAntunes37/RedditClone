@@ -1,13 +1,12 @@
 using Serilog;
-using RedditClone.API;
-using RedditClone.Application;
-using RedditClone.Infrastructure;
 using Asp.Versioning;
-using Asp.Versioning.Builder;
-using RedditClone.API.Endpoints.User.Login;
-using Asp.Versioning.ApiExplorer;
-using RedditClone.API.Extension;
 using System.Reflection;
+using Asp.Versioning.Builder;
+using RedditClone.Application;
+using RedditClone.API.Extension;
+using RedditClone.Infrastructure;
+using Asp.Versioning.ApiExplorer;
+using RedditClone.API.Endpoints.User.Login;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -18,8 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    builder.Services.AddPresentation()
-                    .AddApplication(builder.Configuration)
+    builder.Services.AddApplication(builder.Configuration)
                     .AddInfrastructure(builder.Configuration);
 
     builder.Services.AddApiVersioning(options =>

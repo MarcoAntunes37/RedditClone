@@ -121,7 +121,6 @@ public class PostRepositoryTests
 
             postRepository.UpdatePostById(
                 post!.Id,
-                post.UserId,
                 arrange["newTitle"].ToString()!,
                 arrange["newContent"].ToString()!);
 

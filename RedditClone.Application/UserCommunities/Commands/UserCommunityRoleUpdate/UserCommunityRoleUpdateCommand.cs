@@ -8,6 +8,7 @@ using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Application.UserCommunities.Results.UserCommunityRoleUpdateResult;
 
 public record UserCommunityRoleUpdateCommand(
+    UserId RequesterId,
     CommunityId CommunityId,
     UserId UserId,
     Role Role)

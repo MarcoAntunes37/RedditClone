@@ -9,7 +9,6 @@ public record ReplyCreatedDomainEvent(
     Guid Id,
     ReplyId ReplyId,
     CommentId CommentId,
-    CommunityId CommunityId,
     UserId UserId,
     string Content
 ) : IDomainEvent;

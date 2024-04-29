@@ -25,9 +25,20 @@ public class UpdateCommunityCommandHandler(
         Log.Information(
             "Trying to update Community: {@CommunityId} with Owner: {@UserId}");
 
+        if (!_communityRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error("{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
         var admin = _userCommunitiesRepository.GetUserCommunitiesAdmin(command.CommunityId);
 
-        if(admin.UserId != command.UserId)
+        if (admin.UserId != command.UserId)
         {
             Error error = Errors.UserCommunities.UserIsNotCommunityAdmin;
 

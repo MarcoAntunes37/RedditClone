@@ -6,6 +6,7 @@ using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.CommunityAggregate.ValueObjects;
 using RedditClone.Application.Community.Commands.UpdateCommunity;
 using RedditClone.Application.Community.Results.UpdateCommunityResult;
+using RedditClone.API.Extension;
 
 public class UpdateCommunityEndpoint : IEndpoint
 {
@@ -27,11 +28,10 @@ public class UpdateCommunityEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Communities);
+        .WithTags(Tags.Communities)
+        .RequireAuthorization();
     }
 }

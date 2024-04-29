@@ -2,9 +2,14 @@
 
 ## C# interface
 ```csharp
-    void Register(User user);
-    void Login(string username, string password);
-    void
+    User? GetUserByEmail(string email);
+    User? GetUserById(UserId userId);
+    User? GetUserByUsername(string username);
+    void Add(User user);
+    ErrorOr<bool> DeleteUserById(UserId id, UserId requesterId);
+    ErrorOr<User> UpdateProfileById(UserId id, string firstname, string lastname, string email);
+    ErrorOr<bool> UpdatePasswordById(UserId id, string oldPassword, string newPassword, string matchPassword);
+    ErrorOr<bool> UpdateRecoveredPassword(string email, string newPassword, string matchPassword);
 ```
 
 
@@ -19,39 +24,5 @@
     "email": "emailteste@gmail.com",
     "createdAt": "2020-01-01T00:00:00.00000000Z",
     "updatedAt": "2020-01-01T00:00:00.00000000Z"
-}
-```
-
-## Post register user request
-
-### Route
-```js
-POST {{host}}/auth/register
-```
-
-### Payload
-```json
-{
-    "firstname": "Marco",
-    "lastname": "Aurelio",
-    "username": "marcodev",
-    "password": "123$Asdsa",
-    "email": "emailteste@gmail.com",
-    "communities": [],
-}
-```
-
-## Post login user request
-
-### Route
-```js
-POST {{host}}/auth/login
-```
-
-### Payload
-```json
-{
-    "password": "123$Asdsa",
-    "email": "emailteste@gmail.com"
 }
 ```

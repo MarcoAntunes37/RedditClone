@@ -3,7 +3,8 @@ namespace RedditClone.Application.Community.Results.GetCommunitiesListResult;
 using RedditClone.Domain.CommunityAggregate;
 
 public record GetCommunitiesListResult(
-    List<Community> Communities,
+    IList<Community> Communities,
+    int TotalPages,
     int Page,
     int PageSize,
     int TotalItems

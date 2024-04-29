@@ -26,9 +26,37 @@ public class UpdateCommentVoteCommandHandler(
             command.VoteId,
             command.CommentId);
 
-        if (_commentRepository.GetCommentById(command.CommentId).Value is null)
+        var comment = _commentRepository.GetCommentById(command.CommentId).Value;
+
+        if (comment is null)
         {
             Error error = Errors.Comments.CommentNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        var vote = comment.Votes.FirstOrDefault(v => v.Id == command.VoteId)!;
+
+        if (vote is null){
+
+            Error error = Errors.CommentVotes.VoteNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (vote.UserId != command.UserId)
+        {
+            Error error = Errors.CommentVotes.UserNotVoteOwner;
 
             Log.Error(
                 "{@Code}, {@Descriptor}",

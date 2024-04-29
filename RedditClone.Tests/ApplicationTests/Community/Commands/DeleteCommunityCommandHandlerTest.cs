@@ -47,8 +47,7 @@ public class DeleteCommunityCommandHandlerTest
 
             var command = new DeleteCommunityCommand(
                 communityId,
-                userId,
-                Role.Admin);
+                userId);
 
             var result = await handler.Handle(command, default);
 

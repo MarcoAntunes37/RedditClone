@@ -2,10 +2,10 @@ namespace RedditClone.API.Endpoints.User.UpdateProfile;
 
 using ErrorOr;
 using MediatR;
+using RedditClone.API.Extension;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Application.User.Commands.UpdateProfile;
 using RedditClone.Application.User.Results.UpdateProfile;
-using Microsoft.AspNetCore.Mvc;
 
 public class UpdateProfileEndpoint : IEndpoint
 {
@@ -26,12 +26,11 @@ public class UpdateProfileEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    result.FirstError.Code,
-                    result.FirstError.Description)
+                errors => ProblemExtensions.CreateProblemDetails(errors)
             );
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Users);
+        .WithTags(Tags.Users)
+        .RequireAuthorization();
     }
 }

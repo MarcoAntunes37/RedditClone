@@ -11,7 +11,6 @@ public record CommentCreatedDomainEvent(
     Guid Id,
     CommentId CommentId,
     PostId PostId,
-    CommunityId CommunityId,
     UserId UserId,
     string Content
 ) : IDomainEvent;

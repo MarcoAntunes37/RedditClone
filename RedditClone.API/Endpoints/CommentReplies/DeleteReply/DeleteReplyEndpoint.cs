@@ -3,6 +3,7 @@ namespace RedditClone.API.Endpoints.CommentReplies.DeleteReply;
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using RedditClone.API.Extension;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Domain.CommentAggregate.ValueObjects;
 using RedditClone.Application.CommentReplies.Commands.DeleteCommentReply;
@@ -27,11 +28,10 @@ public class DeleteReplyEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.CommentReplies);
+        .WithTags(Tags.CommentReplies)
+        .RequireAuthorization();
     }
 }

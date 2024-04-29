@@ -11,6 +11,5 @@ public record CommentDeletedDomainEvent(
     Guid Id,
     CommentId CommentId,
     PostId PostId,
-    CommunityId CommunityId,
     UserId UserId
 ) : IDomainEvent;

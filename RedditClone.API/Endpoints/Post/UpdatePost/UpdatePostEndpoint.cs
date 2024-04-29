@@ -1,6 +1,7 @@
 
 using ErrorOr;
 using MediatR;
+using RedditClone.API.Extension;
 using RedditClone.Application.Post.Commands.UpdatePost;
 using RedditClone.Application.Post.Results.UpdatePostResult;
 using RedditClone.Domain.PostAggregate.ValueObjects;
@@ -27,11 +28,10 @@ public class UpdatePostEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Posts);
+        .WithTags(Tags.Posts)
+        .RequireAuthorization();
     }
 }

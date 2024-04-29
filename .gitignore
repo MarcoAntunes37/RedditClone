@@ -480,10 +480,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Development configurations
-appsettings.Development.json
-appsettings.json
-
 # EF core migrations
 /RedditClone.Infrastructure/Migrations/
 

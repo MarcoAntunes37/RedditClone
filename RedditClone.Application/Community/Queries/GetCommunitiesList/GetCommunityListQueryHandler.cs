@@ -6,6 +6,7 @@ using RedditClone.Application.Persistence;
 using RedditClone.Application.Community.Queries.GetCommunitiesList;
 using RedditClone.Domain.CommunityAggregate;
 using Serilog;
+using RedditClone.Application.Common.Extensions;
 
 public class GetCommunitiesListQueryHandler(
     ICommunityRepository communityRepository)
@@ -39,13 +40,10 @@ public class GetCommunitiesListQueryHandler(
 
         int totalItems = communities.Count;
 
-        int startIndex = (query.Page -1) * query.PageSize;
+        var pagedCommunities = PaginationHandler.ApplyPagination(
+            communities, query.Page, query.PageSize);
 
-        int endIndex = Math.Min(startIndex + query.PageSize -1, totalItems -1);
-
-        List<Community> pageCommunities = communities.GetRange(startIndex, endIndex - startIndex + 1);
-
-        GetCommunitiesListResult result = new(pageCommunities, query.Page, query.PageSize, totalItems);
+        GetCommunitiesListResult result = new(pagedCommunities.Item1, pagedCommunities.Item2, query.Page, query.PageSize, totalItems);
 
         Log.Information(
             "{@GetCommunitiesListResult}",

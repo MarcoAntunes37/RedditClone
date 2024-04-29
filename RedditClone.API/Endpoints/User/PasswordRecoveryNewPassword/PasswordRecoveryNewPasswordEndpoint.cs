@@ -2,6 +2,7 @@ namespace RedditClone.API.Endpoints.User.PasswordRecoveryNewPassword;
 
 using ErrorOr;
 using MediatR;
+using RedditClone.API.Extension;
 using RedditClone.Application.User.Commands.PasswordRecoveryNewPassword;
 using RedditClone.Application.User.Results.PasswordRecoveryNewPassword;
 
@@ -24,9 +25,7 @@ public class PasswordRecoveryNewPasswordEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
         .WithTags(Tags.Users);

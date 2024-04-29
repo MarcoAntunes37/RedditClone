@@ -1,8 +1,8 @@
 namespace RedditClone.API.Endpoints.User.Login;
 
 using ErrorOr;
-using MapsterMapper;
 using MediatR;
+using RedditClone.API.Extension;
 using RedditClone.Application.User.Queries.Login;
 using RedditClone.Application.User.Results.Login;
 
@@ -20,17 +20,9 @@ public class LoginEndpoint : IEndpoint
 
             ErrorOr<LoginResult> result = await mediator.Send(query);
 
-            var error = new Error();
-
-            if (result.IsError)
-            {
-                error = result.Errors[0];
-            }
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    error.Code,
-                    error.Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
         .WithTags(Tags.Users);

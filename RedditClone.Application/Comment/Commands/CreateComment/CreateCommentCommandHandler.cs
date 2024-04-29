@@ -11,10 +11,12 @@ using RedditClone.Application.Comment.Results.CreateCommentResult;
 
 public class CreateCommentCommandHandler(
     ICommentRepository commentRepository,
+    IPostRepository postRepository,
     IUserCommunitiesRepository userCommunitiesRepository)
 : IRequestHandler<CreateCommentCommand, ErrorOr<CreateCommentResult>>
 {
     private readonly ICommentRepository _commentRepository = commentRepository;
+    private readonly IPostRepository postRepository = postRepository;
     private readonly IUserCommunitiesRepository _userCommunitiesRepository = userCommunitiesRepository;
 
     public async Task<ErrorOr<CreateCommentResult>> Handle(
@@ -31,9 +33,45 @@ public class CreateCommentCommandHandler(
 
         var userCommunity = _userCommunitiesRepository.GetUserCommunities(command.UserId, command.CommunityId);
 
-        if (userCommunity == null)
+        if (userCommunity is null)
         {
             Error error = Errors.UserCommunities.UserNotInCommunity;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (!postRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (!postRepository.CommunityExists(command.CommunityId))
+        {
+            Error error = Errors.Community.CommunityNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if(!_commentRepository.PostExists(command.PostId))
+        {
+            Error error = Errors.Posts.PostNotFound;
 
             Log.Error(
                 "{@Code}, {@Descriptor}",

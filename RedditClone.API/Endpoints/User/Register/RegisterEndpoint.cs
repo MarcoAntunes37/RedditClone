@@ -2,6 +2,7 @@ namespace RedditClone.API.Endpoints.User.Register;
 
 using ErrorOr;
 using MediatR;
+using RedditClone.API.Extension;
 using RedditClone.Application.User.Commands.Register;
 using RedditClone.Application.User.Results.Register;
 
@@ -17,17 +18,15 @@ public class RegisterEndpoint : IEndpoint
                 request.Firstname,
                 request.Lastname,
                 request.Username,
-                request.Email,
                 request.Password,
-                request.RepeatPassword);
+                request.RepeatPassword,
+                request.Email);
 
             ErrorOr<RegisterResult> result = await mediator.Send(command);
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    result.FirstError.Code,
-                    result.FirstError.Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
         .WithTags(Tags.Users);

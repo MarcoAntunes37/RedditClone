@@ -48,16 +48,6 @@ public class CommentConfiguration
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            crb.Property(cr => cr.CommunityId)
-                .ValueGeneratedNever()
-                .HasConversion(id => id.Value,
-                    value => new CommunityId(value));
-
-            crb.HasOne<Community>()
-                .WithMany()
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
-
             crb.Property(cr => cr.CommentId)
                 .ValueGeneratedNever()
                 .HasConversion(id => id.Value,
@@ -160,16 +150,6 @@ public class CommentConfiguration
                  value => new UserId(value));
 
         builder.HasOne<User>()
-            .WithMany()
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Property(c => c.CommunityId)
-            .ValueGeneratedNever()
-            .HasConversion(id => id.Value,
-                value => new CommunityId(value));
-
-        builder.HasOne<Community>()
             .WithMany()
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);

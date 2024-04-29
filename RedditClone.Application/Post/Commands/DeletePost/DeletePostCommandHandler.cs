@@ -3,6 +3,7 @@ namespace RedditClone.Application.Post.Commands.DeletePost;
 using ErrorOr;
 using MediatR;
 using Serilog;
+using RedditClone.Domain.Common.Errors;
 using RedditClone.Application.Common.Interfaces.Persistence;
 using RedditClone.Application.Post.Results.DeletePostResult;
 
@@ -23,7 +24,31 @@ public class DeletePostCommandHandler(
             "Trying to delete post: {@PostId}",
             command.PostId);
 
-        _postRepository.DeletePostById(command.PostId, command.UserId);
+        if(!_postRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        var success = _postRepository.DeletePostById(command.PostId, command.UserId);
+
+        if (!success.Value)
+        {
+            Error error = Errors.Posts.PostNotOwnedByUser;
+
+            Log.Error(
+                "{@Code}, {@Description}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
 
         DeletePostResult result = new("Post deleted successfully");
 

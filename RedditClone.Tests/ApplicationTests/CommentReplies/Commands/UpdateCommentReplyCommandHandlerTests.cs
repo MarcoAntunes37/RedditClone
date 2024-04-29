@@ -37,7 +37,6 @@ public class UpdateCommentReplyCommandHandlerTests
 
         var reply = Replies.Create(
             userId,
-            communityId,
             comment.Id,
             "ContentTest",
             new List<RepliesVotes>());

@@ -2,11 +2,12 @@ namespace RedditClone.API.Endpoints.Comment.CreateComment;
 
 using ErrorOr;
 using MediatR;
-using RedditClone.Application.Comment.Commands.CreateComment;
-using RedditClone.Application.Comment.Results.CreateCommentResult;
-using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.API.Extension;
 using RedditClone.Domain.PostAggregate.ValueObjects;
 using RedditClone.Domain.UserAggregate.ValueObjects;
+using RedditClone.Domain.CommunityAggregate.ValueObjects;
+using RedditClone.Application.Comment.Commands.CreateComment;
+using RedditClone.Application.Comment.Results.CreateCommentResult;
 
 
 public class CreateCommentEndpoint : IEndpoint
@@ -29,11 +30,10 @@ public class CreateCommentEndpoint : IEndpoint
 
             return result.Match(
                 result => Results.Ok(result),
-                errors => Results.Problem(
-                    errors.First().Code,
-                    errors.First().Description));
+                errors => ProblemExtensions.CreateProblemDetails(errors));
         })
         .MapToApiVersion(1)
-        .WithTags(Tags.Comments);
+        .WithTags(Tags.Comments)
+        .RequireAuthorization();
     }
 }

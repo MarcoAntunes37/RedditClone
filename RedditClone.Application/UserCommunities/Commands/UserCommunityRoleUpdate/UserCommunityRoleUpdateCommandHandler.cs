@@ -15,7 +15,6 @@ public class UserCommunityRoleUpdateCommandHandler(
 {
     private readonly IUserCommunitiesRepository _userCommunityRepository = userCommunityRepository;
 
-
     public async Task<ErrorOr<UserCommunityRoleUpdateResult>> Handle(
         UserCommunityRoleUpdateCommand command,
         CancellationToken cancellationToken)
@@ -29,9 +28,31 @@ public class UserCommunityRoleUpdateCommandHandler(
             command.UserId,
             command.CommunityId);
 
-        var userCommunities = _userCommunityRepository.GetUserCommunities(command.UserId, command.CommunityId);
+        if (!_userCommunityRepository.UserExists(command.UserId))
+        {
+            Error error = Errors.User.UserNotFound;
 
-        var admin = _userCommunityRepository.GetUserCommunitiesAdmin(command.CommunityId);
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        if (!_userCommunityRepository.CommunityExists(command.CommunityId))
+        {
+            Error error = Errors.User.UserNotFound;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
+        var userCommunities = _userCommunityRepository.GetUserCommunities(command.UserId, command.CommunityId);
 
         if (userCommunities is null)
         {
@@ -45,18 +66,29 @@ public class UserCommunityRoleUpdateCommandHandler(
             return error;
         }
 
+        var admin = _userCommunityRepository.GetUserCommunitiesAdmin(command.CommunityId);
+
+        if (command.RequesterId != admin.UserId)
+        {
+            Error error = Errors.UserCommunities.UserIsNotCommunityAdmin;
+
+            Log.Error(
+                "{@Code}, {@Descriptor}",
+                error.Code,
+                error.Description);
+
+            return error;
+        }
+
         if (command.Role == Role.Admin)
         {
-            _userCommunityRepository.UpdateRole(
-                admin.UserId, command.CommunityId, Role.Member);
+            _userCommunityRepository.UpdateRole(command.UserId, command.CommunityId, Role.Admin);
 
-            _userCommunityRepository.UpdateRole(
-                command.UserId, command.CommunityId, command.Role);
+            _userCommunityRepository.UpdateRole(admin.UserId, admin.CommunityId, Role.Member);
         }
         else
         {
-            _userCommunityRepository.UpdateRole(
-                command.UserId, command.CommunityId, command.Role);
+            _userCommunityRepository.UpdateRole(command.UserId, command.CommunityId, command.Role);
         }
 
         UserCommunityRoleUpdateResult result = new("User role updated successfully");
@@ -69,5 +101,6 @@ public class UserCommunityRoleUpdateCommandHandler(
             command.Role);
 
         return result;
+
     }
 }

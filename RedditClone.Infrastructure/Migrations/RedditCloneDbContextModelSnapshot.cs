@@ -27,9 +27,6 @@ namespace RedditClone.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CommunityId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -48,8 +45,6 @@ namespace RedditClone.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CommunityId");
 
                     b.HasIndex("PostId");
 
@@ -226,12 +221,6 @@ namespace RedditClone.Infrastructure.Migrations
 
             modelBuilder.Entity("RedditClone.Domain.CommentAggregate.Comment", b =>
                 {
-                    b.HasOne("RedditClone.Domain.CommunityAggregate.Community", null)
-                        .WithMany()
-                        .HasForeignKey("CommunityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RedditClone.Domain.PostAggregate.Post", null)
                         .WithMany()
                         .HasForeignKey("PostId")
@@ -252,9 +241,6 @@ namespace RedditClone.Infrastructure.Migrations
                             b1.Property<Guid>("CommentId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<Guid>("CommunityId")
-                                .HasColumnType("uuid");
-
                             b1.Property<string>("Content")
                                 .IsRequired()
                                 .HasColumnType("text");
@@ -272,20 +258,12 @@ namespace RedditClone.Infrastructure.Migrations
 
                             b1.HasIndex("CommentId");
 
-                            b1.HasIndex("CommunityId");
-
                             b1.HasIndex("UserId");
 
                             b1.ToTable("CommentsReplies", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("CommentId");
-
-                            b1.HasOne("RedditClone.Domain.CommunityAggregate.Community", null)
-                                .WithMany()
-                                .HasForeignKey("CommunityId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
 
                             b1.HasOne("RedditClone.Domain.UserAggregate.User", null)
                                 .WithMany()

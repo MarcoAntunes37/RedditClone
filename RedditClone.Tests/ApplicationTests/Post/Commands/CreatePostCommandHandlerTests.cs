@@ -3,6 +3,7 @@ namespace RedditClone.Tests.ApplicationTests.Post.Commands;
 using Moq;
 using ErrorOr;
 using RedditClone.Domain.PostAggregate;
+using RedditClone.Application.Persistence;
 using RedditClone.Domain.PostAggregate.Entities;
 using RedditClone.Domain.UserAggregate.ValueObjects;
 using RedditClone.Application.Post.Commands.CreatePost;
@@ -17,6 +18,7 @@ public class CreatePostCommandHandlerTests
     public async Task CreatePostCommand_ShouldReturnCreatePostResult_WhenPostIsValid()
     {
         var mockPostRepository = new Mock<IPostRepository>();
+        var mockCommunityRepository = new Mock<ICommunityRepository>();
 
         var mockUserCommunitiesRepository = new Mock<IUserCommunitiesRepository>();
 
