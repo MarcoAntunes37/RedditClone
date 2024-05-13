@@ -20,6 +20,7 @@ using RedditClone.Application.Common.Interfaces.Services;
 using RedditClone.Infrastructure.Persistence.Repositories;
 using RedditClone.Application.Common.Interfaces.Persistence;
 using RedditClone.Application.Common.Interfaces.Authentication;
+using Microsoft.EntityFrameworkCore.Internal;
 
 public static class DependencyInjection
 {

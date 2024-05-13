@@ -7,12 +7,13 @@ using RedditClone.API.Extension;
 using RedditClone.Infrastructure;
 using Asp.Versioning.ApiExplorer;
 using RedditClone.API.Endpoints.User.Login;
+using RedditClone.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Host.UseSerilog((context, configuration) =>
         configuration.ReadFrom.Configuration(context.Configuration));
-
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -38,10 +39,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    using (var scoped = app.Services.CreateScope())
+    {
+        try
+        {
+            var context = scoped.ServiceProvider.GetRequiredService<RedditCloneDbContext>();
+            context.Database.EnsureCreated();
+            context.Database.Migrate();
+        }
+        catch(Exception ex)
+        {
+            Serilog.Log.Error(ex.ToString());
+            throw;
+        }
+    }
+
     ApiVersionSet apiVersionSet = app.NewApiVersionSet()
         .HasApiVersion(new ApiVersion(1))
         .ReportApiVersions()
         .Build();
+
 
     RouteGroupBuilder versionedGroup = app.MapGroup("api/v{version:apiVersion}")
         .WithApiVersionSet(apiVersionSet);

@@ -87,16 +87,16 @@ I made a Reddit clone as a personal learning project, driven by my determination
 ```
 * Open appsettings.json or appsettings.Development.json depending of what type of env.
 
-* You will need to configure a secret to create JWT Token, it need to be a string with at least 128bits.
+* You will need to set a secret to create JWT Token, it need to be a string with at least 128bits.
 
-* To use email recovery you will need to configure a smtp server.
+* To use email service you will need to configure a smtp server.
 
 * Start docker compose container
 ```
   cd RedditClone; docker compose -up
 ```
 
-* If all credentials are correct docker will start the API listened in:
+* If all setup is correct docker will start the API listened in:
 ```
   http://localhost:8080
 ```
@@ -108,7 +108,7 @@ I made a Reddit clone as a personal learning project, driven by my determination
 
 ## Known problems
 
-* I tried to do an integration test, it normally integrates with the database container but I can't make it integrate with the other containers, it shows as if the container wasn't available yet. I'm using the Testcontainers library.
+* I tried to setup integration test, it normally integrates with the database container but I can't make it integrate with the other containers, it shows as if the container wasn't available yet. I'm using the Testcontainers library.
 
 ## Contact
 

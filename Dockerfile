@@ -1,16 +1,32 @@
 # syntax=docker/dockerfile:1
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 
-COPY . /source
+WORKDIR /src
+COPY ["RedditClone.API/RedditClone.API.csproj", "RedditClone.API/"]
+COPY ["RedditClone.Domain/RedditClone.Domain.csproj", "RedditClone.Domain/"]
+COPY ["RedditClone.Infrastructure/RedditClone.Infrastructure.csproj", "RedditClone.Infrastructure/"]
+COPY ["RedditClone.Application/RedditClone.Application.csproj", "RedditClone.Application/"]
+COPY ["RedditClone.Tests/RedditClone.Tests.csproj", "RedditClone.Tests/"]
 
-WORKDIR /source/RedditClone.API
+RUN dotnet restore "RedditClone.API/RedditClone.API.csproj"
+RUN dotnet restore "RedditClone.Infrastructure/RedditClone.Infrastructure.csproj"
+
+COPY . .
+
+RUN dotnet tool install --global dotnet-ef
+
+ENV PATH="${PATH}:/root/.dotnet/tools"
+
+RUN dotnet ef migrations add "InitialCreate" -p /src/RedditClone.Infrastructure -s /src/RedditClone.API
+
+WORKDIR /src/RedditClone.API
 
 ARG TARGETARCH
 
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
     dotnet publish -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 WORKDIR /app
 
 EXPOSE 80
