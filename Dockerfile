@@ -23,15 +23,15 @@ WORKDIR /src/RedditClone.API
 
 ARG TARGETARCH
 
-ENV ASPNETCORE_ENVIRONMENT=Production
-
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
-    dotnet publish -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app
+dotnet publish -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 WORKDIR /app
 
-EXPOSE 80
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+EXPOSE 8080
 EXPOSE 443
 
 COPY --from=build /app .
