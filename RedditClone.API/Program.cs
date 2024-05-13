@@ -6,9 +6,9 @@ using RedditClone.Application;
 using RedditClone.API.Extension;
 using RedditClone.Infrastructure;
 using Asp.Versioning.ApiExplorer;
+using Microsoft.EntityFrameworkCore;
 using RedditClone.API.Endpoints.User.Login;
 using RedditClone.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 {

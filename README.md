@@ -14,7 +14,7 @@
 <h3 align="center">Reddit Clone API</h3>
 
   <p align="center">
-    This project is a Minimal API using Clean Code, Solid, Outbox, DDD, CQRS, REPR and Event driven.
+    This project is a Minimal API using Clean code, Solid, Outbox, DDD, CQRS, REPR and EDD.
   </p>
 </div>
 <!-- TABLE OF CONTENTS -->
@@ -30,10 +30,12 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#pre-requisites">Pre-requisites</a></li>
         <li><a href="#installation">Installation</a></li>
-        <li><a href="#references">References</a></li>
       </ul>
+    </li>
+    <li>
+      <a href="#known-problems">Known Problems</a>
     </li>
     <li>
       <a href="#contact">Contact</a>
@@ -47,20 +49,69 @@ I made a Reddit clone as a personal learning project, driven by my determination
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Built With
-* [![C#][C#img]][C#-url]
-* <a href="https://dotnet.microsoft.com/en-us/download/dotnet"><img src="https://dotnet.microsoft.com/static/images/redesign/social/square.png" alt="DotNetSDK" width="42" height="33"/></a>
-* <a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore"><img src="https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore/8.0.4/icon" alt="EntityFrameworkCore" width="42" height="33"></a>
-* <a href="https://www.postgresql.org/"><img src="https://www.postgresql.org/media/img/about/press/elephant.png" alt="PostgreSql" width="42" height="33"/></a>
-* <a href="https://www.nuget.org/packages/MediatR"><img src="https://api.nuget.org/v3-flatcontainer/mediatr/12.2.0/icon" alt="MediatR" width="42" height="33"></a>
-* <a href="https://docs.fluentvalidation.net/en/latest/index.html"><img src="https://api.nuget.org/v3-flatcontainer/fluentvalidation/11.9.1/icon" alt="FluentValidator" width="42" height="33"></a>
-* <a href="https://www.nuget.org/packages/Quartz"><img src="https://api.nuget.org/v3-flatcontainer/quartz/3.8.1/icon" alt="Quartz" width="42" height="33"></a>
-* <a href="https://serilog.net/"><img src="https://raw.githubusercontent.com/serilog/serilog.github.io/master/images/serilog-180px.png" alt="Serilog" width="42" height="33"></a>
-* <a href="https://testcontainers.com/"><img src="https://api.nuget.org/v3-flatcontainer/testcontainers/3.8.0/icon" alt="Testcontainers" width="42" height="33"></a>
-* <a href="https://xunit.net/">Xunit</a>
-* <a href="https://www.rabbitmq.com/">RabbitMq</a>
-* <a href="https://www.nuget.org/packages/Rebus">Rebus</a>
-* <a href="https://www.nuget.org/packages/ErrorOr/">ErrorOr</a>
+## Build With
+<details>
+  <summary>Build with</summary>
+  <ol>
+    <li>
+      <a href="https://learn.microsoft.com/en-us/dotnet/csharp/">
+        <img src="https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=c-sharp&logoColor=white" alt="DotNetSDK" width="42" height="33"/>
+      </a>
+    </li>
+    <li>
+      <a href="https://dotnet.microsoft.com/en-us/download/dotnet">
+        <img src="https://dotnet.microsoft.com/static/images/redesign/social/square.png" alt="DotNetSDK" width="42" height="33"/>
+      </a>
+    </li>
+    <li>
+      <a href="https://www.nuget.org/packages/Microsoft.EntityFrameworkCore">
+        <img src="https://api.nuget.org/v3-flatcontainer/microsoft.entityframeworkcore/8.0.4/icon" alt="EntityFrameworkCore" width="42" height="33">
+      </a>
+    </li>
+    <li>
+      <a href="https://www.postgresql.org/">
+        <img src="https://www.postgresql.org/media/img/about/press/elephant.png" alt="PostgreSql" width="42" height="33"/>
+      </a>
+    </li>
+    <li>
+      <a href="https://www.nuget.org/packages/MediatR">
+        <img src="https://api.nuget.org/v3-flatcontainer/mediatr/12.2.0/icon" alt="MediatR" width="42" height="33">
+      </a>
+    </li>
+    <li>
+      <a href="https://docs.fluentvalidation.net/en/latest/index.html">
+        <img src="https://api.nuget.org/v3-flatcontainer/fluentvalidation/11.9.1/icon" alt="FluentValidator" width="42" height="33">
+      </a>
+    </li>
+    <li>
+      <a href="https://www.nuget.org/packages/Quartz">
+        <img src="https://api.nuget.org/v3-flatcontainer/quartz/3.8.1/icon" alt="Quartz" width="42" height="33">
+      </a>
+    </li>
+    <li>
+      <a href="https://serilog.net/">
+        <img src="https://raw.githubusercontent.com/serilog/serilog.github.io/master/images/serilog-180px.png" alt="Serilog" width="42" height="33">
+      </a>
+    </li>
+    <li>
+      <a href="https://testcontainers.com/">
+        <img src="https://api.nuget.org/v3-flatcontainer/testcontainers/3.8.0/icon" alt="Testcontainers" width="42" height="33">
+      </a>
+    </li>
+    <li>
+      <a href="https://xunit.net/">Xunit</a>
+    </li>
+    <li>
+      <a href="https://www.rabbitmq.com/">RabbitMq</a>
+    </li>
+    <li>
+      <a href="https://www.nuget.org/packages/Rebus">Rebus</a>
+    </li>
+    <li>
+      <a href="https://www.nuget.org/packages/ErrorOr/">ErrorOr</a>
+    </li>
+  </ol>
+</details>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -87,9 +138,11 @@ I made a Reddit clone as a personal learning project, driven by my determination
 ```
 * Open appsettings.json or appsettings.Development.json depending of what type of env.
 
-* You will need to set a secret to create JWT Token, it need to be a string with at least 128bits.
+* You will need to set a secret to create JWT Token, it need to be a string with at least 256bits.
 
 * To use email service you will need to configure a smtp server.
+
+* API documentation will available only in development environment, change ASPNETCORE_ENVIRONMENT variable in dockerfile to Development before next step if you want to access API documentation.
 
 * Start docker compose container
 ```
@@ -101,14 +154,18 @@ I made a Reddit clone as a personal learning project, driven by my determination
   http://localhost:8080
 ```
 
-* You can access api documentation in url
+* Documentation will be available in following path:
 ```
   http://localhost:8080/swagger
 ```
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Known problems
 
 * I tried to setup integration test, it normally integrates with the database container but I can't make it integrate with the other containers, it shows as if the container wasn't available yet. I'm using the Testcontainers library.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contact
 
@@ -134,8 +191,5 @@ Project Link: [https://github.com/MarcoAntunes37/RedditClone](https://github.com
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/marco-aurelio-antunes-junior-0b11526a/
 [product-screenshot]: images/screenshot.png
-[C#img]: https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=c-sharp&logoColor=white
-[DotnetUrl]: https://dotnet.microsoft.com/en-us/download/dotnet
-[C#-url]: https://learn.microsoft.com/en-us/dotnet/csharp/
 [Docker-Url]: https://www.docker.com/products/docker-desktop/
 [Docker-Guide]: https://docs.docker.com/desktop/install/windows-install/
